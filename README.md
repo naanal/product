@@ -3,6 +3,6 @@ The Product repository has broadly the following:
 
 mgmt - Scripts/Files needed to create mgmt ISO image, initial setup related files
 
-admin - Dashboard/Script/Files that admin will use
+admin - All admin related dashboard/features/settings
 
-user - Dashboard/Script/Files that end user will use
+user - All end user related dashboard/features/setting
