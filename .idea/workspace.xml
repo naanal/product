@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b02da9bc-e7e5-4697-ab7a-65b10eabc4b2" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/admin/dashboard" afterPath="$PROJECT_DIR$/admin/dashboard" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/user/dashboard/README.rst" afterPath="$PROJECT_DIR$/user/dashboard/README.rst" />
     </list>
     <ignored path="product.iws" />
     <ignored path=".idea/workspace.xml" />
