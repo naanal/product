@@ -2,7 +2,8 @@
 @import "/{{ THEME_DIR }}/{{ THEME }}/variables";
 
 // Horizon
-@import "/dashboard/scss/horizon.scss";
+//moved into individual theme styles
+//@import "/dashboard/scss/horizon.scss";
 
 // Angular
 @import "/app/app";
