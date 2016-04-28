@@ -1,6 +1,8 @@
 {% load i18n %}
 {% with table.needs_form_wrapper as needs_form_wrapper %}
 <div class="table_wrapper">
+<div class="box box-primary">
+    <div class="box-body">
   {% if needs_form_wrapper %}<form action="{{ table.get_full_url }}" method="POST">{% csrf_token %}{% endif %}
   {% with columns=table.get_columns rows=table.get_rows %}
 {% block table %}
@@ -86,5 +88,7 @@
 {% endblock table %}
   {% endwith %}
   {% if needs_form_wrapper %}</form>{% endif %}
+    </div>
+</div>
 </div>
 {% endwith %}

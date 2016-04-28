@@ -275,6 +275,10 @@ AVAILABLE_THEMES = [
         'material',
         pgettext_lazy("Google's Material Design style theme", "Material"),
         'themes/material'
+    ), (
+        'naanal_theme',
+        pgettext_lazy("Naanal theme", "Naanal Theme"),
+        'themes/naanal_theme'
     ),
 ]
 

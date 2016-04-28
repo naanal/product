@@ -5,6 +5,7 @@
   <head>
     <meta content='IE=edge' http-equiv='X-UA-Compatible' />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type' />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     {% include "horizon/_custom_meta.html" %}
     <title>{% block title %}{% endblock %} - {% site_branding %}</title>
     {% comment %} Load CSS sheets before Javascript  {% endcomment %}
@@ -17,12 +18,13 @@
     {% include "horizon/_custom_head_js.html" %}
     {% block ng_route_base %} {% endblock %}
   </head>
-  <body id="{% block body_id %}{% endblock %}" ng-app='horizon.app' ng-strict-di>
+  <body class=" hold-transition skin-blue sidebar-mini" id="{% block body_id %}{% endblock %}" ng-app='horizon.app' ng-strict-di>
     <noscript>
       <div class="javascript_disabled_alert">
         {% trans "This application requires JavaScript to be enabled in your web browser." %}
       </div>
     </noscript>
+    <div class="wrapper">
     {% block content %}
       <div class='topbar'>
         {% include "header/_header.html" %}
@@ -32,7 +34,7 @@
         {% block sidebar %}
           {% include 'horizon/common/_sidebar.html' %}
         {% endblock %}
-        <div id='content_body'>
+        <div id='content_body' class="content-wrapper">
           <div class='container-fluid'>
             <div class="row">
               <div class="col-xs-12">
@@ -55,5 +57,6 @@
       {% include "horizon/_scripts.html" %}
     {% endblock %}
     <div id="modal_wrapper"></div>
+    </div>
   </body>
 </html>
