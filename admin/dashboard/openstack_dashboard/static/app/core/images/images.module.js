@@ -173,9 +173,9 @@
     var path = $windowProvider.$get().STATIC_URL + 'app/core/images/';
     $provide.constant('horizon.app.core.images.basePath', path);
     var tableUrl = path + "table/";
-    var projectTableRoute = 'project/ngimages/';
+    var projectTableRoute = 'virtual/ngimages/';
     var detailsUrl = path + "detail/";
-    var projectDetailsRoute = 'project/ngimages/details/';
+    var projectDetailsRoute = 'virtual/ngimages/details/';
 
     // Share the routes as constants so that views within the images module
     // can create links to each other.

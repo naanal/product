@@ -23,6 +23,7 @@ import horizon
 
 class Tenants(horizon.Panel):
     name = _("Projects")
+    icon = "fa fa-users"
     slug = 'projects'
     policy_rules = (("identity", "identity:list_projects"),
                     ("identity", "identity:list_user_projects"))

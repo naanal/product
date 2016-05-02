@@ -79,9 +79,9 @@
 
     beforeEach(module('horizon.app.core.images'));
 
-    beforeEach(module('horizon.dashboard.project'));
-    beforeEach(module('horizon.dashboard.project.workflow'));
-    beforeEach(module('horizon.dashboard.project.workflow.launch-instance'));
+    beforeEach(module('horizon.dashboard.virtual'));
+    beforeEach(module('horizon.dashboard.virtual.workflow'));
+    beforeEach(module('horizon.dashboard.virtual.workflow.launch-instance'));
 
     beforeEach(inject(function ($injector, _$rootScope_) {
       $scope = _$rootScope_.$new();

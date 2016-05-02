@@ -21,6 +21,7 @@ import horizon
 class Identity(horizon.Dashboard):
     name = _("Identity")
     slug = "identity"
+    icon = "fa fa-key"
     default_panel = 'projects'
 
 

@@ -36,7 +36,7 @@ from openstack_dashboard.dashboards.identity.projects \
     import tables as project_tables
 from openstack_dashboard.dashboards.identity.projects \
     import workflows as project_workflows
-from openstack_dashboard.dashboards.project.overview \
+from openstack_dashboard.dashboards.overview.summary \
     import views as project_views
 
 PROJECT_INFO_FIELDS = ("domain_id",

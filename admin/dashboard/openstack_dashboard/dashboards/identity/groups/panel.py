@@ -21,6 +21,7 @@ from openstack_dashboard.api import keystone
 
 class Groups(horizon.Panel):
     name = _("Groups")
+    icon = "fa fa-users"
     slug = 'groups'
     policy_rules = (("identity", "identity:list_groups"),)
 

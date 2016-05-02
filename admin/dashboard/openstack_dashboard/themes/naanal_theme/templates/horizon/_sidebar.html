@@ -21,34 +21,31 @@
             </div>
           </form>
 
-		<ul class="sidebar-menu">
-			{% for dashboard, panel_info in components %}
-      			{% if user|has_permissions:dashboard %}
-            		<li class="header">{{ dashboard.name }}</li>
-					{% for group, panels in panel_info.iteritems %}
-              			{% with panels|has_permissions_on_list:user as filtered_panels %}
-                			{% if filtered_panels %}
-                  				{% if group.name %}
-									<li class="treeview">
-									  <a href="#sidebar-drawer-{{ dashboard.slug }}-{{ group.slug }}"><i class="fa fa-link"></i> <span> {{ group.name }}</span> <i class="fa fa-angle-left pull-right"></i></a>
-									  <ul class="treeview-menu">
-								{% endif %}
-                  				{% for panel in filtered_panels %}
-										<li>
-											<a href="{{ panel.get_absolute_url }}"><i class="fa fa-circle-o"></i> {{ panel.name }}</a>
-										</li>
-								{% endfor %}
-                  				{% if group.name %}
-									  </ul>
-									</li>
-								{% endif %}
-                			{% endif %}
-              			{% endwith %}
-            		{% endfor %}
-				{% endif %}
-    		{% endfor %}
-          </ul>
-
-
+		  <ul class="sidebar-menu">
+        {% for dashboard, panel_info in components %}
+          {% if user|has_permissions:dashboard %}
+            <li class="treeview{% if current.slug == dashboard.slug %} active{% endif %}">
+              <a href="#sidebar-drawer-{{ dashboard.slug }}">
+                <i class="{{ dashboard.icon }}"></i> <span>{{ dashboard.name }}</span> <i class="fa fa-angle-left pull-right"></i>
+              </a>
+              <ul class="treeview-menu">
+              {% for group, panels in panel_info.iteritems %}
+                {% with panels|has_permissions_on_list:user as filtered_panels %}
+                  {% if filtered_panels %}
+                    {% for panel in filtered_panels %}
+                      <li class="{% if current.slug == dashboard.slug and current_panel == panel.slug %} active{% endif %}">
+                        <a href="{{ panel.get_absolute_url }}">
+                        <i class="{{ panel.icon }}"></i> {{ panel.name }}
+                        </a>
+                      </li>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+              {% endfor %}
+              </ul>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
 	</section>
 </aside>

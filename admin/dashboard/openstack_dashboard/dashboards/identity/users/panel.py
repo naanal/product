@@ -25,6 +25,7 @@ from openstack_dashboard.api import keystone
 
 class Users(horizon.Panel):
     name = _("Users")
+    icon = "fa fa-user"
     slug = 'users'
     policy_rules = (("identity", "identity:get_user"),
                     ("identity", "identity:list_users"))

@@ -36,7 +36,7 @@
       'horizon.framework.conf',
       'horizon.framework.util',
       'horizon.framework.widgets',
-      'horizon.dashboard.project.workflow'
+      'horizon.dashboard.virtual.workflow'
     ], config)
     .run([
       'horizon.framework.conf.resource-type-registry.service',

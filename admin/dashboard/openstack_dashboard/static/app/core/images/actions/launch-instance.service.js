@@ -23,7 +23,7 @@
   launchInstanceService.$inject = [
     '$q',
     'horizon.app.core.images.non_bootable_image_types',
-    'horizon.dashboard.project.workflow.launch-instance.modal.service',
+    'horizon.dashboard.virtual.workflow.launch-instance.modal.service',
     'horizon.framework.util.q.extensions'
   ];
 
@@ -53,7 +53,7 @@
 
     function perform(image) {
       return launchInstanceModal.open({
-        successUrl: '/project/instances',
+        successUrl: '/virtual/instances',
         'imageId': image.id
       });
     }

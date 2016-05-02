@@ -27,9 +27,9 @@
     ///////////////////////
     beforeEach(module('horizon.framework'));
     beforeEach(module('horizon.app.core'));
-    beforeEach(module('horizon.dashboard.project.workflow.launch-instance', function($provide) {
+    beforeEach(module('horizon.dashboard.virtual.workflow.launch-instance', function($provide) {
       $provide.value(
-        'horizon.dashboard.project.workflow.launch-instance.modal.service', launchInstanceModalMock
+        'horizon.dashboard.virtual.workflow.launch-instance.modal.service', launchInstanceModalMock
       );
     }));
 
@@ -45,7 +45,7 @@
 
       expect(launchInstanceModalMock.open).toHaveBeenCalled();
       expect(launchInstanceModalMock.open.calls.argsFor(0)).toEqual([{
-        successUrl: '/project/instances',
+        successUrl: '/virtual/instances',
         imageId: '1'
       }]);
     });

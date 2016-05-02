@@ -278,6 +278,7 @@ class Panel(HorizonComponent):
     """
     name = ''
     slug = ''
+    icon = 'fa fa-circle-o'
     urls = None
     nav = True
     index_url_name = "index"
@@ -445,6 +446,7 @@ class Dashboard(Registry, HorizonComponent):
     _registerable_class = Panel
     name = ''
     slug = ''
+    icon = 'fa fa-th'
     urls = None
     panels = []
     default_panel = None

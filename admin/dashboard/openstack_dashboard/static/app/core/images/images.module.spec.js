@@ -35,8 +35,8 @@
       expect(tableRoute).toBeDefined();
     });
 
-    it('should equal to "project/ngimages/"', function () {
-      expect(tableRoute).toEqual('project/ngimages/');
+    it('should equal to "virtual/ngimages/"', function () {
+      expect(tableRoute).toEqual('virtual/ngimages/');
     });
   });
 
@@ -53,8 +53,8 @@
       expect(detailsRoute).toBeDefined();
     });
 
-    it('should equal to "project/ngimages/details/"', function () {
-      expect(detailsRoute).toEqual('project/ngimages/details/');
+    it('should equal to "virtual/ngimages/details/"', function () {
+      expect(detailsRoute).toEqual('virtual/ngimages/details/');
     });
   });
 
@@ -81,11 +81,11 @@
       expect($routeProvider.when.calls.count()).toEqual(2);
       var imagesRouteCallArgs = $routeProvider.when.calls.argsFor(0);
       expect(imagesRouteCallArgs).toEqual([
-        '/project/ngimages/', {templateUrl: staticUrl + 'app/core/images/table/images-table.html'}
+        '/virtual/ngimages/', {templateUrl: staticUrl + 'app/core/images/table/images-table.html'}
       ]);
       var imagesDetailsCallArgs = $routeProvider.when.calls.argsFor(1);
       expect(imagesDetailsCallArgs).toEqual([
-        '/project/ngimages/details/:imageId',
+        '/virtual/ngimages/details/:imageId',
         { templateUrl: staticUrl + 'app/core/images/detail/image-detail.html'}
       ]);
     });

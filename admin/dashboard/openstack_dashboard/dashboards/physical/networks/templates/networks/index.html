@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Networks" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Networks") %}
+{% endblock page_header %}
+
+{% block main %}
+<div class="embed-responsive embed-responsive-16by9">
+  <iframe class="embed-responsive-item" src="http://demo.fuel-infra.org:8000"></iframe>
+</div>
+{% endblock %}
+
+
