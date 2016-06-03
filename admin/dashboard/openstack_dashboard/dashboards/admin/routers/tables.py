@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.project.routers import tables as r_tables
+from openstack_dashboard.dashboards.virtual.routers import tables as r_tables
 
 
 class DeleteRouter(r_tables.DeleteRouter):

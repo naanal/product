@@ -24,7 +24,7 @@ from openstack_dashboard.dashboards.admin.volumes.snapshots \
     import forms as vol_snapshot_forms
 from openstack_dashboard.dashboards.admin.volumes.snapshots \
     import tabs as vol_snapshot_tabs
-from openstack_dashboard.dashboards.project.volumes.snapshots \
+from openstack_dashboard.dashboards.virtual.volumes.snapshots \
     import views
 
 

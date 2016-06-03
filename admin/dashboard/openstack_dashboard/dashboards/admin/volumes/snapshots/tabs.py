@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import tabs
 
-from openstack_dashboard.dashboards.project.volumes.snapshots \
+from openstack_dashboard.dashboards.virtual.volumes.snapshots \
     import tabs as overview_tab
 
 

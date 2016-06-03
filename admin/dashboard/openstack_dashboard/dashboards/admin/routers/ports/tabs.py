@@ -13,7 +13,7 @@
 #    under the License.
 
 from horizon import tabs
-from openstack_dashboard.dashboards.project.routers.ports import tabs as r_tabs
+from openstack_dashboard.dashboards.virtual.routers.ports import tabs as r_tabs
 
 
 class OverviewTab(r_tabs.OverviewTab):

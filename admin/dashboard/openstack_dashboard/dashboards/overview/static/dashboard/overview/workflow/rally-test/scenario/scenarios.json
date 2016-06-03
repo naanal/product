@@ -1,0 +1,178 @@
+{
+  "rallytask": [
+    {
+      "component": "Nova",
+      "description": "Something about Nova Tests",
+      "tasks": [
+        {
+          "name": "Boot and Delete Multiple Server",
+          "description": "You Can Boot and Delete servers",
+          "inputs": [
+            "image",
+            "flavor"
+          ],
+          "task": {
+            "NovaServers.boot_and_delete_multiple_servers": [
+              {
+                "runner": {
+                  "type": "constant",
+                  "concurrency": 1,
+                  "times": 1
+                },
+                "args": {
+                  "count": 5,
+                  "image": {
+                    "name": "^cirros.*uec$"
+                  },
+                  "flavor": {
+                    "name": "{{flavor_name}}"
+                  }
+                },
+                "context": {
+                  "users": {
+                    "users_per_tenant": 1,
+                    "tenants": 1
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Boot and Delete Server",
+          "description": "You Can Boot and Delete servers",
+          "inputs": [
+            "image",
+            "flavor"
+          ],
+          "task": {
+            "NovaServers.boot_and_delete_server": [
+              {
+                "args": {
+                  "flavor": {
+                    "name": "{{flavor_name}}"
+                  },
+                  "image": {
+                    "name": "^cirros.*uec$"
+                  },
+                  "force_delete": false
+                },
+                "runner": {
+                  "type": "constant",
+                  "times": 10,
+                  "concurrency": 2
+                },
+                "context": {
+                  "users": {
+                    "tenants": 3,
+                    "users_per_tenant": 2
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Boot and List Server",
+          "description": "You Can Boot and List servers",
+          "inputs": [
+            "image",
+            "flavor"
+          ],
+          "task": {
+            "NovaServers.boot_and_list_server": [
+              {
+                "args": {
+                  "flavor": {
+                    "name": "{{flavor_name}}"
+                  },
+                  "image": {
+                    "name": "^cirros.*uec$"
+                  },
+                  "detailed": true
+                },
+                "runner": {
+                  "type": "constant",
+                  "times": 1,
+                  "concurrency": 1
+                },
+                "context": {
+                  "users": {
+                    "tenants": 1,
+                    "users_per_tenant": 1
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "component": "Glance",
+      "description": "Something about Glance Tests",
+      "tasks": [
+        {
+          "name": "Create And Delete Image",
+          "description": "You Create And Delete Image",
+          "inputs": [],
+          "task": {
+            "GlanceImages.create_and_delete_image": [
+              {
+                "args": {
+                  "image_location": "http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img",
+                  "container_format": "bare",
+                  "disk_format": "qcow2"
+                },
+                "runner": {
+                  "type": "constant",
+                  "times": 10,
+                  "concurrency": 2
+                },
+                "context": {
+                  "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 3
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Create Image and Boot Instance",
+          "description": "You Can Create Image and Boot Instance",
+          "inputs": [
+            "flavor"
+          ],
+          "task": {
+            "GlanceImages.create_image_and_boot_instances": [
+              {
+                "args": {
+                  "image_location": "http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img",
+                  "container_format": "bare",
+                  "disk_format": "qcow2",
+                  "flavor": {
+                    "name": "{{flavor_name}}"
+                  },
+                  "number_instances": 2
+                },
+                "runner": {
+                  "type": "constant",
+                  "times": 10,
+                  "concurrency": 2
+                },
+                "context": {
+                  "users": {
+                    "tenants": 3,
+                    "users_per_tenant": 5
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
