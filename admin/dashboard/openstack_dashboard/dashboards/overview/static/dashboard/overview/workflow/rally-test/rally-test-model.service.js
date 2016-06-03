@@ -68,10 +68,24 @@
 
       initialize: initialize,
       runRally : runRally,
-      log : []
+      log : [],
+      jn : [],
+      id : '',
+      resultschema: {},
+      finalresults : [],
+      viewhtml: viewhtml,
+      htm: [],
+      isProcessing : false
     };
 
+    function viewhtml() {
+        return rallyAPI.rallyViewHtml().then(function(response){
+          model.htm = response.data.html_result;
+          console.log(model.htm)
+        });
+    }
     function runRally() {
+      model.isProcessing=true;
 
       var finalselections = angular.copy(model.initializeScenario.selections); 
 
@@ -81,9 +95,59 @@
 
       var processedselections = angular.copy(model.initializeScenario.processedScenarios);
       return rallyAPI.rallyStartTest(processedselections).then(function(response){
-        model.log = response.data;
+        model.log = response.data.log_result;
+        model.jn = response.data.jsn_result;
+        model.id = response.data.id;
+        processResult(model.jn);
       });
+      model.isProcessing=false;
+    }
 
+    function initresultschema(){
+      model.resultschema = {
+         "sno" : '',
+         "name" : '',
+         "count" : '',
+         "duration" : '',
+         "status" : '',
+         "percentage" : ''
+       }
+    }
+    function processResult(results){
+   
+         initresultschema();
+
+         var results = JSON.parse(results);
+
+         for (var i=0;i<results.length;i++) {
+               model.resultschema.sno = i+1;
+               model.resultschema.name= results[i].key.name;
+               model.resultschema.count = results[i].result.length;
+               var duration = 0; 
+               var err = 0;
+               var suc = 0;
+           
+               for(var j=0; j< results[i].result.length; j++)
+                 {
+                   duration  = duration + results[i].result[j].duration;
+                   if(results[i].result[j].error.length > 0)
+                     err  = err + 1;
+                 }
+              model.resultschema.duration = duration;
+              if(err > 0)
+              {
+                model.resultschema.status = 'Failed';
+                model.resultschema.percentage = ( err / results[i].result.length ) * 100;
+               }
+              else
+              {
+                model.resultschema.status = 'Success';
+                model.resultschema.percentage = 100;
+              }
+              
+           model.finalresults.push(model.resultschema);
+           initresultschema();     
+          }  
     }
 
     function initializeSelectedScenarios(){

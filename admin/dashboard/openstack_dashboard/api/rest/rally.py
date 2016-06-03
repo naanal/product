@@ -31,6 +31,35 @@ class TaskStart(generic.View):
     @rest_utils.ajax(data_required=True)
     def post(self, request):
         rtask = json.dumps(request.DATA)
-        rallyTask = subprocess.Popen("rally task start '%s'"%(rtask), stdout=subprocess.PIPE, shell=True)
-        (output, err) = rallyTask.communicate()
-        return output
+ #       command='rally task start {0}'.str(rtask)
+ #       rallyTask= subprocess.check_call(["rally","task","start", rtask], shell=False,stdout=file_out)
+        rallyTask= subprocess.check_output(["rally","task","start", rtask], shell=False)
+        report=rallyTask.split(" ")
+        chars=[]
+        for line in report:
+            chars.extend(line)
+#            print (line)
+            if "UUID" in line:
+                i=line.split(' ')
+                print(i)
+                id = [x[:x.index('\n')] if '\n' in x else x for x in i]
+                uuid=''.join(map(str, id))
+                jsn= subprocess.check_output(["rally","task","results", uuid], shell=False)              
+ #       result=[rallyTask,jsn]
+#        print(result[0])
+#        print("!!!!!!!!!!!!!!!!!!!!!!!!!1")
+#        print(jsn)
+        return {"log_result":rallyTask,"jsn_result":jsn, "id" :uuid}
+
+
+@urls.register
+class viewHtml(generic.View):
+    """API for rally volumes.
+    """
+    url_regex = r'rally/html/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        htm_result=subprocess.check_output(["rally","task","report","--out=report.html","--open"], shell = False)
+        print(htm_result)
+        return {"html_result":htm_result}

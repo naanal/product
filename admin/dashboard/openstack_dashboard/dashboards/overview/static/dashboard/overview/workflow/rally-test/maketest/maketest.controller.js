@@ -37,9 +37,12 @@
   function RallyTestMaketestController($scope,RallyTestModel) {
     var ctrl = this;
    ctrl.runTest = runTest;
-
+   ctrl.viewhtml = viewhtml;
    function runTest(){
     $scope.model.runRally();
+   }
+   function viewhtml () {
+    $scope.model.viewhtml();
    }
   }
 })();

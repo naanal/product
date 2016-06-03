@@ -1,178 +1,528 @@
-{
-  "rallytask": [
-    {
-      "component": "Nova",
-      "description": "Something about Nova Tests",
-      "tasks": [
-        {
-          "name": "Boot and Delete Multiple Server",
-          "description": "You Can Boot and Delete servers",
-          "inputs": [
-            "image",
-            "flavor"
-          ],
-          "task": {
-            "NovaServers.boot_and_delete_multiple_servers": [
-              {
-                "runner": {
-                  "type": "constant",
-                  "concurrency": 1,
-                  "times": 1
-                },
-                "args": {
-                  "count": 5,
-                  "image": {
-                    "name": "^cirros.*uec$"
-                  },
-                  "flavor": {
-                    "name": "{{flavor_name}}"
-                  }
-                },
-                "context": {
-                  "users": {
-                    "users_per_tenant": 1,
-                    "tenants": 1
-                  }
-                }
-              }
-            ]
-          }
-        },
-        {
-          "name": "Boot and Delete Server",
-          "description": "You Can Boot and Delete servers",
-          "inputs": [
-            "image",
-            "flavor"
-          ],
-          "task": {
-            "NovaServers.boot_and_delete_server": [
-              {
-                "args": {
-                  "flavor": {
-                    "name": "{{flavor_name}}"
-                  },
-                  "image": {
-                    "name": "^cirros.*uec$"
-                  },
-                  "force_delete": false
-                },
-                "runner": {
-                  "type": "constant",
-                  "times": 10,
-                  "concurrency": 2
-                },
-                "context": {
-                  "users": {
-                    "tenants": 3,
-                    "users_per_tenant": 2
-                  }
-                }
-              }
-            ]
-          }
-        },
-        {
-          "name": "Boot and List Server",
-          "description": "You Can Boot and List servers",
-          "inputs": [
-            "image",
-            "flavor"
-          ],
-          "task": {
-            "NovaServers.boot_and_list_server": [
-              {
-                "args": {
-                  "flavor": {
-                    "name": "{{flavor_name}}"
-                  },
-                  "image": {
-                    "name": "^cirros.*uec$"
-                  },
-                  "detailed": true
-                },
-                "runner": {
-                  "type": "constant",
-                  "times": 1,
-                  "concurrency": 1
-                },
-                "context": {
-                  "users": {
-                    "tenants": 1,
-                    "users_per_tenant": 1
-                  }
-                }
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "component": "Glance",
-      "description": "Something about Glance Tests",
-      "tasks": [
-        {
-          "name": "Create And Delete Image",
-          "description": "You Create And Delete Image",
-          "inputs": [],
-          "task": {
-            "GlanceImages.create_and_delete_image": [
-              {
-                "args": {
-                  "image_location": "http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img",
-                  "container_format": "bare",
-                  "disk_format": "qcow2"
-                },
-                "runner": {
-                  "type": "constant",
-                  "times": 10,
-                  "concurrency": 2
-                },
-                "context": {
-                  "users": {
-                    "tenants": 2,
-                    "users_per_tenant": 3
-                  }
-                }
-              }
-            ]
-          }
-        },
-        {
-          "name": "Create Image and Boot Instance",
-          "description": "You Can Create Image and Boot Instance",
-          "inputs": [
-            "flavor"
-          ],
-          "task": {
-            "GlanceImages.create_image_and_boot_instances": [
-              {
-                "args": {
-                  "image_location": "http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img",
-                  "container_format": "bare",
-                  "disk_format": "qcow2",
-                  "flavor": {
-                    "name": "{{flavor_name}}"
-                  },
-                  "number_instances": 2
-                },
-                "runner": {
-                  "type": "constant",
-                  "times": 10,
-                  "concurrency": 2
-                },
-                "context": {
-                  "users": {
-                    "tenants": 3,
-                    "users_per_tenant": 5
-                  }
-                }
-              }
-            ]
-          }
-        }
-      ]
-    }
-  ]
+ {
+   "rallytask":[
+      {
+         "component":"Nova",
+         "description":"Something about Nova Tests",
+         "tasks":[
+            {
+               "name":"Boot and Delete Multiple Server",
+               "description":"You Can Boot and Delete servers",
+               "inputs":[
+                  "image",
+                  "flavor"
+               ],
+               "task":{
+                  "NovaServers.boot_and_delete_multiple_servers":[
+                     {
+                        "runner":{
+                           "type":"constant",
+                           "concurrency":1,
+                           "times":1
+                        },
+                        "args":{
+                           "count":5,
+                           "image":{
+                              "name":"^cirros.*uec$"
+                           },
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           }
+                        },
+                        "context":{
+                           "users":{
+                              "users_per_tenant":1,
+                              "tenants":1
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Boot and Get Console Output",
+               "description":"You Can Boot and Get",
+               "inputs":[
+                  "image",
+                  "flavor"
+               ],
+               "task":{
+                  "NovaServers.boot_and_get_console_output":[
+                     {
+                        "args":{
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           },
+                           "image":{
+                              "name":"^cirros.*uec$"
+                           }
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":1,
+                           "concurrency":1
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":1,
+                              "users_per_tenant":1
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Boot and Delete Server",
+               "description":"You Can Boot and Delete servers",
+               "inputs":[
+                  "image",
+                  "flavor"
+               ],
+               "task":{
+                  "NovaServers.boot_and_delete_server":[
+                     {
+                        "args":{
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           },
+                           "image":{
+                              "name":"^cirros.*uec$"
+                           },
+                           "force_delete":false
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":10,
+                           "concurrency":2
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":3,
+                              "users_per_tenant":2
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Boot and Delete Server-Count2",
+               "description":"You Can Boot and Delete servers",
+               "inputs":[
+                  "image",
+                  "flavor"
+               ],
+               "task":{
+                  "NovaServers.boot_and_delete_server":[
+                     {
+                        "args":{
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           },
+                           "image":{
+                              "name":"^cirros.*uec$"
+                           },
+                           "force_delete":false
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":2,
+                           "concurrency":2
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":2,
+                              "users_per_tenant":2
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Boot and List Server",
+               "description":"You Can Boot and List servers",
+               "inputs":[
+                  "image",
+                  "flavor"
+               ],
+               "task":{
+                  "NovaServers.boot_and_list_server":[
+                     {
+                        "args":{
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           },
+                           "image":{
+                              "name":"^cirros.*uec$"
+                           },
+                           "detailed":true
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":1,
+                           "concurrency":1
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":1,
+                              "users_per_tenant":1
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Boot And Migrate Server",
+               "description":"You Can Boot and Migrate Server",
+               "inputs":[
+                  "image",
+                  "flavor"
+               ],
+               "task":{
+                  "NovaServers.boot_and_migrate_server":[
+                     {
+                        "args":{
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           },
+                           "image":{
+                              "name":"^cirros.*uec$"
+                           }
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":10,
+                           "concurrency":2
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":1,
+                              "users_per_tenant":1
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Boot and Live Migrate Server",
+               "description":"You Can Boot and Live Migrate Server",
+               "inputs":[
+                  "image",
+                  "flavor"
+               ],
+               "task":{
+                  "NovaServers.boot_and_live_migrate_server":[
+                     {
+                        "args":{
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           },
+                           "image":{
+                              "name":"^cirros.*uec$"
+                           },
+                           "block_migration":true
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":10,
+                           "concurrency":2
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":1,
+                              "users_per_tenant":1
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Boot and Delete Server With Keypair",
+               "description":"You Can Boot and Boot and Delete Server With Keypair",
+               "inputs":[
+                  "image",
+                  "flavor"
+               ],
+               "task":{
+                  "NovaKeypair.boot_and_delete_server_with_keypair":[
+                     {
+                        "args":{
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           },
+                           "image":{
+                              "name":"^cirros.*uec$"
+                           },
+                           "boot_server_kwargs":{
+
+                           }
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":5,
+                           "concurrency":2
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":2,
+                              "users_per_tenant":1
+                           },
+                           "network":{
+                              "start_cidr":"100.1.0.0/26"
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Boot and Delete Server With Security Groups",
+               "description":"You Can Boot and Delete with Security Groups",
+               "inputs":[
+                  "image",
+                  "flavor"
+               ],
+               "task":{
+                  "NovaSecGroup.boot_and_delete_server_with_secgroups":[
+                     {
+                        "args":{
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           },
+                           "image":{
+                              "name":"^cirros.*uec$"
+                           },
+                           "security_group_count":10,
+                           "rules_per_security_group":10
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":10,
+                           "concurrency":2
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":3,
+                              "users_per_tenant":2
+                           },
+                           "network":{
+                              "start_cidr":"100.1.0.0/26"
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Boot and Show Server",
+               "description":"You Can Boot and Show Server",
+               "inputs":[
+                  "image",
+                  "flavor"
+               ],
+               "task":{
+                  "NovaServers.boot_and_show_server":[
+                     {
+                        "args":{
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           },
+                           "image":{
+                              "name":"^cirros.*uec$"
+                           }
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":1,
+                           "concurrency":1
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":1,
+                              "users_per_tenant":1
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Boot Server from Volume and Delete",
+               "description":"You Can Boot Serevr from Volume and Delete",
+               "inputs":[
+                  "image",
+                  "flavor"
+               ],
+               "task":{
+                  "NovaServers.boot_server_from_volume_and_delete":[
+                     {
+                        "args":{
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           },
+                           "image":{
+                              "name":"^cirros.*uec$"
+                           },
+                           "volume_size":10,
+                           "force_delete":false
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":10,
+                           "concurrency":2
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":3,
+                              "users_per_tenant":2
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Boot, Lock, Unlock and Delete",
+               "description":"You Can Boot, Lock, Unlock and Delete",
+               "inputs":[
+                  "image",
+                  "flavor"
+               ],
+               "task":{
+                 "NovaServers.boot_lock_unlock_and_delete": [
+                    {
+                        "args": {
+                            "flavor": {
+                                "name": "{{flavor_name}}"
+                            },
+                            "image": {
+                                "name": "^cirros.*uec$"
+                            }
+                        },
+                        "runner": {
+                            "type": "constant",
+                            "times": 10,
+                            "concurrency": 2
+                        },
+                        "context": {
+                            "users": {
+                                "tenants": 1,
+                                "users_per_tenant": 1
+                            }
+                        }
+                    }
+                ]
+               }
+            },
+            {
+               "name":"Boot and Associate Floating IP",
+               "description":"You Can Boot and associate flaoting ip",
+               "inputs":[
+                  "image",
+                  "flavor"
+               ],
+               "task":{
+                  "NovaServers.boot_and_associate_floating_ip":[
+                     {
+                        "runner":{
+                           "type":"constant",
+                           "concurrency":1,
+                           "times":1
+                        },
+                        "args":{
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           },
+                           "image":{
+                              "name":"^cirros.*uec$"
+                           }
+                        },
+                        "context":{
+                           "users":{
+                              "users_per_tenant":1,
+                              "tenants":1
+                           },
+                           "network":{
+
+                           }
+                        }
+                     }
+                  ]
+               }
+            }
+         ]
+      },
+      {
+         "component":"Glance",
+         "description":"Something about Glance Tests",
+         "tasks":[
+            {
+               "name":"Create And Delete Image",
+               "description":"You Create And Delete Image",
+               "inputs":[
+
+               ],
+               "task":{
+                  "GlanceImages.create_and_delete_image":[
+                     {
+                        "args":{
+                           "image_location":"http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img",
+                           "container_format":"bare",
+                           "disk_format":"qcow2"
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":10,
+                           "concurrency":2
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":2,
+                              "users_per_tenant":3
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Create Image and Boot Instance",
+               "description":"You Can Create Image and Boot Instance",
+               "inputs":[
+                  "flavor"
+               ],
+               "task":{
+                  "GlanceImages.create_image_and_boot_instances":[
+                     {
+                        "args":{
+                           "image_location":"http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img",
+                           "container_format":"bare",
+                           "disk_format":"qcow2",
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           },
+                           "number_instances":2
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":10,
+                           "concurrency":2
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":3,
+                              "users_per_tenant":5
+                           }
+                        }
+                     }
+                  ]
+               }
+            }
+         ]
+      }
+   ]
 }

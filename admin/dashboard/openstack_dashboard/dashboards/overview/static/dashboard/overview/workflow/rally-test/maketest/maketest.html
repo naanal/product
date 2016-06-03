@@ -1,5 +1,10 @@
-<div ng-controller="RallyTestMaketestController as ctrl">
+ <style type="text/css">
+  .parent{
+    padding: 0 5% 0 0;
+  }
+</style>
 
+<div class="parent" ng-controller="RallyTestMaketestController as ctrl">
 <div class="box box-primary">
   <div class="box-header with-border">
     <h3 class="box-title">Finalize your Test</h3>
@@ -9,16 +14,47 @@
   </div><!-- /.box-header -->
   <div class="box-body">
 
-    <button class="btn btn-success btn-md" ng-click="ctrl.runTest()">Click Here to Run Test</button>
-    <hr/>
+    <button class="btn btn-success btn-md" ng-click="ctrl.runTest()" ng-disabled="model.isProcessing">Click Here to Run Test</button>
+    <hr/> 
     <div ng-hide="model.log.length == 0 ">
     <h3>Your Test has been Completed</h3>
-	<button class="btn btn-primary btn-md" ng-click="log=true">View Log</button>
-	<pre ng-show="log">
-	{$model.log$}
-	<button class="btn btn-primary btn-md" ng-click="log = false">Close Log</button>
-	</pre>
-	</div>
+
+ <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>Task Name</th>
+        <th>Count</th>
+        <th>Duration</th>
+        <th>Status</th>
+        <th>%</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="task in model.finalresults track by $index">
+        <td>{$task.sno$}</td>
+        <td>{$task.name$}</td>
+        <td>{$task.count$}</td>
+        <td>{$task.duration | number $}</td>
+        <td>
+          
+          <label class="label" ng-class="{'label-success' : task.status  == 'Success', 'label-danger' : task.status == 'Failed'}">{$task.status$}</label>
+          
+          
+        </td>
+        <td>{$task.percentage$} %</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button class="btn btn-primary btn-md" ng-click="log=true">View Log</button>
+  <pre ng-show="log">
+  {$model.log$}
+  <button class="btn btn-primary btn-md" ng-click="log = false">Close Log</button>
+  </pre>
+  <button class="btn btn-primary btn-md" ng-click="ctrl.viewhtml()">view Html Output</button>
+  <iframe name="display" width="50%" height="50%" frameborder="0" marginwidth="0" marginheight="0" src="">this is i-frame</iframe>
+  </div>
   </div><!-- /.box-body -->
 </div>
 </div>

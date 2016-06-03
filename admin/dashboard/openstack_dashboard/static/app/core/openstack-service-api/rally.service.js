@@ -37,7 +37,8 @@
   function rallyAPI(apiService, toastService, basePathOfJsonFile) {
     var service = {
       rallyTasksScenarios: rallyTasksScenarios,
-      rallyStartTest : rallyStartTest
+      rallyStartTest : rallyStartTest,
+      rallyViewHtml: rallyViewHtml
     };
 
     return service;
@@ -65,6 +66,12 @@
         });
     }
 
+    function rallyViewHtml() {
+      return apiService.get('/api/rally/html/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to View Html.'));
+        });
+    }
 
   }
 }());
