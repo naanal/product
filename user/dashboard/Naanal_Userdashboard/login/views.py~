@@ -10,6 +10,7 @@ from keystoneclient import session
 from keystoneclient.v3 import client as ksclient
 from novaclient import client
 import time
+import unicodedata
 
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
@@ -20,7 +21,7 @@ from django.views.decorators.cache import cache_control
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def loginpage(request):
     state = "Please log in below..."
-    username = password = ''
+    username = password = instance_id = instance_name = status = ''
     if request.POST:
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -106,7 +107,10 @@ def change_password(request):
         new_password = request.POST.get('newpassword')
         print username
         print password
+        new_password1=str(new_password)
         print new_password
+        pswd=type(new_password1)
+        print pswd        
         print "change post method"
         LDAP_SERVER = 'ldap://172.30.1.197'
         LDAP_USERNAME = '%s@naanal.local' % username
@@ -119,11 +123,26 @@ def change_password(request):
              ldap_client = ldap.initialize(LDAP_SERVER)   
              ldap_client.set_option(ldap.OPT_REFERRALS,0)
              ldap_client.simple_bind_s(LDAP_USERNAME, LDAP_PASSWORD)
-             print 'user current password authentication successfull'  
-             return render_to_response('changepassword.html',{'password':password, 'username': username})   
+             print 'user current password authentication successfull' 
+             ldap_client.unbind()
+             ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
+             l = ldap.initialize('ldaps://172.30.1.197')
+             l.simple_bind_s('Administrator@naanal.local', 'p@ssw0rd1') 
+             dn="cn=%s,ou=Police,dc=naanal,dc=local" % username
+             password='p@ssword5'             
+             unicode_pass = unicode('\"' + new_password1 + '\"', 'iso-8859-1')             
+             password_value = unicode_pass.encode('utf-16-le')
+             print (password_value)
+             add_pass = [(ldap.MOD_REPLACE, 'unicodePwd', [password_value])]
+             l.modify_s(dn, add_pass)
+             l.modify_s(dn, add_pass)
+             l.unbind_s()
+             status='success'
+             return render_to_response('changepassword.html',{'password':password, 'username': username, 'status': status})   
         except ldap.INVALID_CREDENTIALS:
              ldap_client.unbind()
-             return render_to_response('changepassword.html',{'password':password, 'username': username}) 
+             status='worng current password'
+             return render_to_response('changepassword.html',{'password':password, 'username': username, 'status': status}) 
              print 'Wrong username or password'
         except ldap.SERVER_DOWN:
              print 'windows active directory not available'
@@ -200,7 +219,7 @@ def change_pswd(request):
         ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
         l = ldap.initialize('ldaps://172.30.1.197')
         l.simple_bind_s('Administrator@naanal.local', 'p@ssw0rd1') 
-        dn="cn=map1,dc=naanal,dc=local" 
+        dn="cn=map1,ou=Police,dc=naanal,dc=local" 
         password='p@ssw0rd1'
         unicode_pass = unicode('\"' + password + '\"', 'iso-8859-1')
         password_value = unicode_pass.encode('utf-16-le')
@@ -209,7 +228,8 @@ def change_pswd(request):
         password_value = unicode_pass.encode('utf-16-le')
         add_pass = [(ldap.MOD_REPLACE, 'unicodePwd', [password_value])]
         l.modify_s(dn, add_pass)
-        l.unbind_s()      
-        return render_to_response('changepassword.html',{'password':password, 'username': username})   
+        l.unbind_s()
+        status="success"
+        return render_to_response('changepassword.html',{'password':password, 'username': username,'status': status})   
     
     return render_to_response('changepassword.html',{'password':password, 'username': username})
