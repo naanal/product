@@ -185,19 +185,21 @@ def instance_stop(request):
         server = nova.servers.find(name=instance_name)
         if operation == 'stop':
             server.stop()
+            time.sleep(20)
         elif operation == 'start':
             server.start()
+            time.sleep(20)
             console=server.get_vnc_console('novnc')
             console1=console['console']
             console=console1['url']
             console=str(console)
-            console=console.replace("30.120","1.11")
             print type(console)
             print console
         elif operation == 'reboot':
-            server.reboot(reboot_type='SOFT')         
+            server.reboot(reboot_type='SOFT')
+            time.sleep(20)        
         #****************** MYSQL coding to check the instances status *************************************
-        time.sleep(20)
+        
         db = MySQLdb.connect(host="192.168.1.11",port=3306,user="root",passwd="password",db="nova")
         cursor = db.cursor()
         cursor.execute("select display_name,vm_state from instances where uuid='%s'" % (instance_id))
