@@ -74,9 +74,9 @@
       <ul class="sidebar-menu">
       
        
-        <li class="active"><a href="/index/?username={{ username }}/?password={{password}}" value="{{username}}"><i class="fa fa-laptop text-red"></i> <span>My Machine</span></a></li>
-		<li><a href="/change"><i class="fa fa-unlock text-green"></i> <span>Change Password</span></a></li>
-        <li><a href="/help"><i class="fa fa-question-circle text-yellow"></i> <span>Help</span></a></li>
+        <li class="active"><a href="/index/?username={{ username }}" value="{{username}}"><i class="fa fa-laptop text-red"></i> <span>My Machine</span></a></li>
+		<li><a href="/change/?username={{ username }}" value="{{username}}"><i class="fa fa-unlock text-green"></i> <span>Change Password</span></a></li>
+        <li><a href="/help/?username={{ username }}" value="{{username}}"><i class="fa fa-question-circle text-yellow"></i> <span>Help</span></a></li>
         <li><a href="/login"><i class="fa fa-sign-out text-aqua"></i> <span>Logout</span></a></li>
       </ul>
     </section>
@@ -120,22 +120,22 @@
                     <td><span class="label label-success">{{status}}</span></td>
                     <td>
                              <form action="/stop/" method="POST">
-                                          <input type="hidden" name="operation" value="start" /><br />
-                                          <input type="hidden" name="instance_id" value="{{instanceid}}" /><br />
-                                          <input type="hidden" name="instance_name" value="{{instancename}}" /><br />
+                                          <input type="hidden" name="operation" value="start" />
+                                          <input type="hidden" name="instance_id" value="{{instanceid}}" />
+                                          <input type="hidden" name="instance_name" value="{{instancename}}" />
 					  <button class="btn btn-success btn-xs disabled">PowerOn</button>
-                             </form>
+                                 </form>
 
                              <form action="/stop/" method="POST">
-                                          <input type="hidden" name="operation" value="reboot" /><br />
-                                          <input type="hidden" name="instance_id" value="{{instanceid}}" /><br />
-                                          <input type="hidden" name="instance_name" value="{{instancename}}" /><br /> 
+                                          <input type="hidden" name="operation" value="reboot" />
+                                          <input type="hidden" name="instance_id" value="{{instanceid}}" />
+                                          <input type="hidden" name="instance_name" value="{{instancename}}" />
                                           <button class="btn btn-warning btn-xs">Restart</button>
                              </form>
                              <form action="/stop/" method="POST">
-                                          <input type="hidden" name="operation" value="stop" /><br />
-                                          <input type="hidden" name="instance_id" value="{{instanceid}}" /><br />
-                                          <input type="hidden" name="instance_name" value="{{instancename}}" /><br />
+                                          <input type="hidden" name="operation" value="stop" />
+                                          <input type="hidden" name="instance_id" value="{{instanceid}}" />
+                                          <input type="hidden" name="instance_name" value="{{instancename}}" />
 					  <button class="btn btn-danger btn-xs">ShutOff</button>
                              </form>
                     </td>
