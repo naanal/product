@@ -36,7 +36,7 @@ def loginpage(request):
             ldap_client.set_option(ldap.OPT_REFERRALS,0)
             ldap_client.simple_bind_s(LDAP_USERNAME, LDAP_PASSWORD)
             print 'successfull'
-            db = MySQLdb.connect(host="172.30.1.242",port=3306,user="root",passwd="password",db="mysql")
+            db = MySQLdb.connect(host="192.168.1.11",port=3306,user="root",passwd="password",db="mysql")
             cursor = db.cursor()
             cursor.execute("select instances_id from mapping1 where username='%s'" % (username))
             results = cursor.fetchall()
@@ -45,7 +45,7 @@ def loginpage(request):
                 print instance_id
             db.commit()
             db.close()
-            db = MySQLdb.connect(host="172.30.1.242",port=3306,user="root",passwd="password",db="nova")
+            db = MySQLdb.connect(host="192.168.1.11",port=3306,user="root",passwd="password",db="nova")
             cursor = db.cursor()
             cursor.execute("select display_name,vm_state from instances where uuid='%s'" % (instance_id))
             results = cursor.fetchall()            
@@ -67,7 +67,7 @@ def index_page(request):
     username = password = ''
     if request.GET:
         username = request.GET.get('username')        
-        db = MySQLdb.connect(host="172.30.1.242",port=3306,user="root",passwd="password",db="mysql")
+        db = MySQLdb.connect(host="192.168.1.11",port=3306,user="root",passwd="password",db="mysql")
         cursor = db.cursor()
         cursor.execute("select instances_id from mapping1 where username='%s'" % (username))
         results = cursor.fetchall()
@@ -76,7 +76,7 @@ def index_page(request):
             print instance_id
         db.commit()
         db.close()
-        db = MySQLdb.connect(host="172.30.1.242",port=3306,user="root",passwd="password",db="nova")
+        db = MySQLdb.connect(host="192.168.1.11",port=3306,user="root",passwd="password",db="nova")
         cursor = db.cursor()
         cursor.execute("select display_name,vm_state from instances where uuid='%s'" % (instance_id))
         results = cursor.fetchall() 
@@ -160,7 +160,7 @@ def help(request):
 
 @csrf_exempt
 def instance_stop(request):
-    instance_id=''
+    instance_id=console=''
     if request.POST:
         instance_id = request.POST.get('instance_id')
         instance_name=request.POST.get('instance_name')
@@ -175,7 +175,7 @@ def instance_stop(request):
         project_name = 'admin'
         project_domain_name = 'Default'
         password = 'ADMIN'
-        auth =v3.Password(auth_url=auth_url,username=username,password=password,project_id='9ae46562307842439cab73340e7ed47b',
+        auth =v3.Password(auth_url=auth_url,username=username,password=password,project_id='c9b0922ac3c8400da4aabde2b2bb9daf',
         user_domain_name=user_domain_name)
         sess = session.Session(auth=auth)
         keystone = ksclient.Client(session=sess)
@@ -187,11 +187,18 @@ def instance_stop(request):
             server.stop()
         elif operation == 'start':
             server.start()
+            console=server.get_vnc_console('novnc')
+            console1=console['console']
+            console=console1['url']
+            console=str(console)
+            console=console.replace("30.120","1.11")
+            print type(console)
+            print console
         elif operation == 'reboot':
             server.reboot(reboot_type='SOFT')         
         #****************** MYSQL coding to check the instances status *************************************
         time.sleep(20)
-        db = MySQLdb.connect(host="172.30.1.242",port=3306,user="root",passwd="password",db="nova")
+        db = MySQLdb.connect(host="192.168.1.11",port=3306,user="root",passwd="password",db="nova")
         cursor = db.cursor()
         cursor.execute("select display_name,vm_state from instances where uuid='%s'" % (instance_id))
         results = cursor.fetchall()
@@ -201,7 +208,7 @@ def instance_stop(request):
              status =row[1]
         db.commit()
         db.close()
-        return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status})
+        return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console})
  
 
 
