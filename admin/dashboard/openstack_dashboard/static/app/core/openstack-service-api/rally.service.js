@@ -37,8 +37,7 @@
   function rallyAPI(apiService, toastService, basePathOfJsonFile) {
     var service = {
       rallyTasksScenarios: rallyTasksScenarios,
-      rallyStartTest : rallyStartTest,
-      rallyViewHtml: rallyViewHtml
+      rallyStartTest : rallyStartTest
     };
 
     return service;
@@ -63,13 +62,6 @@
       return apiService.post('/api/rally/task/', taskdata)
         .error(function () {
           toastService.add('error', gettext('Unable to Run The Task.'));
-        });
-    }
-
-    function rallyViewHtml() {
-      return apiService.get('/api/rally/html/')
-        .error(function () {
-          toastService.add('error', gettext('Unable to View Html.'));
         });
     }
 

@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright 2016 Naanal technologies Pvt Limited
  * (c) Copyright 2015 ThoughtWorks Inc.
  *
@@ -38,6 +38,9 @@
     var ctrl = this;
     ctrl.insertImage = insertImage;
     ctrl.insertFlavor = insertFlavor;
+    ctrl.insertVolumesize = insertVolumesize;
+    ctrl.insertFixednetwork = insertFixednetwork;
+    ctrl.insertNo_Times = insertNo_Times;
 
 
   function insertImage (image,task){
@@ -66,6 +69,53 @@
         if( Object.keys(value2)[0] == Object.keys(task)[0] ) {
            
           $scope.model.initializeScenario.selections[key1].task[Object.keys(task)[0]][0].args.flavor.name = flavor;
+    
+         }
+      });
+    });
+    
+  };
+    function insertNo_Times (no_times,task){
+    
+    angular.forEach($scope.model.initializeScenario.selections, function(value1, key1){
+      
+      angular.forEach($scope.model.initializeScenario.selections[key1], function(value2,key2){
+        
+        if( Object.keys(value2)[0] == Object.keys(task)[0] ) {
+           
+          $scope.model.initializeScenario.selections[key1].task[Object.keys(task)[0]][0].runner.times = no_times;
+    
+         }
+      });
+    });
+    
+  };
+
+  function insertVolumesize (volume_args,task){
+    
+    angular.forEach($scope.model.initializeScenario.selections, function(value1, key1){
+      
+      angular.forEach($scope.model.initializeScenario.selections[key1], function(value2,key2){
+        
+        if( Object.keys(value2)[0] == Object.keys(task)[0] ) {
+           
+          $scope.model.initializeScenario.selections[key1].task[Object.keys(task)[0]][0].args.volume_args.size = volume_args;
+    
+         }
+      });
+    });
+    
+  };
+
+  function insertFixednetwork (fixed_network,task){
+    
+    angular.forEach($scope.model.initializeScenario.selections, function(value1, key1){
+      
+      angular.forEach($scope.model.initializeScenario.selections[key1], function(value2,key2){
+        
+        if( Object.keys(value2)[0] == Object.keys(task)[0] ) {
+           
+          $scope.model.initializeScenario.selections[key1].task[Object.keys(task)[0]][0].args.fixed_network = fixed_network;
     
          }
       });

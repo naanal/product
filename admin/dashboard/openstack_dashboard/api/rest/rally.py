@@ -44,22 +44,32 @@ class TaskStart(generic.View):
                 print(i)
                 id = [x[:x.index('\n')] if '\n' in x else x for x in i]
                 uuid=''.join(map(str, id))
-                jsn= subprocess.check_output(["rally","task","results", uuid], shell=False)              
+                jsn= subprocess.check_output(["rally","task","results", uuid], shell=False)         
  #       result=[rallyTask,jsn]
 #        print(result[0])
 #        print("!!!!!!!!!!!!!!!!!!!!!!!!!1")
 #        print(jsn)
+                htm=subprocess.check_output(["rally","task","report","--out=report.html"], shell = False)
+                #print(htm)
+                file=open("/home/sss/Documents/product/admin/dashboard/openstack_dashboard/dashboards/overview/static/dashboard/overview/workflow/rally-test/input/rally_html_output.html","w")
+                r_report=(htm)
+                file.write(r_report)
+                file.close()
         return {"log_result":rallyTask,"jsn_result":jsn, "id" :uuid}
 
 
-@urls.register
-class viewHtml(generic.View):
-    """API for rally volumes.
-    """
-    url_regex = r'rally/html/$'
-
-    @rest_utils.ajax()
-    def get(self, request):
-        htm_result=subprocess.check_output(["rally","task","report","--out=report.html","--open"], shell = False)
-        print(htm_result)
-        return {"html_result":htm_result}
+#@urls.register
+#class viewHtml(generic.View):
+ #   """API for rally volumes.
+ #   """
+ #s   url_regex = r'rally/html/$'
+#
+#    @rest_utils.ajax()
+#    def get(self, request):
+#        htm=subprocess.check_output(["rally","task","report","--out=report.html","--open"], shell = False)
+#        print(htm)
+#        file=open("/home/sss/Documents/product/admin/dashboard/openstack_dashboard/dashboards/overview/static/dashboard/overview/workflow/rally-test/input/rally_html_output.html","w")
+#        r_report=(htm)
+#        file.write(r_report)
+#        file.close()
+#        return {"html_result":htm}

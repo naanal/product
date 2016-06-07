@@ -62,6 +62,7 @@
       orginalSchema : {},
       flavors: [],
       images: [],
+      fixed_network:[],
             /**
        * api methods for UI controllers
        */
@@ -73,17 +74,16 @@
       id : '',
       resultschema: {},
       finalresults : [],
-      viewhtml: viewhtml,
-      htm: [],
+    //  viewhtml: viewhtml,
+    //  htm: [],
       isProcessing : false
     };
 
-    function viewhtml() {
+    /**function viewhtml() {
         return rallyAPI.rallyViewHtml().then(function(response){
           model.htm = response.data.html_result;
-          console.log(model.htm)
         });
-    }
+    }**/
     function runRally() {
       model.isProcessing=true;
 
@@ -176,7 +176,8 @@
         promise = $q.all([
           getImages(),
           getFlavors(),
-          getSamples()
+          getSamples(),
+          getNetworks()
 
         ]);
 
@@ -207,6 +208,9 @@
      function getFlavors() {
       return  novaAPI.getFlavors(true, true).then(onGetFlavors);
     }
+    function getNetworks() {
+      return  neutronAPI.getNetworks().then(onGetNet_list, noop);
+    }
 
     function onGetSamples(data) {
       angular.extend(model.orginalSchema, data.data);
@@ -221,11 +225,11 @@
    
       push.apply(model.flavors, data.data.items);
     }
-
+    function onGetNet_list(data) {
+   
+      push.apply(model.fixed_network, data.data.items);
+    }
     return model;
   }
 
 })();
-
-
-    

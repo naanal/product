@@ -1,4 +1,4 @@
-<style type="text/css">
+ <style type="text/css">
 fieldset.scheduler-border {
     border: 1px groove #ddd !important;
     padding: 0 1.4em 1.4em 1.4em !important;
@@ -20,17 +20,17 @@ fieldset.scheduler-border {
 <div ng-controller="RallyTestScenariosController as ctrl">
 <div ng-repeat="schema in ctrl.Schema">
 
-	<fieldset class="scheduler-border">
-	    <legend class="scheduler-border">{$schema.component$}</legend>
-		
-		<div>
-		<label class="checkbox-inline" ng-repeat="task in schema.tasks">
-	      <input type="checkbox" value="{$task.task$}" 
-	      ng-checked="model.initializeScenario.selections.indexOf(task) > -1"
-	      ng-click="toggleSelection(task)">{$task.name$}
-	    </label>
-	    </div>
-	</fieldset>
+    <fieldset class="scheduler-border">
+        <legend class="scheduler-border">{$schema.component$}</legend>
+        
+        <div>
+        <label class="checkbox-inline col-sm-5" ng-repeat="task in schema.tasks">
+          <input type="checkbox" value="{$task.task$}" 
+          ng-checked="model.initializeScenario.selections.indexOf(task) > -1"
+          ng-click="toggleSelection(task)">{$task.name$}
+        </label>
+        </div>
+    </fieldset>
 </div>
 <input type="checkbox" ng-model="devpurpose" /> For Development Purpose
 <pre ng-show="devpurpose">{$model.initializeScenario.selections | json $} </pre>

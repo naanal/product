@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright 2016 Naanal technologies Pvt Limited
  * (c) Copyright 2015 ThoughtWorks Inc.
  *
@@ -37,12 +37,12 @@
   function RallyTestMaketestController($scope,RallyTestModel) {
     var ctrl = this;
    ctrl.runTest = runTest;
-   ctrl.viewhtml = viewhtml;
+//   ctrl.viewhtml = viewhtml;
    function runTest(){
     $scope.model.runRally();
    }
-   function viewhtml () {
+/**   function viewhtml () {
     $scope.model.viewhtml();
-   }
+   }**/
   }
 })();
