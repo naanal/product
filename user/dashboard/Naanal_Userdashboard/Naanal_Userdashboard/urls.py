@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     url(r'^change/','login.views.change_password' ),
     url(r'^help/','login.views.help' ),
     url(r'^stop/','login.views.instance_stop' ),
+    url(r'^logout/','login.views.logout' ),
 )
