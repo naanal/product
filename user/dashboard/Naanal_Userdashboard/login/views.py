@@ -113,8 +113,15 @@ def index_page(request):
            db.close()
            if status =="active":
               console=vnc_console(instance_name)
-           print console     
-           return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console})
+           print console
+           db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="nova")
+           cursor = db.cursor()
+           sql ="select ip_address from neutron.ipallocations where port_id = (select id  from neutron.ports where device_id ='%s' );" % (instance_id)           
+           cursor.execute(sql)  
+           results = cursor.fetchall()
+           for row in results:     
+               fixed=row[0]     
+           return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'fixedip':fixed})
     
     return render_to_response('login.html')
 
@@ -294,4 +301,33 @@ def download_RDP(username,instance_id):
     fo.write(content);    
     return(Rdpname) 
 
+
+@csrf_exempt
+def snapshot(request):
+    username = password = ''
+    if request.POST:
+        if request.session.has_key('username'):
+           username1 = request.session['username']    
+           username = request.POST.get('username')  
+           instance_id = request.POST.get('instance_id')
+           instance_name=request.POST.get('instance_name')      
+           print username,instance_id,instance_name  
+           auth_url = 'http://controller:35357/v3'
+           username1 = 'admin'
+           user_domain_name = 'Default'
+           project_name = 'admin'
+           project_domain_name = 'Default'
+           password = 'ADMIN'
+           auth =v3.Password(auth_url=auth_url,username=username1,password=password,project_id='c9b0922ac3c8400da4aabde2b2bb9daf',
+           user_domain_name=user_domain_name)
+           sess = session.Session(auth=auth)
+           keystone = ksclient.Client(session=sess)
+           keystone.projects.list()
+           from novaclient import client
+           nova = client.Client(2, session=keystone.session)
+           server = nova.servers.find(name=instance_name)
+           nova.servers.create_image(server, 'testing', metadata=None) # here testing is name of the snapshot
+
+
+           
            
