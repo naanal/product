@@ -116,12 +116,13 @@
                   <tr>
                     
                     <td><a href="{{console}}">{{instancename}}</a></td>
-					<td>{{instanceid}}</td>
+					<td>{{fixedip}}</td>
                     <td><span class="label label-success">{{status}}</span></td>
                     <td>
                              <form action="/stop/" method="POST">
                                           <input type="hidden" name="operation" value="start" />
                                           <input type="hidden" name="instance_id" value="{{instanceid}}" />
+                                          <input type="hidden" name="user_name" value="{{username}}" />
                                           <input type="hidden" name="instance_name" value="{{instancename}}" />
 					  <button class="btn btn-success btn-xs disabled">PowerOn</button>
                                  </form>
@@ -129,27 +130,26 @@
                              <form action="/stop/" method="POST">
                                           <input type="hidden" name="operation" value="reboot" />
                                           <input type="hidden" name="instance_id" value="{{instanceid}}" />
+                                          <input type="hidden" name="user_name" value="{{username}}" />
                                           <input type="hidden" name="instance_name" value="{{instancename}}" />
                                           <button class="btn btn-warning btn-xs">Restart</button>
                              </form>
                              <form action="/stop/" method="POST">
                                           <input type="hidden" name="operation" value="stop" />
                                           <input type="hidden" name="instance_id" value="{{instanceid}}" />
+                                          <input type="hidden" name="user_name" value="{{username}}" />
                                           <input type="hidden" name="instance_name" value="{{instancename}}" />
 					  <button class="btn btn-danger btn-xs">ShutOff</button>
                              </form>
 
-                             </form>
+                             
+                            
+					  <a href="/static/RDP/{{RDP_file}}" class="btn btn-success btn-xs" download>Download RDP</a>
+                            
                              <form action="" method="POST">
                                           <input type="hidden" name="operation" value="stop" />
                                           <input type="hidden" name="instance_id" value="{{instanceid}}" />
-                                          <input type="hidden" name="instance_name" value="{{instancename}}" />
-					  <button class="btn btn-success btn-xs disabled">Download RDP</button>
-                             </form>
-                             </form>
-                             <form action="" method="POST">
-                                          <input type="hidden" name="operation" value="stop" />
-                                          <input type="hidden" name="instance_id" value="{{instanceid}}" />
+                                          <input type="hidden" name="user_name" value="{{username}}" />
                                           <input type="hidden" name="instance_name" value="{{instancename}}" />
 					  <button class="btn btn-warning btn-xs">Snapshot</button>
                              </form>

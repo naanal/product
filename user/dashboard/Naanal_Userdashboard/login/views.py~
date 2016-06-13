@@ -13,17 +13,19 @@ import time
 import unicodedata
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
-from django.contrib.sessions.models import Session
+import os
+#from django.contrib.sessions.models import Session
 
 @csrf_exempt
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+#@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def loginpage(request):
     state = "Please log in below..."
-    username = password = instance_id = instance_name = status = console = ''
+    username = password = instance_id = instance_name = status = console = fixed = ''
     if request.POST:
         username = request.POST.get('username')
         password = request.POST.get('password')
         request.session['username'] = username
+        
         LDAP_SERVER = 'ldap://windows-server'
         LDAP_USERNAME = '%s@naanal.local' % username
         LDAP_PASSWORD = password
@@ -33,15 +35,13 @@ def loginpage(request):
         try:  
             ldap_client = ldap.initialize(LDAP_SERVER)   
             ldap_client.set_option(ldap.OPT_REFERRALS,0)
-            ldap_client.simple_bind_s(LDAP_USERNAME, LDAP_PASSWORD)
-            print 'successfull'
+            ldap_client.simple_bind_s(LDAP_USERNAME, LDAP_PASSWORD)            
             db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="mysql")
             cursor = db.cursor()
             cursor.execute("select instances_id from mapping1 where username='%s'" % (username))
             results = cursor.fetchall()
             for row in results:
                 instance_id = row[0]
-                print instance_id
             db.commit()
             db.close()
             db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="nova")
@@ -50,15 +50,22 @@ def loginpage(request):
             results = cursor.fetchall()            
             for row in results:               
                 instance_name = row[0]
-                status =row[1]
-                print type(status)               
+                status =row[1]                             
             db.commit()
             db.close()
-            print status
+            db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="nova")
+            cursor = db.cursor()
+            sql ="select ip_address from neutron.ipallocations where port_id = (select id  from neutron.ports where device_id ='%s' );" % (instance_id)           
+            cursor.execute(sql)  
+            results = cursor.fetchall()
+            for row in results:     
+                fixed=row[0]
+            print status           
             if status =="active":
                console=vnc_console(instance_name)
-               print console     
-            return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console})
+               print console    
+            rdp_file=download_RDP(username,instance_id) 
+            return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'fixedip':fixed,'RDP_file':rdp_file})
         except ldap.INVALID_CREDENTIALS:
             ldap_client.unbind()
             state= 'Wrong username or password'
@@ -77,9 +84,12 @@ def logout(request):
     return render_to_response('login.html',{'state':state})
 
 
+
+
+
 @csrf_exempt
 def index_page(request):
-    username = password = instance_id =instance_name = status = ''
+    username = password = instance_id =instance_name = status = console = ''
     if request.GET:
         username = request.GET.get('username')
         if request.session.has_key('username'):
@@ -89,8 +99,7 @@ def index_page(request):
            cursor.execute("select instances_id from mapping1 where username='%s'" % (username))
            results = cursor.fetchall()
            for row in results:
-               instance_id = row[0]
-               print instance_id
+               instance_id = row[0]               
            db.commit()
            db.close()
            db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="nova")
@@ -110,9 +119,12 @@ def index_page(request):
     return render_to_response('login.html')
 
 
+
+
+
 @csrf_exempt
 def change_password(request):
-    username = password = ''
+    username = password = console=''
     if request.GET:
         if request.session.has_key('username'):
            username1 = request.session['username']    
@@ -174,6 +186,9 @@ def change_password(request):
     return render_to_response('login.html')
 
 
+
+
+
 def help(request):
     username = password = ''
     if request.GET:
@@ -186,17 +201,17 @@ def help(request):
 
 @csrf_exempt
 def instance_stop(request):
-    instance_id=console=''
+    instance_id=console=username=''
     if request.POST:
         if request.session.has_key('username'):
            username1 = request.session['username']    
            instance_id = request.POST.get('instance_id')
+           username = request.POST.get('user_name')
            instance_name=request.POST.get('instance_name')
            operation=request.POST.get('operation')
-           print "********************server start/stop**************************"
-           print instance_id
-           print instance_name
-           print operation
+           username=str(username)
+           rdp_file=download_RDP(username,instance_id)
+           print "********************server start/stop**************************"       
            auth_url = 'http://controller:35357/v3'
            username1 = 'admin'
            user_domain_name = 'Default'
@@ -224,7 +239,10 @@ def instance_stop(request):
                console=server.get_vnc_console('novnc')
                console1=console['console']
                console=console1['url']
-               console=str(console)        
+               console=str(console)
+           elif operation == 'rdp':
+               
+               print rdp_file
         #****************** MYSQL coding to check the instances status *************************************
            db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="nova")
            cursor = db.cursor()
@@ -236,7 +254,7 @@ def instance_stop(request):
                status =row[1]
            db.commit()
            db.close()
-           return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console})
+           return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'RDP_file':rdp_file})
     return render_to_response('login.html')
 
 def vnc_console(instance_name):
@@ -259,9 +277,21 @@ def vnc_console(instance_name):
     console=console1['url']
     return(console)
  
+def download_RDP(username,instance_id):
+    print "inside the Download RDP"
+    fixed =''
+    db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="nova")
+    cursor = db.cursor()
+    sql ="select floating_ip_address from neutron.floatingips where fixed_port_id = (select id  from neutron.ports where device_id ='%s' );"% (instance_id)            
+    cursor.execute(sql)  
+    results = cursor.fetchall()
+    for row in results:     
+        fixed=row[0]    
+    file_name="login/static/RDP/"+username+".rdp"
+    Rdpname=username+".rdp"
+    content="auto connect:i:1\nfull address:s:%s\nusername:s:%s\n" % (fixed, username)     
+    fo = open(file_name, "wb")
+    fo.write(content);    
+    return(Rdpname) 
 
-
-
-
-
-
+           
