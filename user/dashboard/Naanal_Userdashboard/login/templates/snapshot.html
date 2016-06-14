@@ -1,10 +1,12 @@
 
-
 <html>
 <body>
-<form action='snap' method='POST'>
+<form action='/snap/' method='POST'>
   Snapshot name:<br>
-  <input type="text" name="firstname"><br>
+  <input type="text" name="snapshot_name">
+  <input type="hidden" name="instance_id" value="{{instanceid}}" />
+  <input type="hidden" name="username" value="{{username}}" />
+  <input type="hidden" name="instance_name" value="{{instancename}}" />
   <button class="btn btn-warning btn-xs">Snapshot</button>
 </form>
 </body>

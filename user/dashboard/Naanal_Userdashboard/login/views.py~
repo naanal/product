@@ -301,6 +301,16 @@ def download_RDP(username,instance_id):
     fo.write(content);    
     return(Rdpname) 
 
+@csrf_exempt
+def snapshot_name(request):
+    username = password = ''
+    if request.POST:
+        if request.session.has_key('username'):
+           username1 = request.session['username']    
+           username = request.POST.get('username')  
+           instance_id = request.POST.get('instance_id')
+           instance_name=request.POST.get('instance_name')    
+    return render_to_response('snapshot.html',{ 'username': username,'instancename':instance_name,'instanceid':instance_id})
 
 @csrf_exempt
 def snapshot(request):
@@ -310,8 +320,10 @@ def snapshot(request):
            username1 = request.session['username']    
            username = request.POST.get('username')  
            instance_id = request.POST.get('instance_id')
-           instance_name=request.POST.get('instance_name')      
-           print username,instance_id,instance_name  
+           instance_name=request.POST.get('instance_name')
+           snapshot_name=request.POST.get('snapshot_name')     
+           print "********snapshot*****************"
+           print snapshot_name
            auth_url = 'http://controller:35357/v3'
            username1 = 'admin'
            user_domain_name = 'Default'
@@ -326,8 +338,148 @@ def snapshot(request):
            from novaclient import client
            nova = client.Client(2, session=keystone.session)
            server = nova.servers.find(name=instance_name)
-           nova.servers.create_image(server, 'testing', metadata=None) # here testing is name of the snapshot
+           network=server.networks
+           i=0
+           for k in network['lan-net']:
+              i=i+1
+              if i==1:
+		      network_name= 'lan-net'
+	      else :
+		      network_name= 'wan-net'
+           db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="nova")
+           cursor = db.cursor()                  
+           cursor.execute("select instance_type_id from instances where uuid='%s'" % (instance_id))  
+           results = cursor.fetchall()
+           for row in results:     
+              instance_type_id=row[0]    
+           db.close()
+           db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="nova")
+           cursor = db.cursor()                  
+           cursor.execute(" select name from instance_types where id ='%s'" % (instance_type_id))  
+           results = cursor.fetchall()           
+           for row in results:     
+              flavor_name=row[0]    
+              print flavor_name
+           image_name=snapshot_name
+           print instance_name,image_name,flavor_name,network_name  
+           nova.servers.create_image(server, image_name, metadata=None) # here testing is name of the snapshot
+           time.sleep(60)
+           #status=instance_replace(username,instance_name,image_name,flavor_name,network_name)
+           console=fixed=''
+             
+           auth_url = 'http://controller:35357/v3'
+           username1 = 'admin'
+           user_domain_name = 'Default'
+           project_name = 'admin'
+           project_domain_name = 'Default'
+           password = 'ADMIN'
+           auth =v3.Password(auth_url=auth_url,username=username1,password=password,project_id='c9b0922ac3c8400da4aabde2b2bb9daf',
+           user_domain_name=user_domain_name)
+           sess = session.Session(auth=auth)
+           keystone = ksclient.Client(session=sess)
+           keystone.projects.list()
+           from novaclient import client
+           nova = client.Client(2, session=keystone.session)
+           image = nova.images.find(name=image_name)
+           flavor = nova.flavors.find(name=flavor_name)
+           network =nova.networks.find(label=network_name) 
+           server = nova.servers.create(name = image_name,image = image.id,flavor = flavor.id,nics=[{'net-id': network.id}])
+           new_instance_id=str(server.id)
+           print new_instance_id            
+           db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="mysql")
+           cursor = db.cursor()
+           cursor.execute("UPDATE mapping1 SET instances_id='%s' ,instances_name='%s'  where username='%s';" % (new_instance_id,image_name,username))    
+           db.commit()
+           db.close()
 
 
-           
-           
+    
+           db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="mysql")
+           cursor = db.cursor()
+           cursor.execute("select instances_id from mapping1 where username='%s'" % (username))
+           results = cursor.fetchall()
+           for row in results:
+               instance_id = row[0]               
+           db.commit()
+           db.close()
+           db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="nova")
+           cursor = db.cursor()
+           cursor.execute("select display_name,vm_state from instances where uuid='%s'" % (instance_id))
+           results = cursor.fetchall() 
+           for row in results:               
+               instance_name = row[0]
+               status =row[1]                
+           db.commit()
+           db.close()
+           if status =="active":
+              console=vnc_console(instance_name)
+              print console
+           db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="nova")
+           cursor = db.cursor()
+           sql ="select ip_address from neutron.ipallocations where port_id = (select id  from neutron.ports where device_id ='%s' );" % (instance_id)           
+           cursor.execute(sql)  
+           results = cursor.fetchall()
+           for row in results:     
+               fixed=row[0]     
+           return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'fixedip':fixed})
+    
+          
+def instance_replace(username,instance_name,image_name,flavor_name,network_name):
+    console=fixed=''
+    username='map2'    
+    auth_url = 'http://controller:35357/v3'
+    username1 = 'admin'
+    user_domain_name = 'Default'
+    project_name = 'admin'
+    project_domain_name = 'Default'
+    password = 'ADMIN'
+    auth =v3.Password(auth_url=auth_url,username=username1,password=password,project_id='c9b0922ac3c8400da4aabde2b2bb9daf',
+    user_domain_name=user_domain_name)
+    sess = session.Session(auth=auth)
+    keystone = ksclient.Client(session=sess)
+    keystone.projects.list()
+    from novaclient import client
+    nova = client.Client(2, session=keystone.session)
+    image = nova.images.find(name=image_name)
+    flavor = nova.flavors.find(name=flavor_name)
+    network =nova.networks.find(label=network_name) 
+    server = nova.servers.create(name = image_name,image = image.id,flavor = flavor.id,nics=[{'net-id': network.id}])
+    new_instance_id=str(server.id)
+    print new_instance_id            
+    db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="mysql")
+    cursor = db.cursor()
+    cursor.execute("UPDATE mapping1 SET instances_id='%s' ,instances_name='%s'  where username='%s';" % (new_instance_id,image_name,username))    
+    db.commit()
+    db.close()
+
+
+    
+    db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="mysql")
+    cursor = db.cursor()
+    cursor.execute("select instances_id from mapping1 where username='%s'" % (username))
+    results = cursor.fetchall()
+    for row in results:
+        instance_id = row[0]               
+    db.commit()
+    db.close()
+    db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="nova")
+    cursor = db.cursor()
+    cursor.execute("select display_name,vm_state from instances where uuid='%s'" % (instance_id))
+    results = cursor.fetchall() 
+    for row in results:               
+        instance_name = row[0]
+        status =row[1]                
+    db.commit()
+    db.close()
+    if status =="active":
+       console=vnc_console(instance_name)
+       print console
+    db = MySQLdb.connect(host="controller",port=3306,user="root",passwd="password",db="nova")
+    cursor = db.cursor()
+    sql ="select ip_address from neutron.ipallocations where port_id = (select id  from neutron.ports where device_id ='%s' );" % (instance_id)           
+    cursor.execute(sql)  
+    results = cursor.fetchall()
+    for row in results:     
+        fixed=row[0]     
+    return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'fixedip':fixed})
+    

@@ -13,4 +13,5 @@ urlpatterns = patterns('',
     url(r'^stop/','login.views.instance_stop' ),
     url(r'^logout/','login.views.logout' ),
     url(r'^snap/','login.views.snapshot' ),
+    url(r'^snap1/','login.views.snapshot_name' ),
 )
