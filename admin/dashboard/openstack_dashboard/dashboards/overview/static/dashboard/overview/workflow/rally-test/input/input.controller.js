@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright 2016 Naanal technologies Pvt Limited
  * (c) Copyright 2015 ThoughtWorks Inc.
  *
@@ -41,10 +41,65 @@
     ctrl.insertVolumesize = insertVolumesize;
     ctrl.insertFixednetwork = insertFixednetwork;
     ctrl.insertNo_Times = insertNo_Times;
+    ctrl.gatherInputs = gatherInputs;
+    ctrl.insertCommon = insertCommon;
+    var common_inputs_dup = [];
+    $scope.common_inputs = [];
 
+    function gatherInputs(selections) {
+      for(var i in selections){
+          common_inputs_dup.push.apply(common_inputs_dup, selections[i].inputs);
+      }
+      $scope.common_inputs = unique(common_inputs_dup);
+    }
+
+    function insertCommon (type, value)
+    {
+
+        if(type == 'image')
+        {
+          for( var i=0; i < $scope.model.initializeScenario.selections.length; i++){
+            if($scope.model.initializeScenario.selections[i].inputs.indexOf('image') > -1)
+              insertImage (value, $scope.model.initializeScenario.selections[i].task);
+          }
+        }
+         if(type == 'flavor')
+        {
+          for( var i=0; i < $scope.model.initializeScenario.selections.length; i++){
+            if($scope.model.initializeScenario.selections[i].inputs.indexOf('flavor') > -1)
+              insertFlavor (value, $scope.model.initializeScenario.selections[i].task);
+          }
+        }
+
+         if(type == 'volume_args')
+        {
+          for( var i=0; i < $scope.model.initializeScenario.selections.length; i++){
+            if($scope.model.initializeScenario.selections[i].inputs.indexOf('volume_args') > -1)
+              insertVolumesize (value, $scope.model.initializeScenario.selections[i].task);
+          }
+        }
+
+         if(type == 'times')
+        {
+          for( var i=0; i < $scope.model.initializeScenario.selections.length; i++){
+            if($scope.model.initializeScenario.selections[i].inputs.indexOf('times') > -1)
+              insertNo_Times (value, $scope.model.initializeScenario.selections[i].task);
+          }
+        }
+         if(type == 'fixed_network')
+        {
+          for( var i=0; i < $scope.model.initializeScenario.selections.length; i++){
+            if($scope.model.initializeScenario.selections[i].inputs.indexOf('fixed_network') > -1)
+              insertFixednetwork (value, $scope.model.initializeScenario.selections[i].task);
+          }
+        }
+
+
+    }
 
   function insertImage (image,task){
     
+
     angular.forEach($scope.model.initializeScenario.selections, function(value1, key1){
       
       angular.forEach($scope.model.initializeScenario.selections[key1], function(value2,key2){
@@ -58,7 +113,6 @@
     });
     
   };
-
 
   function insertFlavor (flavor,task){
     
@@ -75,7 +129,8 @@
     });
     
   };
-    function insertNo_Times (no_times,task){
+
+  function insertNo_Times (no_times,task){
     
     angular.forEach($scope.model.initializeScenario.selections, function(value1, key1){
       
@@ -122,6 +177,26 @@
     });
     
   };
+
+  function unique(origArr) {
+      var newArr = [],
+          origLen = origArr.length,
+          found, x, y;
+
+      for (x = 0; x < origLen; x++) {
+          found = undefined;
+          for (y = 0; y < newArr.length; y++) {
+              if (origArr[x] === newArr[y]) {
+                  found = true;
+                  break;
+              }
+          }
+          if (!found) {
+              newArr.push(origArr[x]);
+          }
+      }
+      return newArr;
+  }
 
   }
 })();

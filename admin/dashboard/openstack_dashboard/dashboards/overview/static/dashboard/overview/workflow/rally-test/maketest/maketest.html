@@ -5,7 +5,7 @@
 </style>
 <script type="text/javascript">
   function reload() {
-    document.getElementById('frame_id').src="/static/dashboard/overview/workflow/rally-test/input/rally_html_output.html";
+    document.getElementById('frame_id').src="/static/dashboard/overview/workflow/rally-test/input/rally_html.html";
   } btn_id.onclick = reload;
 </script>
 
@@ -59,7 +59,7 @@
   </pre>
   <button id="btn_id" class="btn btn-primary btn-md" ng-click="btn=true">view Html Output</button>
   <pre ng-show="btn">
-  <iframe  id="frame_id" name="display" width="100%" height="200%" frameborder="0" marginwidth="0" marginheight="0" ></iframe>
+  <iframe  id="frame_id" name="display" width="200%" height="200%" frameborder="0" marginwidth="0" marginheight="0" ></iframe>
   <button class="btn btn-primary btn-md" ng-click="btn = false">Close Html view</button>
   </pre>
 <!--   <div>

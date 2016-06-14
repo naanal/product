@@ -22,7 +22,9 @@
     'horizon.app.core.openstack-service-api.rally',
     'horizon.app.core.openstack-service-api.nova',
     'horizon.app.core.openstack-service-api.neutron',
-    'horizon.app.core.openstack-service-api.glance'
+    'horizon.app.core.openstack-service-api.glance',
+    'horizon.framework.widgets.modal-wait-spinner.service',
+    'horizon.framework.widgets.toast.service'
   ];
 
   /**
@@ -49,7 +51,7 @@
    * UI and services API.
    * @returns {Object} The model
    */
-  function RallyTestModel($q, $log, rallyAPI, novaAPI, neutronAPI, glanceAPI) {
+  function RallyTestModel($q, $log, rallyAPI, novaAPI, neutronAPI, glanceAPI, modalWaitSpinnerService, toast) {
 
     var initPromise;
     var model = {
@@ -79,6 +81,21 @@
       isProcessing : false
     };
 
+
+  function initializeSelectedScenarios(){
+      model.initializeScenario = {
+        selections : [],
+        processedScenarios : {},
+        flavor: null,
+        log : [],
+        jn : [],
+        id : '',
+        resultschema: {},
+        finalresults : []
+      }
+    }
+
+
     /**function viewhtml() {
         return rallyAPI.rallyViewHtml().then(function(response){
           model.htm = response.data.html_result;
@@ -94,11 +111,20 @@
       }
 
       var processedselections = angular.copy(model.initializeScenario.processedScenarios);
-      return rallyAPI.rallyStartTest(processedselections).then(function(response){
+      modalWaitSpinnerService.showModalSpinner(gettext("Please Wait.. Test is Running"));
+      return rallyAPI.rallyStartTest(processedselections)
+      .then(function(response){
         model.log = response.data.log_result;
         model.jn = response.data.jsn_result;
         model.id = response.data.id;
         processResult(model.jn);
+        modalWaitSpinnerService.hideModalSpinner();
+        
+      },
+      function(data) {
+        // Handle error here
+        modalWaitSpinnerService.hideModalSpinner();
+        toast.add('error', interpolate("Failed to select inputs", "1"));
       });
       model.isProcessing=false;
     }
@@ -150,12 +176,7 @@
           }  
     }
 
-    function initializeSelectedScenarios(){
-      model.initializeScenario = {
-        selections : [],
-        processedScenarios : {}
-      }
-    }
+
 
     function initialize(deep) {
       var deferred, promise;

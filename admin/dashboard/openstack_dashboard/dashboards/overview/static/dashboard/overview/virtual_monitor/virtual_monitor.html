@@ -1,5 +1,4 @@
-<div id="virtual_monitor_wrapper" ng-controller="horizon.dashboard.overview.virtual_monitor.VirtualMonitorController as vmc">
+<div id="virtual_monitor_wrapper" ng-controller="horizon.dashboard.overview.virtual_monitor.VirtualMonitorController as vmc" class = "loading">
 
-<button class="btn btn-primary btn-lg" ng-click="modal.openRallyTestWizard({ successUrl: '/overview/virtual_monitor/' })" ng-controller="RallyTestModalController as modal" class="btn-launch ng-scope">Run Tests</button>
-
+<button id = "spin" class="btn btn-primary btn-lg" ng-click="modal.openRallyTestWizard({ successUrl: '/overview/virtual_monitor/' })" ng-controller="RallyTestModalController as modal" class="btn-launch ng-scope">Run Tests</button>
 </div>

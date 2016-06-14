@@ -74,42 +74,7 @@
                }
             },
             {
-               "name":"Boot and Delete Server",
-               "description":"You Can Boot and Delete servers",
-               "inputs":[
-                  "image",
-                  "flavor",
-                  "times"
-               ],
-               "task":{
-                  "NovaServers.boot_and_delete_server":[
-                     {
-                        "args":{
-                           "flavor":{
-                              "name":"{{flavor_name}}"
-                           },
-                           "image":{
-                              "name":"^cirros.*uec$"
-                           },
-                           "force_delete":false
-                        },
-                        "runner":{
-                           "type":"constant",
-                           "times":10,
-                           "concurrency":2
-                        },
-                        "context":{
-                           "users":{
-                              "tenants":3,
-                              "users_per_tenant":2
-                           }
-                        }
-                     }
-                  ]
-               }
-            },
-            {
-               "name":"Boot and Delete Server-Count2",
+               "name":"Boot and Delete Servers",
                "description":"You Can Boot and Delete servers",
                "inputs":[
                   "image",
@@ -278,45 +243,6 @@
                            "users":{
                               "tenants":2,
                               "users_per_tenant":1
-                           },
-                           "network":{
-                              "start_cidr":"100.1.0.0/26"
-                           }
-                        }
-                     }
-                  ]
-               }
-            },
-            {
-               "name":"Boot and Delete Server With Security Groups",
-               "description":"You Can Boot and Delete with Security Groups",
-               "inputs":[
-                  "image",
-                  "flavor",
-                  "times"
-               ],
-               "task":{
-                  "NovaSecGroup.boot_and_delete_server_with_secgroups":[
-                     {
-                        "args":{
-                           "flavor":{
-                              "name":"{{flavor_name}}"
-                           },
-                           "image":{
-                              "name":"^cirros.*uec$"
-                           },
-                           "security_group_count":10,
-                           "rules_per_security_group":10
-                        },
-                        "runner":{
-                           "type":"constant",
-                           "times":10,
-                           "concurrency":2
-                        },
-                        "context":{
-                           "users":{
-                              "tenants":3,
-                              "users_per_tenant":2
                            },
                            "network":{
                               "start_cidr":"100.1.0.0/26"
@@ -822,6 +748,45 @@
                            },
                            "network":{
 
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Boot and Delete Server With Security Groups",
+               "description":"You Can Boot and Delete with Security Groups",
+               "inputs":[
+                  "image",
+                  "flavor",
+                  "times"
+               ],
+               "task":{
+                  "NovaSecGroup.boot_and_delete_server_with_secgroups":[
+                     {
+                        "args":{
+                           "flavor":{
+                              "name":"{{flavor_name}}"
+                           },
+                           "image":{
+                              "name":"^cirros.*uec$"
+                           },
+                           "security_group_count":10,
+                           "rules_per_security_group":10
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":10,
+                           "concurrency":2
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":3,
+                              "users_per_tenant":2
+                           },
+                           "network":{
+                              "start_cidr":"100.1.0.0/26"
                            }
                         }
                      }
@@ -1594,112 +1559,6 @@
          ]
       },
       {
-         "component":"",
-         "description":"Something about VM Tests",
-         "tasks":[
-            {
-               "name":"Boot and Check Network Connectivity",
-               "description":"You can Boot and Check Network Connectivity",
-               "inputs":[
-                  "image",
-                  "flavor",
-                  "volume_args",
-                  "fixed_network",
-                  "times"
-               ],
-               "task":{
-                  "VMTasks.boot_runcommand_delete":[
-                     {
-                        "args":{
-                           "flavor":{
-                              "name":"{{flavor_name}}"
-                           },
-                           "image":{
-                              "name":"^cirros.*uec$"
-                           },
-                           "volume_args":{
-                              "size":2
-                           },
-                           "fixed_network":"private",
-                           "floating_network":"public",
-                           "use_floating_ip":true,
-                           "force_delete":false,
-                           "command":{
-                              "remote_path":"samples/tasks/support/instance_dd_test.sh"
-                           },
-                           "username":"cirros"
-                        },
-                        "runner":{
-                           "type":"constant",
-                           "times":10,
-                           "concurrency":2
-                        },
-                        "context":{
-                           "users":{
-                              "tenants":3,
-                              "users_per_tenant":2
-                           }
-                        }
-                     }
-                  ]
-               }
-            },
-            {
-               "name":"Boot, Delete with Custom  Image ",
-               "description":"You Can Boot, Delete with Custom  Image",
-               "inputs":[
-                  "flavor",
-                  "times"
-               ],
-               "task":{
-                  "VMTasks.boot_runcommand_delete_custom_image":[
-                     {
-                        "args":{
-                           "flavor":{
-                              "name":"{{flavor_name}}"
-                           },
-                           "command":{
-                              "remote_path":"./instance_dd_test.sh"
-                           },
-                           "username":"root",
-                           "userdata":"#cloud-config\ndisable_root: 0\nssh_pwauth: 1"
-                        },
-                        "runner":{
-                           "type":"constant",
-                           "times":1,
-                           "concurrency":1,
-                           "timeout":3000
-                        },
-                        "context":{
-                           "users":{
-                              "tenants":1,
-                              "users_per_tenant":1
-                           },
-                           "image_command_customizer":{
-                              "image":{
-                                 "name":"cirros"
-                              },
-                              "flavor":{
-                                 "name":"m1.tiny"
-                              },
-                              "command":{
-                                 "local_path":"rally-jobs/extra/install_benchmark.sh",
-                                 "remote_path":"./install_benchmark.sh"
-                              },
-                              "username":"root",
-                              "userdata":"#cloud-config\ndisable_root: 0\nssh_pwauth: 1"
-                           },
-                           "network":{
-
-                           }
-                        }
-                     }
-                  ]
-               }
-            }
-         ]
-      },
-      {
          "component":"Cinder",
          "description":"Something about Cinder Tests",
          "tasks":[
@@ -1709,7 +1568,6 @@
                "inputs":[
                   "image",
                   "flavor",
-                  "size",
                   "availability_zone",
                   "times"
                ],
@@ -1975,101 +1833,6 @@
                }
             },
             {
-               "name":"Create Nested Snapshot and Attach Volume",
-               "description":"You Can Create Nested Snapshot and Attach Volume",
-               "inputs":[
-                  "times"
-               ],
-               "task":{
-                  "CinderVolumes.create_nested_snapshots_and_attach_volume":[
-                     {
-                        "args":{
-                           "size":{
-                              "min":1,
-                              "max":5
-                           },
-                           "nested_level":{
-                              "min":5,
-                              "max":10
-                           }
-                        },
-                        "runner":{
-                           "type":"constant",
-                           "times":1,
-                           "concurrency":1
-                        },
-                        "context":{
-                           "users":{
-                              "tenants":2,
-                              "users_per_tenant":1
-                           },
-                           "servers":{
-                              "image":{
-                                 "name":"^cirros.*uec$"
-                              },
-                              "flavor":{
-                                 "name":"{{flavor_name}}"
-                              },
-                              "servers_per_tenant":2
-                           }
-                        }
-                     }
-                  ]
-               }
-            },
-            {
-               "name":"Create from Volume and Delete Volume",
-               "description":"You Can Create from Volume and Delete Volume",
-               "inputs":[
-                  "times"
-               ],
-               "task":{
-                  "CinderVolumes.create_from_volume_and_delete_volume":[
-                     {
-                        "args":{
-                           "size":1
-                        },
-                        "runner":{
-                           "type":"constant",
-                           "times":2,
-                           "concurrency":2
-                        },
-                        "context":{
-                           "users":{
-                              "tenants":1,
-                              "users_per_tenant":1
-                           },
-                           "volumes":{
-                              "size":1
-                           }
-                        }
-                     },
-                     {
-                        "args":{
-                           "size":{
-                              "min":1,
-                              "max":5
-                           }
-                        },
-                        "runner":{
-                           "type":"constant",
-                           "times":2,
-                           "concurrency":2
-                        },
-                        "context":{
-                           "users":{
-                              "tenants":1,
-                              "users_per_tenant":1
-                           },
-                           "volumes":{
-                              "size":1
-                           }
-                        }
-                     }
-                  ]
-               }
-            },
-            {
                "name":"Create Snapshot and Attach Volume",
                "description":"You Can Create Snapshot and Attach Volume",
                "inputs":[
@@ -2280,9 +2043,105 @@
                      }
                   ]
                }
+            },
+            {
+               "name":"Create from Volume and Delete Volume",
+               "description":"You Can Create from Volume and Delete Volume",
+               "inputs":[
+                  "times"
+               ],
+               "task":{
+                  "CinderVolumes.create_from_volume_and_delete_volume":[
+                     {
+                        "args":{
+                           "size":1
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":2,
+                           "concurrency":2
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":1,
+                              "users_per_tenant":1
+                           },
+                           "volumes":{
+                              "size":1
+                           }
+                        }
+                     },
+                     {
+                        "args":{
+                           "size":{
+                              "min":1,
+                              "max":5
+                           }
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":2,
+                           "concurrency":2
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":1,
+                              "users_per_tenant":1
+                           },
+                           "volumes":{
+                              "size":1
+                           }
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               "name":"Create Nested Snapshot & Attach Volume",
+               "description":"You Can Create Nested Snapshot and Attach Volume",
+               "inputs":[
+                  "times"
+               ],
+               "task":{
+                  "CinderVolumes.create_nested_snapshots_and_attach_volume":[
+                     {
+                        "args":{
+                           "size":{
+                              "min":1,
+                              "max":5
+                           },
+                           "nested_level":{
+                              "min":5,
+                              "max":10
+                           }
+                        },
+                        "runner":{
+                           "type":"constant",
+                           "times":1,
+                           "concurrency":1
+                        },
+                        "context":{
+                           "users":{
+                              "tenants":2,
+                              "users_per_tenant":1
+                           },
+                           "servers":{
+                              "image":{
+                                 "name":"^cirros.*uec$"
+                              },
+                              "flavor":{
+                                 "name":"{{flavor_name}}"
+                              },
+                              "servers_per_tenant":2
+                           }
+                        }
+                     }
+                  ]
+               }
             }
          ]
       },
+                  
       {
          "component":"Quotas",
          "description":"Something about Quotas Tests",

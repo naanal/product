@@ -1,58 +1,104 @@
-<html>
-<head>
 <style type="text/css">
   .parent{
     padding: 0 5% 0 0;
   }
 </style>
-</head>
+
 <div class="parent" ng-controller="RallyTestInputController as ctrl">
 
-<div class="box box-primary collapsed-box" ng-repeat = "task in model.initializeScenario.selections">
-  <div class="box-header with-border">
-    <h3 class="box-title">{$task.name$}</h3>
-    <div class="box-tools pull-right">
-      <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
-    </div><!-- /.box-tools -->
-  </div><!-- /.box-header -->
-  <div class="box-body">
 
-    <div class="form-group col-xs-12 col-sm-6" ng-repeat="input in task.inputs">
+    <!-- Toggle Selections -->
+
+    <div class="form-group">
+
+    <label class="radio-inline"><input type="radio" name="optradio" ng-model="input_type" value="common"  ng-change='ctrl.gatherInputs(model.initializeScenario.selections)' >Assign inputs commonly to all tasks</label>
+    <label class="radio-inline"><input type="radio" name="optradio" ng-model="input_type" value="individual">Assign inputs individually to each tasks</label>
+
+    </div>
+
+    
+    <!-- Common Input Selections -->
+
+    <div class="form-group col-xs-12 col-sm-6" ng-if="input_type == 'common' " ng-repeat="input in common_inputs">
 
         <label class="control-label">Select {$input$}</label>
     
          <select class="form-control" ng-if="input == 'image' "
                ng-model="selectedImage" ng-options="image.name for image in model.images"
-               ng-change="ctrl.insertImage(selectedImage.name,task.task)"
+               ng-change="ctrl.insertCommon('image',selectedImage.name)"
                 >
          </select>
          <select class="form-control" ng-if="input == 'flavor' "
                ng-model="selectedFlavor" ng-options="flavor.name for flavor in model.flavors"
-                ng-change="ctrl.insertFlavor(selectedFlavor.name,task.task)"
+                ng-change="ctrl.insertCommon('flavor',selectedFlavor.name)"
                 >
          </select>
-         <select class="form-control" ng-if="input == 'volume_args' "
-               ng-model="selectedVolumesize" ng-options="volume_args for volume_args in model.volume_args"
-                ng-change="ctrl.insertVolumesize(selectedVolumesize,task.task)"
+         <select class="form-control" ng-if="input == 'volume_args' " ng-init="countVolume = 2" ng-model="countVolume" ng-options="count as count for count in [1,2,3,4,5,6,7,8,9,10]"
+                ng-change="ctrl.insertCommon('volume_args',countVolume)"
                 >
          </select>
          <select class="form-control" ng-if="input == 'fixed_network' "
                ng-model="selectedFixednetwork" ng-options="fixed_network.name for fixed_network in model.fixed_network"
-                ng-change="ctrl.insertFixednetwork(selectedFixednetwork,task.task)"
+                ng-change="ctrl.insertCommon('fixed_network',selectedFixednetwork)"
                 >
          </select>
       
          <select class="form-control" ng-if="input == 'times' " ng-init="no_time = 2"
                ng-model="no_time" ng-options="option as option for option in [1,2,3,4,5,6,7,8,9,10]"
-                ng-change="ctrl.insertNo_Times(no_time,task.task)"
+                ng-change="ctrl.insertCommon('times',no_time)"
                 >
          </select>
 
      </div>
- 
 
-  </div><!-- /.box-body -->
+    
+    <!-- Individual Input Selections -->
+
+    <div class="box box-primary collapsed-box" ng-if="input_type == 'individual' " ng-repeat = "task in model.initializeScenario.selections">
+      <div class="box-header with-border">
+        <h3 class="box-title">{$task.name$}</h3>
+        <div class="box-tools pull-right">
+          <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+        </div><!-- /.box-tools -->
+      </div><!-- /.box-header -->
+
+      <div class="box-body" >
+
+        <div class="form-group col-xs-12 col-sm-6" ng-repeat="input in task.inputs">
+
+            <label class="control-label">Select {$input$}</label>
+        
+             <select class="form-control" ng-if="input == 'image' "
+                   ng-model="selectedImage" ng-options="image.name for image in model.images"
+                   ng-change="ctrl.insertImage(selectedImage.name,task.task)"
+                    >
+             </select>
+             <select class="form-control" ng-if="input == 'flavor' "
+                   ng-model="selectedFlavor" ng-options="flavor.name for flavor in model.flavors"
+                    ng-change="ctrl.insertFlavor(selectedFlavor.name,task.task)"
+                    >
+             </select>
+             <select class="form-control" ng-if="input == 'volume_args' " ng-init="countVolume = 2" ng-model="countVolume" ng-options="count as count for count in [1,2,3,4,5,6,7,8,9,10]"
+                    ng-change="ctrl.insertVolumesize(countVolume,task.task)"
+                    >
+             </select>
+             <select class="form-control" ng-if="input == 'fixed_network' "
+                   ng-model="selectedFixednetwork" ng-options="fixed_network.name for fixed_network in model.fixed_network"
+                    ng-change="ctrl.insertFixednetwork(selectedFixednetwork,task.task)"
+                    >
+             </select>
+          
+             <select class="form-control" ng-if="input == 'times' " ng-init="no_time = 2"
+                   ng-model="no_time" ng-options="option as option for option in [1,2,3,4,5,6,7,8,9,10]"
+                    ng-change="ctrl.insertNo_Times(no_time,task.task)"
+                    >
+             </select>
+
+         </div>
+     
+
+      </div><!-- /.box-body -->
+
+    </div>
 
 </div>
-</div>
-</html>
