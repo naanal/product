@@ -415,3 +415,15 @@ if DEBUG:
     logging.basicConfig(level=logging.DEBUG)
 
 CSRF_COOKIE_AGE = None
+
+# Belows are LDAP Credentials
+
+LDAP_SERVER = "172.30.1.197"
+
+LDAP_SERVER_PORT = 636
+
+LDAP_SSL = True
+
+LDAP_ADMIN_USERNAME = "Administrator@naanal.local"
+
+LDAP_ADMIN_PASSWORD = "p@ssw0rd1"
