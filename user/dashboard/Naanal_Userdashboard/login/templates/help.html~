@@ -77,7 +77,7 @@
         <li><a href="/index/?username={{ username }}" value="{{username}}"><i class="fa fa-laptop text-red"></i> <span>My Machine</span></a></li>
 		<li><a href="/change/?username={{ username }}" value="{{username}}"><i class="fa fa-unlock text-green"></i> <span>Change Password</span></a></li>
         <li  class="active"><a href="/help/?username={{ username }}" value="{{username}}"><i class="fa fa-question-circle text-yellow"></i> <span>Help</span></a></li>
-        <li><a href="/login"><i class="fa fa-sign-out text-aqua"></i> <span>Logout</span></a></li>
+        <li><a href="/logout/?username={{ username }}" value="{{username}}"><i class="fa fa-sign-out text-aqua"></i> <span>Logout</span></a></li>
       </ul>
     </section>
     <!-- /.sidebar -->
