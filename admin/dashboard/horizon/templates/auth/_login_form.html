@@ -5,11 +5,11 @@
       method="POST"
       action="{% url 'login' %}"
       autocomplete="off"
-      ng-controller="hzLoginController">
+      ng-controller="hzLoginController as ct" ng-init="ct.init('{{KEYSTONE_URL}}')" >
   {% csrf_token %}
 {% endblock %}
 
-  <div class="panel panel-default">
+  <div class="panel panel-default" ng-if="keystone == true">
 
     <div class="panel-heading">
     {% block login_header %}
@@ -73,7 +73,6 @@
       {% endblock %}
     </div>
   </div>
-
 {% block post_login%}
 </form>
 {% endblock %}

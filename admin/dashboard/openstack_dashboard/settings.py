@@ -53,6 +53,7 @@ STATIC_URL = None
 
 ROOT_URLCONF = 'openstack_dashboard.urls'
 
+
 HORIZON_CONFIG = {
     'user_home': 'openstack_dashboard.views.get_user_home',
     'ajax_queue_limit': 10,
@@ -109,7 +110,6 @@ MIDDLEWARE_CLASSES = (
     'horizon.middleware.HorizonMiddleware',
     'horizon.themes.ThemeMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -156,6 +156,7 @@ COMPRESS_CSS_HASHING_METHOD = 'hash'
 COMPRESS_PARSER = 'compressor.parser.HtmlParser'
 
 INSTALLED_APPS = [
+
     'openstack_dashboard',
     'django.contrib.contenttypes',
     'django.contrib.auth',
@@ -168,6 +169,7 @@ INSTALLED_APPS = [
     'compressor',
     'horizon',
     'openstack_auth',
+    'notfound',
 ]
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
