@@ -19,14 +19,26 @@ from django.views import generic
 from openstack_dashboard.api.rest import urls
 from openstack_dashboard.api.rest import utils as rest_utils
 from django.conf import settings
-from ldap3 import Connection, Server, ALL, MODIFY_REPLACE
+from ldap3 import Server, Connection, SUBTREE, ALL, ALL_ATTRIBUTES, \
+    ALL_OPERATIONAL_ATTRIBUTES, MODIFY_REPLACE, MODIFY_ADD
 
 
 @urls.register
 class Users(generic.View):
-    """API for AD User Creation, Disable.
+    """API for AD User Lists, Creation, Disable.
     """
     url_regex = r'ldap/users/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """ Get a list of AD Users
+        """
+
+        conn = bind()
+        if conn.bind():
+            return retriveUsers(conn)
+        else:
+            return "Authendication Failed"
 
     @rest_utils.ajax(data_required=True)
     def post(self, request):
@@ -123,6 +135,92 @@ class Users(generic.View):
             return "Authentication Failed"
 
 
+@urls.register
+class Computers(generic.View):
+    """ API for Computer Lists
+    """
+    url_regex = r'ldap/computers/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        conn = bind()
+        if conn.bind():
+            return retriveComputers(conn)
+        else:
+            return "Authendication Failed"
+
+
+@urls.register
+class Computers(generic.View):
+    """ API for Available Computer Lists
+    """
+    url_regex = r'ldap/available_computers/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        conn = bind()
+        if conn.bind():
+            return retriveAvailableComputers(conn)
+        else:
+            return "Authendication Failed"
+
+
+@urls.register
+class Map(generic.View):
+    """ API for User - VM Mapping
+    """
+    url_regex = r'ldap/map/$'
+
+    @rest_utils.ajax(data_required=True)
+    def post(self, request):
+        """Map User-Vm in Active Directory Directive Services.
+
+        Map User-Vm using the parameters supplied in the POST
+        application/json object. The parameters are:
+
+        :param map : array of users, vms
+
+         Each map array must have
+        :user_dn: the distiniguished name of user
+        :computer: the name given to the computer
+
+        This returns status of user creation.
+        """
+        try:
+            args = (
+                request,
+                request.DATA['map'],
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter'
+                                            "'%s'" % e.args[0])
+        result = []
+        conn = bind()
+        if conn.bind():
+            for data in request.DATA['map']:
+
+                group_response = map_response = ''
+                user_dn = data['user_dn']
+                computer = data['computer']
+
+                # 1. Add User to 'allowed' group
+                group_response = addToGroup(user_dn, conn)
+
+                # 2. If user added to 'allowed' group successfully then map the
+                # user to vm
+                if group_response == 'success':
+                    map_response = mapUserToVm(user_dn, computer, conn)
+
+                result.append({"user": user_dn, "action": "maping",
+                               "addToGroup": group_response,
+                               "mapToVm": map_response})
+                unbind(conn)
+            return result
+
+        else:
+            return "Authendication Failed"
+
+
 def bind():
     s = Server(settings.LDAP_SERVER, port=settings.LDAP_SERVER_PORT,
                use_ssl=settings.LDAP_SSL, get_info=ALL)
@@ -162,4 +260,93 @@ def changePassword(dn, password, conn):
     unicode_pass = unicode('"' + password + '"', 'iso-8859-1')
     encoded_pass = unicode_pass.encode('utf-16-le')
     conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
+    return conn.result['description']
+
+
+def addToGroup(user_dn, conn):
+    group_dn = settings.ENABLE_USERS_GROUP_DN
+    conn.modify(group_dn, {'member': [(MODIFY_ADD, user_dn)]})
+    return conn.result['description']
+
+
+def retriveUsers(conn):
+    users = []
+    conn.search(search_base='dc=naanal,dc=local',
+                search_filter='(&(objectCategory=person)(objectClass=user))',
+                search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
+                                                  ALL_OPERATIONAL_ATTRIBUTES])
+    for entry in conn.response:
+        if 'attributes' in entry:
+            if 'userWorkstations' in entry['attributes']:
+                assigned_computer = entry['attributes']['userWorkstations']
+            else:
+                assigned_computer = None
+            users.append({
+                "dn": entry['dn'],
+                "username": entry['attributes']['cn'],
+                "computer": assigned_computer,
+                "status": entry['attributes']['userAccountControl']
+            })
+    return users
+
+
+def assignedComputers(conn):
+    assigned_computers = []
+    conn.search(search_base='dc=naanal,dc=local',
+                search_filter='(&(objectCategory=person)(objectClass=user))',
+                search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
+                                                  ALL_OPERATIONAL_ATTRIBUTES])
+    for entry in conn.response:
+        if 'attributes' in entry:
+            if 'userWorkstations' in entry['attributes']:
+                assigned_computers.append(
+                    entry['attributes']['userWorkstations'])
+    return assigned_computers
+
+
+def retriveComputers(conn):
+    computers = []
+    assignedCom = assignedComputers(conn)
+    conn.search(search_base='cn=computers,dc=naanal,dc=local',
+                search_filter='(&(objectCategory=computer)(objectClass=computer))',
+                search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
+                                                  ALL_OPERATIONAL_ATTRIBUTES])
+
+    for entry in conn.response:
+        if 'attributes' in entry:
+            if entry['attributes']['cn'] in assignedCom:
+                status = "not available"
+            else:
+                status = "available"
+
+            computers.append({
+                "dn": entry['dn'],
+                "computername": entry['attributes']['cn'],
+                "status": status
+            })
+    unbind(conn)
+    return computers
+
+
+def retriveAvailableComputers(conn):
+    available_computers = []
+    assignedCom = assignedComputers(conn)
+    conn.search(search_base='cn=computers,dc=naanal,dc=local',
+                search_filter='(&(objectCategory=computer)(objectClass=computer))',
+                search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
+                                                  ALL_OPERATIONAL_ATTRIBUTES])
+
+    for entry in conn.response:
+        if 'attributes' in entry:
+            if entry['attributes']['cn'] not in assignedCom:
+                available_computers.append({
+                    "dn": entry['dn'],
+                    "computername": entry['attributes']['cn']
+                })
+    unbind(conn)
+    return available_computers
+
+
+def mapUserToVm(user_dn, computer, conn):
+    conn.modify(user_dn, {'userWorkstations': [(MODIFY_REPLACE, computer)]})
     return conn.result['description']

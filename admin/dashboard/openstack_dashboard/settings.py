@@ -376,7 +376,7 @@ if not SECRET_KEY:
 
     from horizon.utils import secret_key
     SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join(LOCAL_PATH,
-                                                       '.secret_key_store'))
+                                                                    '.secret_key_store'))
 
 # Load the pluggable dashboard settings
 import openstack_dashboard.enabled
@@ -429,3 +429,5 @@ LDAP_SSL = True
 LDAP_ADMIN_USERNAME = "Administrator@naanal.local"
 
 LDAP_ADMIN_PASSWORD = "p@ssw0rd1"
+
+ENABLE_USERS_GROUP_DN = "cn=allow, ou=groups, ou=police, dc=naanal, dc=local"
