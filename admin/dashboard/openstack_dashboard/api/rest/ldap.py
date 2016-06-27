@@ -69,8 +69,6 @@ class Users(generic.View):
         conn = bind()
         if conn.bind():
             for user in request.DATA['users']:
-
-                creation_response = password_response = enable_response = ''
                 username = user['username']
                 password = user['password'].encode('ascii', 'ignore')
                 ou = user['ou']
@@ -79,21 +77,23 @@ class Users(generic.View):
                 dn = getdn(username, ou)
 
                 # 1. Create a New User
-                creation_response = createNewUser(dn, username, dns, conn)
+                response = createNewUser(dn, username, dns, conn)
 
                 # 2. If user Creation success then modify the password
-                if creation_response == 'success':
-                    password_response = changePassword(dn, password, conn)
+                if response == 'success':
+                    response = changePassword(dn, password, conn)
 
                     # 3. If Password Modification success then enable user
                     # account
-                    if password_response == 'success':
-                        enable_response = enableUser(dn, conn)
+                    if response == 'success':
+                        response = enableUser(dn, conn)
+                    else:
+                        response = response + "in modifying password"
+                else:
+                    response = response + " in the users"
 
                 result.append({"user": username, "action": "creation",
-                               "addNewUser": creation_response,
-                               "addPassword": password_response,
-                               "enableAccount": enable_response})
+                               "status": response})
                 unbind(conn)
             return result
 
@@ -151,7 +151,7 @@ class Computers(generic.View):
 
 
 @urls.register
-class Computers(generic.View):
+class AvailableComputers(generic.View):
     """ API for Available Computer Lists
     """
     url_regex = r'ldap/available_computers/$'
@@ -190,35 +190,52 @@ class Map(generic.View):
             args = (
                 request,
                 request.DATA['map'],
+                request.DATA['autoMap']
             )
         except KeyError as e:
             raise rest_utils.AjaxError(400, 'missing required parameter'
                                             "'%s'" % e.args[0])
         result = []
+        map_data = request.DATA['map']
+        isAuto = request.DATA['autoMap']
         conn = bind()
-        if conn.bind():
-            for data in request.DATA['map']:
 
-                group_response = map_response = ''
+        if(isAuto == 'True'):
+            users = map_data
+            map_data = []
+            available_vms = retriveAvailableComputers(conn)
+            user_len = len(users)
+            vm_len = len(available_vms)
+            if (user_len > vm_len):
+                return {"message": "You have selected %s users. But %s computers only available" % (user_len, vm_len)}
+            else:
+                sliced_vms = available_vms[:user_len]
+                for user_dn, vm in zip(users, sliced_vms):
+                    map_data.append(
+                        {"user_dn": user_dn, "computer": vm['computername']})
+
+        if conn.bind():
+            for data in map_data:
                 user_dn = data['user_dn']
                 computer = data['computer']
-
                 # 1. Add User to 'allowed' group
-                group_response = addToGroup(user_dn, conn)
+                response = addToGroup(user_dn, conn)
 
                 # 2. If user added to 'allowed' group successfully then map the
                 # user to vm
-                if group_response == 'success':
-                    map_response = mapUserToVm(user_dn, computer, conn)
+                if response == 'success':
+                    response = mapUserToVm(user_dn, computer, conn)
+                else:
+                    response = response + " in the group"
 
-                result.append({"user": user_dn, "action": "maping",
-                               "addToGroup": group_response,
-                               "mapToVm": map_response})
-                unbind(conn)
+                result.append({"user": user_dn, "assigned_computer": computer,
+                               "action": "maping",
+                               "status": response})
+            unbind(conn)
             return result
 
         else:
-            return "Authendication Failed"
+            return "Authentication Failed"
 
 
 def bind():
@@ -343,7 +360,6 @@ def retriveAvailableComputers(conn):
                     "dn": entry['dn'],
                     "computername": entry['attributes']['cn']
                 })
-    unbind(conn)
     return available_computers
 
 
