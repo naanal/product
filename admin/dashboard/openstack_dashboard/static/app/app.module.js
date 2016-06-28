@@ -28,7 +28,8 @@
     'ngSanitize',
     'smart-table',
     'ui.bootstrap',
-    'ngMaterial'
+    'ngMaterial',
+    'md.data.table'
   ];
 
   /**
