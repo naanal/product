@@ -94,7 +94,7 @@ class Users(generic.View):
 
                 result.append({"user": username, "action": "creation",
                                "status": response})
-                unbind(conn)
+            unbind(conn)
             return result
 
         else:
@@ -133,6 +133,72 @@ class Users(generic.View):
             return result
         else:
             return "Authentication Failed"
+
+    @rest_utils.ajax()
+    def patch(self, request):
+        try:
+            args = (
+                request,
+                request.DATA['change_pswd'],
+                request.DATA['change_dn']
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter'
+                                            "'%s'" % e.args[0])
+
+        change_password = request.DATA['change_pswd']
+        change_dn = request.DATA['change_dn']
+        if(change_password == "True"):
+
+            try:
+                args = (
+                    request,
+                    request.DATA['user_dn'],
+                    request.DATA['password']
+                )
+            except KeyError as e:
+                raise rest_utils.AjaxError(400, 'missing required parameter'
+                                           "'%s'" % e.args[0])
+            dn = request.DATA['user_dn']
+            password = request.DATA['password']
+            password = str(password)
+            conn = bind()
+            if conn.bind():
+                change_pswdStatus = changePassword(dn, password, conn)
+                unbind(conn)
+                return change_pswdStatus
+            else:
+                return "Authentication Failed"
+
+        if(change_dn == "True"):
+            print "change the distniguesd name of the user method"
+            try:
+                args = (
+                    request,
+                    request.DATA['user_dn'],
+                    request.DATA['new_username'],
+                    request.DATA['email']
+                )
+            except KeyError as e:
+                raise rest_utils.AjaxError(400, 'missing required parameter'
+                                           "'%s'" % e.args[0])
+            user_dn = request.DATA['user_dn']
+            new_username = request.DATA['new_username']
+            E_mail = request.DATA['email']
+            print user_dn, new_username, E_mail
+            conn = bind()
+            if conn.bind():
+                change_userPrincipalNameStatus = change_userPrincipalName(
+                    user_dn, new_username, conn)
+                change_sAMAccountNameStatus = change_sAMAccountName(
+                    user_dn, new_username, conn)
+                change_userEmailStatus = change_userEmail(
+                    user_dn, E_mail, conn)
+                change_dnstatus = change_userDN(user_dn, new_username, conn)
+                unbind(conn)
+                return change_userPrincipalNameStatus, change_sAMAccountNameStatus, change_dnstatus
+            else:
+                return "Authentication Failed"
 
 
 @urls.register
@@ -277,6 +343,7 @@ def changePassword(dn, password, conn):
     unicode_pass = unicode('"' + password + '"', 'iso-8859-1')
     encoded_pass = unicode_pass.encode('utf-16-le')
     conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
+    conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
     return conn.result['description']
 
 
@@ -365,4 +432,34 @@ def retriveAvailableComputers(conn):
 
 def mapUserToVm(user_dn, computer, conn):
     conn.modify(user_dn, {'userWorkstations': [(MODIFY_REPLACE, computer)]})
+    return conn.result['description']
+
+
+def change_userPrincipalName(user_dn, new_username, conn):
+    new_username = new_username + '@naanal.local'
+    conn.modify(user_dn,
+                {'userPrincipalName': [(MODIFY_REPLACE, [new_username])]})
+    print "status of userPrincipal name change:::::" + conn.result['description']
+    return conn.result['description']
+
+
+def change_sAMAccountName(user_dn, new_username, conn):
+    conn.modify(user_dn,
+                {'sAMAccountName': [(MODIFY_REPLACE, [new_username])]
+                 })
+    print "status of change_sAMAccountName::::" + conn.result['description']
+    return conn.result['description']
+
+
+def change_userEmail(user_dn, E_mail, conn):
+    conn.modify(user_dn,
+                {'mail': [(MODIFY_REPLACE, [E_mail])]})
+    print "status of change_userEmail::::" + conn.result['description']
+    return conn.result['description']
+
+
+def change_userDN(user_dn, new_username, conn):
+    new_username = 'cn=' + new_username
+    conn.modify_dn(user_dn, new_username)
+    print "status of change_userDN::::" + conn.result['description']
     return conn.result['description']
