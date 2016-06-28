@@ -202,6 +202,21 @@ class Users(generic.View):
 
 
 @urls.register
+class AvailableUsers(generic.View):
+    """ API for Available(Enabled & Unattached to computer) Users Lists
+    """
+    url_regex = r'ldap/available_users/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        conn = bind()
+        if conn.bind():
+            return retriveAvailableUsers(conn)
+        else:
+            return "Authendication Failed"
+
+
+@urls.register
 class Computers(generic.View):
     """ API for Computer Lists
     """
@@ -372,6 +387,23 @@ def retriveUsers(conn):
                 "status": entry['attributes']['userAccountControl']
             })
     return users
+
+
+def retriveAvailableUsers(conn):
+    available_users = []
+    conn.search(search_base='dc=naanal,dc=local',
+                search_filter='(&(objectCategory=person)(objectClass=user)(userAccountControl=512))',
+                search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
+                                                  ALL_OPERATIONAL_ATTRIBUTES])
+
+    for entry in conn.response:
+        if 'attributes' in entry:
+            if 'userWorkstations' not in entry['attributes']:
+                available_users.append({
+                    "dn": entry['dn'],
+                    "username": entry['attributes']['cn']
+                })
+    return available_users
 
 
 def assignedComputers(conn):
