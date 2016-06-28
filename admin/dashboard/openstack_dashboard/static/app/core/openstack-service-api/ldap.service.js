@@ -20,7 +20,7 @@
     .module('horizon.app.core.openstack-service-api')
     .factory('horizon.app.core.openstack-service-api.ldap', ldapAPI);
 
-  glanceAPI.$inject = [
+  ldapAPI.$inject = [
     'horizon.framework.util.http.service',
     'horizon.framework.widgets.toast.service'
   ];
@@ -86,7 +86,7 @@
      * Domain Name Seriver of AD. Required.
      *
      * @returns {Object} The result of the API call
-     */
+     **/
     function createUsers() {
       return apiService.post('/api/ldap/users/')
         .error(function () {
