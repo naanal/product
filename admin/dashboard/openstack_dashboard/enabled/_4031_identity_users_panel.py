@@ -24,7 +24,7 @@ PANEL_GROUP = 'default'
 PANEL = 'ngusers'
 
 # If set to True, this settings file will not be added to the settings.
-DISABLED = True
+DISABLED = False
 
 # Python panel class of the PANEL to be added.
 ADD_PANEL = 'openstack_dashboard.dashboards.identity.ngusers.panel.NGUsers'

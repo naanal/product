@@ -1,118 +1,77 @@
-<table ng-controller="identityUsersTableController as table"
-  hz-table ng-cloak
-  st-table="table.iusers"
-  st-safe-src="table.users"
-  default-sort="name"
-  default-sort-reverse="false"
-  class="table table-striped table-rsp table-detail">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-  <thead>
-    <!--
-      Table-batch-actions:
-      This is where batch actions like searching, creating, and deleting.
-    -->
-    <tr>
-      <th colspan="100" class="search-header">
-        <hz-search-bar icon-classes="fa-search"></hz-search-bar>
-      </th>
-    </tr>
+<div  ng-cloak="" ng-controller="identityUsersTableController">
+  <md-card>
+  
+    <md-card-content>
+      <md-tabs md-dynamic-height="" md-border-bottom="">
+        <md-tab label="Users">
+          <md-content class="md-padding" >
+    <section layout="row" layout-xs="column">
+        <section flex="" layout-align="center center">
+            <md-input-container ng-show="!selected.length" md-no-float="" class="md-block left">
+                <md-icon>
+                    <i class="material-icons">search</i>
+                </md-icon>
+                <input type="text" ng-model="searchquery" placeholder="Search By id, name..."/>
+            </md-input-container>
+            <md-content ng-show="selected.length">
+                <div>{$selected.length$} {$selected.length &gt; 1 ? 'items' : 'item'$} selected</div>
+            </md-content>
+        </section>
+        <section flex="" layout-align="center center">
+            <md-button class="md-fab md-mini md-primary" aria-label="add new" ng-click="refresh()">
+                <md-icon>refresh</md-icon>
+                <md-tooltip>Refresh Data</md-tooltip>
+            </md-button>
+            <md-button class="md-fab md-mini md-primary" aria-label="add new" ui-sref="addEditClinic({passModelData : null, postMode:'addnew'})" ng-show="!selected.length">
+                <md-icon>add</md-icon>
+                <md-tooltip>Add New</md-tooltip>
+            </md-button>
+            <md-button class="md-fab md-mini md-primary" aria-label="edit" ng-show="selected.length == 1" ui-sref="addEditClinic({passModelData : selected[0], postMode: 'edit' })">
+                <md-icon>edit</md-icon>
+                <md-tooltip>Edit</md-tooltip>
+            </md-button>
+            <md-button class="md-fab md-mini md-primary" aria-label="delete" ng-show="selected.length" ng-click="deleteSelected($event, selected)">
+                <md-icon>delete</md-icon>
+                <md-tooltip>Delete</md-tooltip>
+            </md-button>
+            <md-button class="md-fab md-mini md-primary" aria-label="view" ng-show="selected.length == 1" ui-sref="viewClinic({passModelData : selected[0]})">
+                <md-icon>insert_drive_file</md-icon>
+                <md-tooltip>View</md-tooltip>
+            </md-button>
+        </section>
+    </section>
+    <md-table-container>
+        <table md-table md-row-select multiple ng-model="selected">
+            <thead md-head md-order="query.order">
+                <tr md-row>
+                    <th md-column>User Name</th>
+                    <th md-column>Email</th>
+                    <th md-column>Computer</th>
+                    <th md-column>Action</th>
+                </tr>
+            </thead>
+            <tbody md-body>
+                <tr md-row md-select="user" md-select-id="name" md-auto-select 
+                ng-repeat="user in ldapusers | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+                    <td md-cell>{$user.username$}</td>
+                    <td md-cell>{$user.mail$}</td>
+                    <td md-cell>
+                    <span ng-if="user.computer != null">{$user.computer$}</span>
+                     <span ng-if="user.computer == null">----</span>
+                    </td>
+                    <td md-cell></td>
+                </tr>
+            </tbody>
+        </table>
+    </md-table-container>
 
-    <!--
-      Table-column-headers:
-      This is where we declaratively define the table column headers.
-      Include select-col if you want to select all.
-      Include expander if you want to inline details.
-      Include action-col if you want to perform actions.
-    -->
-    <tr>
-      <th class="select-col">
-        <div class="themable-checkbox">
-          <input id="users-select-col" type="checkbox" hz-select-all="table.iusers">
-          <label for="users-select-col"></label>
-        </div>
-      </th>
-      <th class="expander"></th>
-      <th class="rsp-p1" st-sort="name" st-sort-default="name" translate>User Name</th>
-      <th class="rsp-p2" st-sort="email" translate>Email</th>
-      <th class="rsp-p1" st-sort="tenantId||default_project_id" translate>User ID</th>
-      <th class="rsp-p2 text-center" st-sort="enabled" translate>Enabled</th>
-    </tr>
-  </thead>
+    <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page" md-total="{$ldapuserscount$}" md-page-select="true" md-boundary-links="true"></md-table-pagination>
 
-  <tbody>
-    <!--
-      Table-rows:
-      This is where we declaratively define the table columns.
-      Include select-col if you want to select all.
-      Include expander if you want to inline details.
-      Include action-col if you want to perform actions.
-      rsp-p1 rsp-p2 are responsive priority as user resizes window.
-    -->
-    <tr ng-repeat-start="user in table.iusers track by user.id"
-        ng-class="{'st-selected': checked[user.id]}">
-
-      <td class="select-col">
-        <div class="themable-checkbox">
-          <input id="user-{$ user.id $}" type="checkbox" ng-model="tCtrl.selections[user.id].checked" hz-select="user">
-          <label for="user-{$ user.id $}"></label>
-        </div>
-      </td>
-      <td class="expander">
-        <span class="fa fa-chevron-right" hz-expand-detail duration="200"></span>
-      </td>
-      <td class="rsp-p1">{$ user.name $}</td>
-      <td class="rsp-p2"><a ng-href="mailto:{$user.email$}">{$ user.email $}</a></td>
-      <td class="rsp-p1">{$ user.id $}</td>
-      <td class="rsp-p2 text-center">
-        <span ng-show="user.enabled" class="fa fa-check text-success"></span>
-        <span ng-hide="user.enabled" class="fa fa-times text-danger"></span>
-      </td>
-    </tr>
-
-    <!--
-      Detail-row:
-      Contains detailed information on this item.
-      Can be toggled using the chevron button.
-      Ensure colspan is greater or equal to number of column-headers.
-    -->
-    <tr ng-repeat-end class="detail-row">
-      <td class="detail" colspan="100">
-        <!--
-          The responsive columns that disappear typically should reappear here
-          with the same responsive priority that they disappear.
-          E.g. table header with rsp-p2 should be here with rsp-alt-p2
-          The layout should minimize vertical space to reduce scrolling.
-        -->
-        <div class="row">
-          <dl ng-if="user.domain_id" class="col-sm-2">
-            <dt translate>Domain ID</dt>
-            <dd>{$ user.domain_id $}</dd>
-          </dl>
-          <dl class="col-sm-2">
-            <dt translate>Project ID</dt>
-            <dd>{$ user.tenantId || user.default_project_id | noValue $}</dd>
-          </dl>
-
-          <span class="rsp-alt-p2">
-            <dl class="col-sm-2">
-              <dt translate>Email</dt>
-              <dd>{$ user.email | noValue $}</dd>
-            </dl>
-            <dl class="col-sm-2">
-              <dt translate>Enabled</dt>
-              <dd>{$ user.enabled | yesno $}</dd>
-            </dl>
-          </span>
-        </div>
-      </td>
-    </tr>
-    <tr hz-no-items items="table.iusers"></tr>
-  </tbody>
-
-  <!--
-    Table-footer:
-    This is where we display number of items and pagination controls.
-  -->
-  <tfoot hz-table-footer items="table.iusers"></tfoot>
-
-</table>
+</md-content>
+        </md-tab>
+      </md-tabs>
+    </md-card-content>
+  </md-card>
+</div>

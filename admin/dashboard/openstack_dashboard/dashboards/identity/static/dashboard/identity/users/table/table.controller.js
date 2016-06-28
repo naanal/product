@@ -33,45 +33,24 @@
     'horizon.framework.widgets.toast.service',
     'horizon.framework.util.i18n.gettext',
     'horizon.app.core.openstack-service-api.policy',
-    'horizon.app.core.openstack-service-api.keystone'
+    'horizon.app.core.openstack-service-api.ldap',
+    '$scope'
   ];
 
-  function identityUsersTableController(toast, gettext, policy, keystone) {
+  function identityUsersTableController(toast, gettext, policy, ldapAPI, $scope) {
+        $scope.selected = [];
+        $scope.query = {
+          order: 'username',
+          limit: 5,
+          page: 1
+        };
 
-    var ctrl = this;
-    ctrl.users = [];
-    ctrl.iusers = [];
-    ctrl.userSession = {};
-    ctrl.checked = {};
-
-    init();
-
-    ////////////////////////////////
-
-    function init() {
-      // if user has permission
-      // fetch table data and populate it
-      var rules = [['identity', 'identity:list_users']];
-      policy.ifAllowed({ rules: rules }).then(policySuccess, policyFailed);
-    }
-
-    function policySuccess() {
-      keystone.getUsers().success(getUsersSuccess);
-      keystone.getCurrentUserSession().success(getSessionSuccess);
-    }
-
-    function policyFailed() {
-      var msg = gettext('Insufficient privilege level to view user information.');
-      toast.add('warning', msg);
-    }
-
-    function getUsersSuccess(response) {
-      ctrl.users = response.items;
-    }
-
-    function getSessionSuccess(response) {
-      ctrl.userSession = response;
-    }
+        ldapAPI.getUsers()
+          .then(function(res){
+              $scope.ldapusers = res.data;
+              console.log($scope.ldapusers);
+              $scope.ldapuserscount = $scope.ldapusers.length;
+          });
   }
 
 })();
