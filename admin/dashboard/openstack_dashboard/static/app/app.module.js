@@ -29,6 +29,7 @@
     'smart-table',
     'ui.bootstrap',
     'ngMaterial',
+    'ngMessages',
     'md.data.table'
   ];
 
