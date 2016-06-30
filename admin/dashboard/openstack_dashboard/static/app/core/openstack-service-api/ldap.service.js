@@ -36,6 +36,7 @@
   function ldapAPI(apiService, toastService) {
     var service = {
       getUsers: getUsers,
+      getAvailableUsers: getAvailableUsers,
       createUsers: createUsers,
       disableUsers: disableUsers,
       getComputers: getComputers,
@@ -66,6 +67,21 @@
     }
 
     /**
+     * @name getAvailableUsers
+     * @description
+     * Get all available Users of AD
+     *
+     * @param none
+     *
+     * @returns {Object} The result of the API call
+     */
+    function getAvailableUsers() {
+      return apiService.get('/api/ldap/available_users/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve Available Users.'));
+        });
+    }
+    /**
      * @name createUsers
      * @description
      * Create a new users. This returns the new user object on success.
@@ -87,8 +103,8 @@
      *
      * @returns {Object} The result of the API call
      **/
-    function createUsers() {
-      return apiService.post('/api/ldap/users/')
+    function createUsers(data) {
+      return apiService.post('/api/ldap/users/',data)
         .error(function () {
           toastService.add('error', gettext('Unable to create the User.'));
         });
@@ -173,8 +189,8 @@
      *
      * @returns {Object} The result of the API call
      */
-    function mapUserToVm() {
-      return apiService.get('/api/ldap/map/')
+    function mapUserToVm(data) {
+      return apiService.post('/api/ldap/map/',data)
         .error(function () {
           toastService.add('error', gettext('Unable to map user to computer.'));
         });

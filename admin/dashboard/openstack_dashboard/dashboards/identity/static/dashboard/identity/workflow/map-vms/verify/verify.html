@@ -1,0 +1,24 @@
+<div ng-controller="MapVmsVerifyController as ctrl">
+    <p>Verify your Selections</p>
+    <div class="well" >
+        <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>User Name</th>
+          <th>User Dn</th>
+        <th>Computer</th>
+          <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="user in model.newMappingSpec.map">
+          <td>{$user.username$}</td>
+          <td>{$user.user_dn$}</td>
+          <td>{$user.computer$}<span ng-if="!user.computer">auto assign</span></td>
+          <td><md-icon class="material-icon" ng-click="ctrl.onTheAirDelete($index)">delete</md-icon></td>
+      </tr>
+    </tbody>
+  </table>
+
+    </div>
+</div>

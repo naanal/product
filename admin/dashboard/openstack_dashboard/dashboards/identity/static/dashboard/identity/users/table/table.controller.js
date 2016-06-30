@@ -32,25 +32,33 @@
   identityUsersTableController.$inject = [
     'horizon.framework.widgets.toast.service',
     'horizon.framework.util.i18n.gettext',
-    'horizon.app.core.openstack-service-api.policy',
     'horizon.app.core.openstack-service-api.ldap',
-    '$scope'
+      'horizon.framework.widgets.modal-wait-spinner.service',
+    '$scope',
+    '$rootScope'
   ];
 
-  function identityUsersTableController(toast, gettext, policy, ldapAPI, $scope) {
-        $scope.selected = [];
+  function identityUsersTableController(toast, gettext, ldapAPI,Spinner, $scope, $rootScope) {
+
+      $scope.selected = [];
         $scope.query = {
           order: 'username',
           limit: 5,
           page: 1
         };
 
+      $rootScope.retieveLdapUsers = function(){
+           Spinner.showModalSpinner(gettext("Retrieving Users...."));
         ldapAPI.getUsers()
           .then(function(res){
+              Spinner.hideModalSpinner();
               $scope.ldapusers = res.data;
-              console.log($scope.ldapusers);
               $scope.ldapuserscount = $scope.ldapusers.length;
+          },function(error){
+              Spinner.hideModalSpinner();
           });
+      }
+      $rootScope.retieveLdapUsers();
   }
 
 })();

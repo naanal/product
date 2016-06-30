@@ -1,0 +1,45 @@
+<style>
+    ._md-select-menu-container
+    {
+        z-index : 9000;
+    }
+    md-select {
+        margin: 0;
+    }
+</style>
+<div ng-controller="MapVmsComputersController as ctrl">
+    <md-radio-group ng-model="model.newMappingSpec.autoMap" ng-change="ctrl.changedMode()" required layout-padding="" layout="row" layout-xs="column" layout-align="center center">
+      <md-radio-button value="True" class="md-primary">Auto Assign Computers</md-radio-button>
+      <md-radio-button value="False" class="md-primary"> Manually Choose Computers </md-radio-button>
+    </md-radio-group>
+    <p class="md-body-2" ng-if="model.newMappingSpec.autoMap == 'True'">Available Computers are randomly assigned to selected users</p>
+    <div class="row">
+        <div class="col-md-10">
+            <div class="well" ng-if="model.newMappingSpec.autoMap == 'False'">
+            <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Computer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="user in model.newMappingSpec.map">
+                <td>{$user.username$}</td>
+                <td>
+                    <md-select placeholder="Pick a Computer"
+                               required
+                               ng-model="user.computer">
+                        <md-option ng-value="computer.computername" ng-repeat="computer in ctrl.availableCom">
+                        {$computer.computername$}
+                        </md-option>
+                    </md-select>
+                </td>
+              </tr>
+            </tbody>
+      </table>
+
+        </div>
+        </div>
+    </div>
+</div>

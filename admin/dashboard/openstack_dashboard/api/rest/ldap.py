@@ -291,9 +291,9 @@ class Map(generic.View):
                 return {"message": "You have selected %s users. But %s computers only available" % (user_len, vm_len)}
             else:
                 sliced_vms = available_vms[:user_len]
-                for user_dn, vm in zip(users, sliced_vms):
+                for user, vm in zip(users, sliced_vms):
                     map_data.append(
-                        {"user_dn": user_dn, "computer": vm['computername']})
+                        {"user_dn": user['user_dn'], "computer": vm['computername']})
 
         if conn.bind():
             for data in map_data:
@@ -304,7 +304,7 @@ class Map(generic.View):
 
                 # 2. If user added to 'allowed' group successfully then map the
                 # user to vm
-                if response == 'success':
+                if response == 'success' or response == 'entryAlreadyExists':
                     response = mapUserToVm(user_dn, computer, conn)
                 else:
                     response = response + " in the group"
@@ -392,7 +392,7 @@ def retriveUsers(conn):
 def retriveAvailableUsers(conn):
     available_users = []
     conn.search(search_base='dc=naanal,dc=local',
-                search_filter='(&(objectCategory=person)(objectClass=user)(userAccountControl=512))',
+                search_filter='(&(objectCategory=person)(objectClass=user)(|(userAccountControl=512)(userAccountControl=66048)))',
                 search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
                                                   ALL_OPERATIONAL_ATTRIBUTES])
 
@@ -400,7 +400,7 @@ def retriveAvailableUsers(conn):
         if 'attributes' in entry:
             if 'userWorkstations' not in entry['attributes']:
                 available_users.append({
-                    "dn": entry['dn'],
+                    "user_dn": entry['dn'],
                     "username": entry['attributes']['cn']
                 })
     return available_users
