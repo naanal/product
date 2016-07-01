@@ -50,10 +50,13 @@ def loginpage(request):
             print status           
             if status =="ACTIVE":
                console=vnc_console(instance_name)
-               print console    
+               button_color = "btn btn-danger btn-xs"
+               print console
+            else:
+                button_color = "btn btn-success btn-xs "
             rdp_file=download_RDP(username,instance_id,instance_name)
             print "\n rdp_file:::"+rdp_file
-            return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'fixedip':fixed,'floatingip':floating_ip,'RDP_file':rdp_file})
+            return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'fixedip':fixed,'floatingip':floating_ip,'RDP_file':rdp_file,'button_color':button_color})
         except ldap3.core.exceptions.LDAPBindError:           
             state= 'Wrong username or password'
         except ldap3.core.exceptions.LDAPSocketOpenError:
@@ -87,9 +90,13 @@ def index_page(request):
            fixed = get_instance_ipaddress(instance_name)
            floating_ip = get_instance_floatingip(instance_name)
            rdp_file = download_RDP(username, instance_id, instance_name)
-           if status =="active":
-              console=vnc_console(instance_name)
-           return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'fixedip':fixed,'floatingip':floating_ip,'RDP_file':rdp_file})
+           if status == "ACTIVE":
+               console = vnc_console(instance_name)
+               button_color = "btn btn-danger btn-xs"
+               print console
+           else:
+               button_color = "btn btn-success btn-xs "
+           return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'fixedip':fixed,'floatingip':floating_ip,'RDP_file':rdp_file,'button_color':button_color})
     
     return render_to_response('login.html')
 
@@ -184,6 +191,7 @@ def instance_stop(request):
                      if test == 5 or time.time() > timeout:
                         break
                      test = test - 1
+               button_color="btn btn-success btn-xs "
                
            elif status == 'SHUTOFF':
                print "------------instance start-------------------"
@@ -196,6 +204,7 @@ def instance_stop(request):
                      if test == 5 or time.time() > timeout:
                         break
                      test = test - 1
+               button_color="btn btn-danger btn-xs"
                console=vnc_console(instance_name)
            elif operation == 'reboot':
                print "------------instance reboot-------------------"
@@ -212,6 +221,7 @@ def instance_stop(request):
                console1=console['console']
                console=console1['url']
                console=str(console)
+               button_color = "btn btn-danger btn-xs"
            elif operation == 'rdp':               
                print rdp_file
            fixed = get_instance_ipaddress(instance_name)
@@ -220,7 +230,7 @@ def instance_stop(request):
            status = instance_status(instance_name)
            print "fixed_ip:::"+fixed,"\n floating_ip::::"+floating_ip,"\n status of instance:::"+status,"\n console_url:::"+console
 
-           return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'RDP_file':rdp_file,'fixedip':fixed,'floatingip':floating_ip})
+           return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'RDP_file':rdp_file,'fixedip':fixed,'floatingip':floating_ip,'button_color':button_color})
     return render_to_response('login.html')
 
 

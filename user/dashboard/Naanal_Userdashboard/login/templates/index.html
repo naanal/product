@@ -118,36 +118,26 @@
                     <td><a href="{{console}}">{{instancename}}</a></td>
 					<td>{{fixedip}},{{floatingip}} </td>
                     <td><span class="label label-success">{{status}}</span> </td>
-                    <td>{{error}}</td>
                     <td>
+
                              <form action="/stop/" method="POST">
                                           {% csrf_token %}
                                           <input type="hidden" name="operation" value="start" />
                                           <input type="hidden" name="instance_id" value="{{instanceid}}" />
                                           <input type="hidden" name="user_name" value="{{username}}" />
                                           <input type="hidden" name="instance_name" value="{{instancename}}" />
-					  <button class="btn btn-success btn-xs " data-toggle="tooltip" data-placement="right" title="Power off/On"><i class="fa fa-power-off" aria-hidden="true"></i></button>
-                                 </form>
+					                     <button class="{{button_color}} " data-toggle="tooltip" data-placement="right"  align="right" title="Power On/Off"><i class="fa fa-power-off" aria-hidden="true"></i></button>
+                                         <a href="/static/RDP/{{RDP_file}}" class="btn btn-success btn-xs" download data-toggle="tooltip" data-placement="right" title="Download RDP File"><i class="fa fa-download" aria-hidden="true"> </i></a>
 
-                             <form action="/stop/" method="POST">
-                                          {% csrf_token %}
                                           <input type="hidden" name="operation" value="reboot" />
                                           <input type="hidden" name="instance_id" value="{{instanceid}}" />
                                           <input type="hidden" name="user_name" value="{{username}}" />
                                           <input type="hidden" name="instance_name" value="{{instancename}}" />
-                                          <button class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="right" title="Restart"><i class="fa fa-history" aria-hidden="true"></i> </button>
+                                          <button class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="right" align="middle" title="Restart"><i class="fa fa-history" aria-hidden="true"></i> </button>
                              </form>
-
-
-                             <form>
-                            
-					  <a href="/static/RDP/{{RDP_file}}" class="btn btn-success btn-xs" download data-toggle="tooltip" data-placement="right" title="Download RDP File"><i class="fa fa-download" aria-hidden="true"> </i></a>
-                            
-                             </form>
-
-
 
                     </td>
+
                   </tr>
                   </tbody>
                 </table>
