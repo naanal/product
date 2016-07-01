@@ -41,16 +41,17 @@ def loginpage(request):
             print"------------------------------------------------------loginpage authentication--------------------------"
             print conn
             instance_name=get_assigned_computer(username)
+            status = instance_status(instance_name)
             instance_id=get_instance_id(instance_name)
-            fixed=get_instance_ipaddress(instance_id)
-            status=instance_status(instance_id)
-            floating_ip=get_instance_floatingip(instance_id)           
-            print "instance_id:::::"+instance_id,"\n fixed::::"+fixed,"\n status"+status,"\n instance_name"+instance_name
+            fixed=get_instance_ipaddress(instance_name)
+            floating_ip=get_instance_floatingip(instance_name)
+
+            print "instance_id:::::"+instance_id,"\n fixed::::"+fixed,"\n status:::"+status,"\n instance_name"+instance_name
             print status           
-            if status =="active":
+            if status =="ACTIVE":
                console=vnc_console(instance_name)
                print console    
-            rdp_file=download_RDP(username,instance_id)
+            rdp_file=download_RDP(username,instance_id,instance_name)
             print "\n rdp_file:::"+rdp_file
             return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'fixedip':fixed,'floatingip':floating_ip,'RDP_file':rdp_file})
         except ldap3.core.exceptions.LDAPBindError:           
@@ -79,16 +80,15 @@ def index_page(request):
     if request.GET:
         username = request.GET.get('username')
         if request.session.has_key('username'):
-           username1 = request.session['username']                
-           instance_name=get_assigned_computer(username)
-           instance_id=get_instance_id(instance_name)
-           fixed=get_instance_ipaddress(instance_id)
-           floating_ip = get_instance_floatingip(instance_id)
-           status=instance_status(instance_id)
-           rdp_file = download_RDP(username, instance_id)
+           username1 = request.session['username']
+           instance_name = get_assigned_computer(username)
+           status = instance_status(instance_name)
+           instance_id = get_instance_id(instance_name)
+           fixed = get_instance_ipaddress(instance_name)
+           floating_ip = get_instance_floatingip(instance_name)
+           rdp_file = download_RDP(username, instance_id, instance_name)
            if status =="active":
               console=vnc_console(instance_name)
-           print console          
            return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'fixedip':fixed,'floatingip':floating_ip,'RDP_file':rdp_file})
     
     return render_to_response('login.html')
@@ -113,8 +113,6 @@ def change_password(request):
            username = request.POST.get('username')      
            password = request.POST.get('currentpassword')
            new_password = request.POST.get('newpassword')
-           print username
-           print password
            new_password1=str(new_password)
            print new_password
            print "--------------inside the changepassword method-----------------"
@@ -154,8 +152,7 @@ def help(request):
     if request.GET:
         if request.session.has_key('username'):
            username1 = request.session['username']    
-           username = request.GET.get('username')        
-           print username     
+           username = request.GET.get('username')
            return render_to_response('help.html',{'username': username})
     return render_to_response('login.html')
 
@@ -171,29 +168,30 @@ def instance_stop(request):
            instance_name=request.POST.get('instance_name')
            operation=request.POST.get('operation')
            username=str(username)
-           rdp_file=download_RDP(username,instance_id)          
+           rdp_file = download_RDP(username, instance_id, instance_name)
            nova=get_nova_keystone_auth()
            server = nova.servers.find(name=instance_name)
+           status=str(server.status)
            print "\n instance_name:::"+instance_name,"\n instance_id::::"+instance_id
-           if operation == 'stop':
+           if status == 'ACTIVE':
                print "------------instance stop-------------------"
-               server.stop()               
-               status=instance_status(instance_id)
+               server.stop()
+               status = instance_status(instance_name)
                timeout = time.time() + 4*5   # 5 minutes from now
-               while status !='stopped':
-                     status=instance_status(instance_id)
+               while status !='SHUTOFF':
+                     status = instance_status(instance_name)
                      test = 0
                      if test == 5 or time.time() > timeout:
                         break
                      test = test - 1
                
-           elif operation == 'start':
+           elif status == 'SHUTOFF':
                print "------------instance start-------------------"
                server.start()
-               status=instance_status(instance_id)
+               status = instance_status(instance_name)
                timeout = time.time() + 4*5   # 5 minutes from now
-               while status !='active':
-                     status=instance_status(instance_id)
+               while status !='ACTIVE':
+                     status = instance_status(instance_name)
                      test = 0
                      if test == 5 or time.time() > timeout:
                         break
@@ -202,9 +200,9 @@ def instance_stop(request):
            elif operation == 'reboot':
                print "------------instance reboot-------------------"
                server.reboot(reboot_type='SOFT')
-               status=instance_status(instance_id)
+               status = instance_status(instance_name)
                timeout = time.time() + 4*5   # 5 minutes from now
-               while status !='active':
+               while status !='ACTIVE':
                      status=instance_status(instance_id)
                      test = 0
                      if test == 5 or time.time() > timeout:
@@ -216,10 +214,10 @@ def instance_stop(request):
                console=str(console)
            elif operation == 'rdp':               
                print rdp_file
-           fixed=get_instance_ipaddress(instance_id)
-           floating_ip = get_instance_floatingip(instance_id)
+           fixed = get_instance_ipaddress(instance_name)
+           floating_ip = get_instance_floatingip(instance_name)
            time.sleep(5)
-           status=instance_status(instance_id)
+           status = instance_status(instance_name)
            print "fixed_ip:::"+fixed,"\n floating_ip::::"+floating_ip,"\n status of instance:::"+status,"\n console_url:::"+console
 
            return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'RDP_file':rdp_file,'fixedip':fixed,'floatingip':floating_ip})
@@ -227,259 +225,6 @@ def instance_stop(request):
 
 
 
-@csrf_exempt
-def snapshot(request):
-    username = password = ''
-    if request.POST:
-        if request.session.has_key('username'):
-           username1 = request.session['username']    
-           username = request.POST.get('username')  
-           instance_id = request.POST.get('instance_id')
-           instance_name=request.POST.get('instance_name')
-           print "-----------inside the snapshot method-----------"
-           console = fixed = ''
-           instance_name = get_assigned_computer(username)
-           instance_id = get_instance_id(instance_name)
-           fixed = get_instance_ipaddress(instance_id)
-           status = instance_status(instance_id)
-           floating_ip = get_instance_floatingip(instance_id)
-           rdp_file = download_RDP(username, instance_id)
-           nova=get_nova_keystone_auth()
-           server = nova.servers.find(name=instance_name)
-           network=server.networks
-           i=0
-           for k in network['net04']:
-              i=i+1
-              if i==1:
-		      network_name= 'net04'
-	      else :
-		      network_name= 'net04_ext'
-
-           flavor_name=get_flavor_name(instance_id)
-           image_name = username
-           print "username:::" + username, "\n instance_id:::" + instance_id, "\n instance_name::::" + instance_name,'\n network_name:::'+network_name,'\n flavor_name::'+flavor_name,'\n image_name::'+image_name
-
-           db = MySQLdb.connect(host="controller", port=3306, user="ha", passwd="ha_pass", db="glance")
-           cursor = db.cursor()
-           cursor.execute("select id from  images where status != 'deleted'and name ='%s' and created_at < NOW();" % (image_name))
-           results = cursor.fetchall()
-           for row in results:
-               oldimage_id = row[0]
-               print "----------inside snapshot old image_id-----------------------"
-               print oldimage_id
-           try:
-                oldimage_id
-           except NameError:
-                oldimage_id= ''
-
-           if oldimage_id !='':
-              print "---------------if already having snapshot image--------------------"
-              nova.servers.create_image(server, image_name, metadata=None)  # here testing is name of the snapshot
-              time.sleep(10)
-              print "snapshot was created"
-              db = MySQLdb.connect(host="controller",port=3306,user="ha",passwd="ha_pass",db="glance")
-              cursor = db.cursor()
-              cursor.execute("select id from  images where status !='deleted' and id != '%s' and name='%s';" %(oldimage_id,image_name))
-              results=cursor.fetchall()
-              for row in results:
-                  image_id=row[0]
-                  print "/n new_image_id ::;"+image_id
-              cursor.execute("select status from  images where id='%s';" % (image_id))
-              results = cursor.fetchall()
-              for row in results:
-                  snapshot_status= row[0]
-                  print "***********************snapshot image status*****************"
-                  print snapshot_status
-           else:
-               print "--------------1st time having snapshot--------------------------------"
-               nova.servers.create_image(server, image_name, metadata=None)  # here testing is name of the snapshot
-               time.sleep(10)
-               print "snapshot was created"
-               db = MySQLdb.connect(host="controller", port=3306, user="ha", passwd="ha_pass", db="glance")
-               cursor = db.cursor()
-               cursor.execute("select id from  images where status !='deleted' and  name='%s';" % (image_name))
-               results = cursor.fetchall()
-               for row in results:
-                   image_id = row[0]
-                   print "/n new_image_id ::;" + image_id
-               cursor.execute("select status from  images where id='%s';" % (image_id))
-               results = cursor.fetchall()
-               for row in results:
-                   snapshot_status = row[0]
-                   print "***********************snapshot image status*****************"
-                   print snapshot_status
-                   print snapshot_status == 'active'
-
-           while snapshot_status !='active':
-                 print "************************inside the while statement*******************************"
-                 print snapshot_status
-                 db = MySQLdb.connect(host="controller",port=3306,user="ha",passwd="ha_pass",db="glance")
-                 cursor = db.cursor()
-                 cursor.execute("select status from  images where id='%s';" % (image_id))
-                 results = cursor.fetchall()
-                 for row in results:
-                     snapshot_status= row[0]
-                     print snapshot_status
-                 if snapshot_status=='killed':
-                     break
-                 db.commit()
-                 db.close()
-
-           if snapshot_status=='active':
-              print "***********inside the if active statment*****************"
-              error='snapshot created successfully.....!!!!!'
-              if oldimage_id != '':
-                  print "---------delete if old image is found-----------"
-                  nova = get_nova_keystone_auth()
-                  print nova.images.delete(oldimage_id)
-
-              if status =="active":
-                 console=vnc_console(instance_name)
-                 print console
-
-              return render_to_response('index.html',
-                                        {'password': password, 'username': username, 'instancename': instance_name,
-                                         'instanceid': instance_id, 'status': status, 'console': console,
-                                         'fixedip': fixed, 'floatingip': floating_ip, 'RDP_file': rdp_file,'error':error})
-
-
-           elif snapshot_status=='killed':
-                error= "Error while creating snapshot......!!!"
-                print error
-
-           return render_to_response('index.html',
-                                     {'password': password, 'username': username, 'instancename': instance_name,
-                                      'instanceid': instance_id, 'status': status, 'console': console, 'fixedip': fixed,
-                                      'floatingip': floating_ip, 'RDP_file': rdp_file,'error':error})
-
-
-@csrf_exempt
-def restore_from_snapshot(request):
-    username = password = task_state = vm_state = console=''
-    if request.POST:
-        if request.session.has_key('username'):
-            username1 = request.session['username']
-            username = request.POST.get('username')
-            instance_id = request.POST.get('instance_id')
-            instance_name = request.POST.get('instance_name')
-            nova = get_nova_keystone_auth()
-            server = nova.servers.find(name=instance_name)
-            network = server.networks
-            print "-----------------------------inside the restore from snapshot method---------------------"
-            i = 0
-            for k in network['net04']:
-                i = i + 1
-                if i == 1:
-                    network_name = 'net04'
-                else:
-                    network_name = 'net04_ext'
-
-            flavor_name = get_flavor_name(instance_id)
-            image_name = username
-            print "\n username:::"+username,"\n old_instance_id::::"+instance_id,"\n flavor_name:::"+flavor_name,'\n  image_name:::'+image_name
-            instance_name = get_assigned_computer(username)
-            instance_id = get_instance_id(instance_name)
-            fixed = get_instance_ipaddress(instance_id)
-            status = instance_status(instance_id)
-            floating_ip = get_instance_floatingip(instance_id)
-            rdp_file = download_RDP(username, instance_id)
-            db = MySQLdb.connect(host="controller", port=3306, user="ha", passwd="ha_pass", db="glance")
-            cursor = db.cursor()
-            cursor.execute(
-                "select id from  images where status != 'deleted'and name ='%s' and created_at < NOW();" % (image_name))
-            results = cursor.fetchall()
-            for row in results:
-                oldimage_id = row[0]
-                print "----------inside snapshot old image_id-----------------------"
-                print oldimage_id
-            try:
-                oldimage_id
-            except NameError:
-                oldimage_id = ''
-
-            if oldimage_id!='':
-                console = fixed = ''
-                nova = get_nova_keystone_auth()
-                image = nova.images.find(name=image_name)
-                flavor = nova.flavors.find(name=flavor_name)
-                network = nova.networks.find(label=network_name)
-                server = nova.servers.create(name=instance_name, image=image.id, flavor=flavor.id,
-                                         nics=[{'net-id': network.id}])
-                print "-------------------------new instances created from the snapshot image successfully...!!!!!!!------------"
-                new_instance_id = str(server.id)
-                time.sleep(10)
-                print "/n new_instance_name:::::" + image_name,'/n new_instance_id::::'+new_instance_id,'old_instance_id:::'+instance_id
-
-                db = MySQLdb.connect(host="controller", port=3306, user="ha", passwd="ha_pass", db="nova")
-                cursor = db.cursor()
-                cursor.execute("select task_state,vm_state from instances where uuid='%s';" % (new_instance_id))
-                results = cursor.fetchall()
-                for row in results:
-                    task_state = row[0]
-                    vm_state = row[1]
-                task_state = str(task_state)
-                vm_state = str(vm_state)
-                print "****************************************"
-                print task_state, vm_state
-                print "****************************************"
-                print"***************************before while statement task_state and vm_state*********************************"
-
-                while vm_state != 'active':
-                    db = MySQLdb.connect(host="controller", port=3306, user="ha", passwd="ha_pass", db="nova")
-                    cursor = db.cursor()
-                    cursor.execute("select task_state,vm_state from instances where uuid='%s';" % (new_instance_id))
-                    results = cursor.fetchall()
-                    for row in results:
-                        task_state = row[0]
-                        vm_state = row[1]
-                    if vm_state == "error":
-                        break
-                    print"***************************INSIDE while statement task_state and vm_state*********************************"
-                    print vm_state
-
-                if vm_state == 'active':
-                    print "***************inside the update statement part****************************"
-                    delete_old_instance = delete_instance(instance_id)  # DELETE THE OLD INSTANCE
-                    print "-------old instance deleted-------------------"
-                    print delete_old_instance
-                    instance_name = get_assigned_computer(username)
-                    instance_id = get_instance_id(instance_name)
-                    fixed = get_instance_ipaddress(instance_id)
-                    status = instance_status(instance_id)
-                    floating_ip = get_instance_floatingip(instance_id)
-                    rdp_file = download_RDP(username, instance_id)
-                    print '------------updated new instance successfully--------------------------'
-                    print '\n instance_name:::'+instance_name,'\n instance_id:::'+instance_id,'\n fixed:::'+fixed,'\n floating_ip:::'+floating_ip
-                    error='restore from snapshot successfully....!!!!! '
-                    if status == "active":
-                        console = vnc_console(instance_name)
-                        print console
-                    return render_to_response('index.html',
-                                              {'password': password, 'username': username, 'instancename': instance_name,
-                                               'instanceid': instance_id, 'status': status, 'console': console,
-                                               'fixedip': fixed, 'floatingip': floating_ip, 'RDP_file': rdp_file,
-                                               'error': error})
-
-
-                elif vm_state == 'error':
-                    print"---------------------Restore from the snapshot having error------------------------"
-                    error= "Restore for snapshot is error...........!!!!!!"
-                    return render_to_response('index.html',
-                                              {'password': password, 'username': username, 'instancename': instance_name,
-                                               'instanceid': instance_id, 'status': status, 'console': console,
-                                               'fixedip': fixed, 'floatingip': floating_ip, 'RDP_file': rdp_file,
-                                               'error': error})
-            else:
-                error = "Do u have no previous snapshot images to restore....!!!!!!"
-                status = instance_status(instance_id)
-                if status == "active":
-                    console = vnc_console(instance_name)
-                    print console
-                return render_to_response('index.html',
-                                          {'password': password, 'username': username, 'instancename': instance_name,
-                                           'instanceid': instance_id, 'status': status, 'console': console,
-                                           'fixedip': fixed, 'floatingip': floating_ip, 'RDP_file': rdp_file,
-                                           'error': error})
 
 
 def get_assigned_computer(username):
@@ -493,16 +238,16 @@ def get_assigned_computer(username):
         if 'attributes' in entry:            
             if 'userWorkstations' in entry['attributes']:
                 assigned_computer = entry['attributes']['userWorkstations']
-                print "-------Assigned computer-----"
                 mylist = assigned_computer.split(',')
                 assigned_computer = mylist[0]
-                print assigned_computer
+                assigned_computer=assigned_computer.lower()
             else:
                 assigned_computer = ''
     return assigned_computer
 
+
 def bind():
-    s = Server('172.30.1.197', port=636, use_ssl=True, get_info=ALL)
+    s = Server('windows-server', port=636, use_ssl=True, get_info=ALL)
     admin_username = 'Administrator@naanal.local'
     admin_password = 'p@ssw0rd1'
     conn = Connection(s, user=admin_username, password=admin_password, auto_bind=True)    
@@ -510,83 +255,50 @@ def bind():
 
 def get_instance_id(instance_name):
     instance_id=''
-    db = MySQLdb.connect(host="controller",port=3306,user="ha",passwd="ha_pass",db="nova")
-    cursor = db.cursor()
-    cursor.execute("select uuid from instances where deleted=0 and display_name='%s'" % (instance_name))
-    results = cursor.fetchall()
-    for row in results:
-        instance_id = row[0]
-    db.commit()
-    db.close()
+    nova=get_nova_keystone_auth()
+    server = nova.servers.find(name=instance_name)
+    instance_id=str(server.id)
     return(instance_id)
 
 
-def get_instance_ipaddress(instance_id):
-    fixed=''   
-    db = MySQLdb.connect(host="controller",port=3306,user="ha",passwd="ha_pass",db="nova")
-    cursor = db.cursor()
-    sql ="select ip_address from neutron.ipallocations where port_id = (select id  from neutron.ports where device_id ='%s' );" % (instance_id)           
-    cursor.execute(sql)  
-    results = cursor.fetchall()
-    for row in results:     
-        fixed=row[0]
-    db.commit()
-    db.close()
+def get_instance_ipaddress(instance_name):
+    fixed=''
+    nova = get_nova_keystone_auth()
+    server = nova.servers.find(name=instance_name)
+    address = server.addresses
+    address = address['net04']
+    fixed = address[0]
+    fixed = fixed['addr']
+    fixed=str(fixed)
     return(fixed)
 
 
-def get_instance_floatingip(instance_id):
+def get_instance_floatingip(instance_name):
     floating_ip=''
-    db = MySQLdb.connect(host="controller",port=3306,user="ha",passwd="ha_pass",db="nova")
-    cursor = db.cursor()
-    sql ="select floating_ip_address from neutron.floatingips where fixed_port_id = (select id  from neutron.ports where device_id ='%s' );" % (instance_id)           
-    cursor.execute(sql)  
-    results = cursor.fetchall()
-    for row in results:     
-        floating_ip=row[0]
-    db.commit()
-    db.close()
+    nova = get_nova_keystone_auth()
+    server = nova.servers.find(name=instance_name)
+    address = server.addresses
+    address = address['net04']
+    if len(address)==2:
+        floating_ip = address[1]
+        floating_ip = floating_ip['addr']
+        floating_ip = str(floating_ip)
+    else:
+        floating_ip=''
+    print floating_ip
+
     return(floating_ip)
 
 
-def instance_status(instance_id):
-    status=''        
-    db = MySQLdb.connect(host="controller",port=3306,user="ha",passwd="ha_pass",db="nova")
-    cursor = db.cursor()
-    cursor.execute("select vm_state from instances where deleted=0 and  uuid='%s'" % (instance_id))
-    results = cursor.fetchall()            
-    for row in results:                       
-        status =row[0]                             
-    db.commit()
-    db.close()
+def instance_status(instance_name):
+    status=''
+    nova = get_nova_keystone_auth()
+    server = nova.servers.find(name=instance_name)
+    status = str(server.status)
     return(status)
 
 
-def get_instance_name(instance_id):    
-    print"inside the instance_name method"
-    print instance_id
-    instance_name=''        
-    db = MySQLdb.connect(host="controller",port=3306,user="ha",passwd="ha_pass",db="nova")
-    cursor = db.cursor()
-    cursor.execute("select display_name from instances where deleted=0 and uuid='%s'" % (instance_id))
-    results = cursor.fetchall()            
-    for row in results:                       
-        instance_name = row[0]                             
-    db.commit()
-    db.close()    
-    return(instance_name)
-def get_project_id(project_name):
-    db = MySQLdb.connect(host="controller",port=3306,user="ha",passwd="ha_pass",db="keystone")
-    cursor = db.cursor()
-    cursor.execute("select id from project where name='%s'" % (project_name))
-    results = cursor.fetchall()            
-    for row in results:                       
-        project_id = row[0]                             
-    db.commit()
-    db.close()
-    print "inside the get_project_id:"    
-    print project_id
-    return(project_id)
+
 
 def get_nova_keystone_auth():
     auth_url = 'http://controller:35357/v3'
@@ -595,7 +307,7 @@ def get_nova_keystone_auth():
     project_name = 'admin'
     project_domain_name = 'Default'
     password = 'admin'
-    project_id=get_project_id(project_name)
+    project_id="359d91ddd8744d27be37e79401d7d9fd"
     auth =v3.Password(auth_url=auth_url,username=username1,password=password,project_id=project_id,
     user_domain_name=user_domain_name)
     sess = session.Session(auth=auth)
@@ -613,10 +325,9 @@ def vnc_console(instance_name):
     console=console1['url']
     return(console)
  
-def download_RDP(username,instance_id):
-    print "inside the Download RDP"
+def download_RDP(username,instance_id,instance_name):
     fixed =''
-    floating_ip=get_instance_floatingip(instance_id)    
+    floating_ip=get_instance_floatingip(instance_name)
     file_name="login/static/RDP/"+username+".rdp"
     Rdpname=username+".rdp"
     content="auto connect:i:1\nfull address:s:%s\nusername:s:%s\n" % (floating_ip, username)     
@@ -626,48 +337,8 @@ def download_RDP(username,instance_id):
 
 
 
-def get_flavor_name(instance_id):    
-    print"inside the instance_name method"
-    db = MySQLdb.connect(host="controller",port=3306,user="ha",passwd="ha_pass",db="nova")
-    cursor = db.cursor()                  
-    cursor.execute("select instance_type_id from instances where uuid='%s'" % (instance_id))  
-    results = cursor.fetchall()
-    for row in results:     
-        instance_type_id=row[0]    
-    db.close()
-    db = MySQLdb.connect(host="controller",port=3306,user="ha",passwd="ha_pass",db="nova")
-    cursor = db.cursor()                  
-    cursor.execute(" select name from instance_types where id ='%s'" % (instance_type_id))  
-    results = cursor.fetchall()           
-    for row in results:     
-        flavor_name=row[0]   
-    return(flavor_name)
 
 
 
 
         
-def delete_instance(instance_id):    
-    print"inside the delete_instance method"
-    print instance_id 
-    nova=get_nova_keystone_auth()
-    server = nova.servers.delete(instance_id)
-    time.sleep(10)
-    db = MySQLdb.connect(host="controller", port=3306, user="ha", passwd="ha_pass", db="nova")
-    cursor = db.cursor()
-    cursor.execute("select deleted from instances where uuid='%s'" % (instance_id))
-    results = cursor.fetchall()
-    for row in results:
-        deleted = row[0]
-    db.close()
-
-    while deleted !=0:
-        db = MySQLdb.connect(host="controller", port=3306, user="ha", passwd="ha_pass", db="nova")
-        cursor = db.cursor()
-        cursor.execute("select deleted from instances where uuid='%s'" % (instance_id))
-        results = cursor.fetchall()
-        for row in results:
-            deleted = row[0]
-    if deleted==0:
-        status='delete the previous instance is success...'
-    return(status)
