@@ -6,40 +6,73 @@
     md-select {
         margin: 0;
     }
+     .md-virtual-repeat-container.md-autocomplete-suggestions-container{
+        z-index:5000 !important;
+    }
 </style>
 <div ng-controller="MapVmsComputersController as ctrl">
-    <md-radio-group ng-model="model.newMappingSpec.autoMap" ng-change="ctrl.changedMode()" required layout-padding="" layout="row" layout-xs="column" layout-align="center center">
-      <md-radio-button value="True" class="md-primary">Auto Assign Computers</md-radio-button>
-      <md-radio-button value="False" class="md-primary"> Manually Choose Computers </md-radio-button>
-    </md-radio-group>
-    <p class="md-body-2" ng-if="model.newMappingSpec.autoMap == 'True'">Available Computers are randomly assigned to selected users</p>
-    <div class="row">
-        <div class="col-md-10">
-            <div class="well" ng-if="model.newMappingSpec.autoMap == 'False'">
-            <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Computer</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="user in model.newMappingSpec.map">
-                <td>{$user.username$}</td>
-                <td>
-                    <md-select placeholder="Pick a Computer"
-                               required
-                               ng-model="user.computer">
-                        <md-option ng-value="computer.computername" ng-repeat="computer in ctrl.availableCom">
-                        {$computer.computername$}
-                        </md-option>
-                    </md-select>
-                </td>
-              </tr>
-            </tbody>
-      </table>
+   <div class="row">
+       <div class="col-md-8">
+            
+         
+           <md-radio-group ng-model="model.newMappingSpec.autoMap" ng-change="ctrl.changedMode()" required layout="row" layout-xs="column">
+              <md-radio-button value="True" class="md-primary" ng-disabled="model.newMappingSpec.map.length > model.availableComputers.length">Auto Assign Computers</md-radio-button>
+              <md-radio-button value="False" class="md-primary"
+              ng-disabled="model.newMappingSpec.map.length > model.availableComputers.length"> Manually Choose Computers </md-radio-button>
+            </md-radio-group>
+           <p class="md-body-2" ng-if="model.newMappingSpec.autoMap == 'True'">Available Computers are randomly assigned to selected users</p>
+          <div ng-if="model.newMappingSpec.map.length > model.availableComputers.length">
+                <p class="md-subhead" style="color:red">Only {$model.availableComputers.length$} VMs available. But You entered {$model.newMappingSpec.map.length$} users.  
+                <a href="" ng-click="ctrl.getVMs()">Refresh</a>
+                </p>
+          </div>
 
-        </div>
+          <div class="row"  ng-if = "model.newMappingSpec.autoMap == 'False'">
+                <div class="well">
+                    <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th class="col-md-5">User</th>
+                        <th class="col-md-7">Computer</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="user in model.newMappingSpec.map">
+                        <td>
+                            {$user.username$}
+                        </td>
+                        <td>
+                              <md-autocomplete
+                                 md-no-cache="true"
+                                md-selected-item="ctrl['selectedComputer'+$index]"
+                                md-search-text="ctrl['computerSearchText' + $index]"
+                                md-items="item in ctrl.computerSearch(ctrl['computerSearchText' + $index])"
+                                md-item-text="item.computername"
+                                md-search-text-change="ctrl.computerTextChange(ctrl['computerSearchText' + $index])"
+                                md-selected-item-change="ctrl.selectedComputerChange(user,item,$index)"
+                                placeholder="Search Computers"
+                                 md-min-length="0">
+                                  placeholder="Choose Computer">
+                                <md-item-template>
+                                  <span md-highlight-text="ctrl['computerSearchText' + $index]">{$item.computername$}</span>
+                                </md-item-template>
+                                <md-not-found>
+                                  "{$ctrl.computerSearchText$}" not found.
+                                </md-not-found>
+                              </md-autocomplete>
+                        </td>
+                      </tr>
+                    </tbody>
+              </table>
+                </div>
+            </div>
+       </div>
+        <div class="col-md-4">
+            <div class="well">
+                <p>You could choose <i>auto</i> or <i>manual</i> Vm Mapping.</p>
+                <p><b>Auto Mapping</b> assign available computers in random manner</p>
+                <p><b>Manually Mapping</b> provides options to select available computers.</p>
+            </div>
         </div>
     </div>
 </div>

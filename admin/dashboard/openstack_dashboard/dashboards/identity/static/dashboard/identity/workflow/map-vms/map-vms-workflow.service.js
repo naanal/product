@@ -54,16 +54,14 @@
           helpUrl: basePath + 'verify/verify.help.html',
           formName: 'mapVmsVerifyForm'
         }
-      ]
-      //   ,
-      //
-      // btnText: {
-      //   finish: gettext('Launch Instance')
-      // },
-      //
-      // btnIcon: {
-      //   finish: 'fa fa-cloud-upload'
-      // }
+      ],
+      btnText: {
+        finish: gettext('Map Vms')
+      },
+
+      btnIcon: {
+        finish: 'fa  fa-exchange'
+      }
     });
   }
 

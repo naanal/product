@@ -21,10 +21,12 @@
     .controller('MapVmsComputersController', MapVmsComputersController);
 
   MapVmsComputersController.$inject = [
-    'mapVmsModel'
+    'mapVmsModel',
+    '$scope',
+    '$log'
   ];
 
-  function MapVmsComputersController(mapVmsModel) {
+  function MapVmsComputersController(mapVmsModel,$scope,$log) {
       var ctrl = this;
       ctrl.availableCom = mapVmsModel.availableComputers;
       ctrl.changedMode = changeMode;
@@ -36,6 +38,45 @@
 
           }
       }
+      
+     
+      ctrl.computerSearch= computerSearch;
+      ctrl.computerTextChange=computerTextChange;
+      ctrl.selectedComputerChange=selectedComputerChange;
+      $scope.selectedVms = new Array(mapVmsModel.availableComputers.length);
+      function computerSearch (query) {
+          var results = query ? mapVmsModel.availableComputers.filter( createFilterForComputer(query) ) : mapVmsModel.availableComputers, deferred;
+          var newresults = angular.copy(results);
+          for (var i=0; i<$scope.selectedVms.length; i++)
+          {
+            var existIndex = newresults.map(function(e) { return e.computername; }).indexOf($scope.selectedVms[i]);
+            if(existIndex != -1)
+              newresults.splice(existIndex,1);
+          }
+          return newresults;
+      }
+      function createFilterForComputer(query) {
+              query=query.toUpperCase();
+              return function filterFn(computer) {
+                  return (computer.computername.indexOf(query) === 0);
+               };
+      }
+      function computerTextChange(text) {
+        $log.info('Text changed to ' + text);
+      }
+      function selectedComputerChange(user,item,index) {
+        console.log(index);
+        if(item != undefined){
+        $scope.selectedVms[index] = item.computername;
+        user.computer = item.computername;
+        $log.info('Item changed to ' + JSON.stringify(item));
+        }
+        else
+        {
+          $scope.selectedVms[index]=null;
+          computerSearch('');
+        }
+      } 
 
   }
 })();

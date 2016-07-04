@@ -88,7 +88,7 @@
 
       model.newMappingSpec = {
         map: [],
-        autoMap: ""
+        autoMap: "True"
       };
     }
 
