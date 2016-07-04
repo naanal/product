@@ -20,7 +20,7 @@ from openstack_dashboard.api.rest import urls
 from openstack_dashboard.api.rest import utils as rest_utils
 from django.conf import settings
 from ldap3 import Server, Connection, SUBTREE, ALL, ALL_ATTRIBUTES, \
-    ALL_OPERATIONAL_ATTRIBUTES, MODIFY_REPLACE, MODIFY_ADD
+    ALL_OPERATIONAL_ATTRIBUTES, MODIFY_REPLACE, MODIFY_ADD, MODIFY_INCREMENT
 
 
 @urls.register
@@ -52,8 +52,7 @@ class Users(generic.View):
          Each Users array must have
         :username: the username to give to the user
         :password: the password given to the user
-        :ou: Organizaional Unit of User
-        :domain: domain name of active directory
+        :mail: mail id of the user
 
         This returns status of user creation.
         """
@@ -61,6 +60,8 @@ class Users(generic.View):
             args = (
                 request,
                 request.DATA['users'],
+                request.DATA['isAssignVm'],
+                request.DATA['isAutoMap']
             )
         except KeyError as e:
             raise rest_utils.AjaxError(400, 'missing required parameter'
@@ -68,37 +69,13 @@ class Users(generic.View):
         result = []
         conn = bind()
         if conn.bind():
-            for user in request.DATA['users']:
-                username = user['username']
-                password = user['password'].encode('ascii', 'ignore')
-                ou = user['ou']
-                dns = user['dns']
-
-                dn = getdn(username, ou)
-
-                # 1. Create a New User
-                response = createNewUser(dn, username, dns, conn)
-
-                # 2. If user Creation success then modify the password
-                if response == 'success':
-                    response = changePassword(dn, password, conn)
-
-                    # 3. If Password Modification success then enable user
-                    # account
-                    if response == 'success':
-                        response = enableUser(dn, conn)
-                    else:
-                        response = response + "in modifying password"
-                else:
-                    response = response + " in the users"
-
-                result.append({"user": username, "action": "creation",
-                               "status": response})
-            unbind(conn)
-            return result
+            users = request.DATA['users']
+            isAssignVm = request.DATA['isAssignVm']
+            isAutoMap = request.DATA['isAutoMap']
+            return userCreationWorkflow(users, isAssignVm, isAutoMap, conn)
 
         else:
-            return "Authendication Failed"
+            return "Authentication Failed"
 
     @rest_utils.ajax()
     def delete(self, request):
@@ -282,25 +259,15 @@ class Map(generic.View):
         conn = bind()
 
         if(isAuto == 'True'):
-            users = map_data
-            map_data = []
-            available_vms = retriveAvailableComputers(conn)
-            user_len = len(users)
-            vm_len = len(available_vms)
-            if (user_len > vm_len):
-                return {"message": "You have selected %s users. But %s computers only available" % (user_len, vm_len)}
-            else:
-                sliced_vms = available_vms[:user_len]
-                for user, vm in zip(users, sliced_vms):
-                    map_data.append(
-                        {"user_dn": user['user_dn'], "computer": vm['computername']})
+            map_data = autoAssignUsersWithVms(map_data, conn)
 
         if conn.bind():
             for data in map_data:
                 user_dn = data['user_dn']
                 computer = data['computer']
                 # 1. Add User to 'allowed' group
-                response = addToGroup(user_dn, conn)
+                allowed_group_name = settings.ALLOWED_USERS_GROUP_DN
+                response = addToGroup(allowed_group_name, user_dn, conn)
 
                 # 2. If user added to 'allowed' group successfully then map the
                 # user to vm
@@ -332,13 +299,16 @@ def unbind(c):
     c.unbind()
 
 
-def getdn(username, ou):
-    return 'cn=%s,ou=%s,dc=naanal,dc=local' % (username, ou)
+def getdn(username):
+    return 'cn=%s,ou=users,ou=Police,dc=naanal,dc=local' % (username)
 
 
-def createNewUser(dn, username, dns, conn):
+def createNewUser(dn, username, mail, conn):
     conn.add(dn, ['Top', 'person', 'user'],
-             {'cn': username, 'userPrincipalName': '%s@%s' % (username, dns),
+             {'cn': username,
+              'userPrincipalName': '%s@%s' % (username, settings.LDAP_DNS),
+              'userWorkstations': settings.LDAP_SERVER_MACHINE_NAME,
+              'mail': mail,
               'sAMAccountName': username})
 
     return conn.result['description']
@@ -362,27 +332,38 @@ def changePassword(dn, password, conn):
     return conn.result['description']
 
 
-def addToGroup(user_dn, conn):
-    group_dn = settings.ENABLE_USERS_GROUP_DN
+def addToGroup(group_dn, user_dn, conn):
     conn.modify(group_dn, {'member': [(MODIFY_ADD, user_dn)]})
     return conn.result['description']
 
 
 def retriveUsers(conn):
     users = []
-    conn.search(search_base='dc=naanal,dc=local',
+    conn.search(search_base=settings.LDAP_BASE_DIR,
                 search_filter='(&(objectCategory=person)(objectClass=user))',
                 search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
                                                   ALL_OPERATIONAL_ATTRIBUTES])
     for entry in conn.response:
         if 'attributes' in entry:
+
             if 'userWorkstations' in entry['attributes']:
                 assigned_computer = entry['attributes']['userWorkstations']
             else:
                 assigned_computer = None
+            if 'mail' in entry['attributes']:
+                mail = entry['attributes']['mail']
+            else:
+                mail = None
+            if 'memberOf' in entry['attributes']:
+                groups = entry['attributes']['memberOf']
+            else:
+                groups = None
             users.append({
-                "dn": entry['dn'],
+                "user_dn": entry['dn'],
                 "username": entry['attributes']['cn'],
+                "mail": mail,
+                "group": groups,
+                "lastLogon": entry['attributes']['lastLogon'].isoformat(" ").split(".")[0],
                 "computer": assigned_computer,
                 "status": entry['attributes']['userAccountControl']
             })
@@ -391,14 +372,13 @@ def retriveUsers(conn):
 
 def retriveAvailableUsers(conn):
     available_users = []
-    conn.search(search_base='dc=naanal,dc=local',
-                search_filter='(&(objectCategory=person)(objectClass=user)(|(userAccountControl=512)(userAccountControl=66048)))',
+    conn.search(search_base=settings.LDAP_BASE_DIR,
+                search_filter='(&(objectCategory=person)(objectClass=user)(memberof=cn=normalusers,ou=groups,ou=police,dc=naanal,dc=local)(|(userAccountControl=512)(userAccountControl=66048)))',
                 search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
                                                   ALL_OPERATIONAL_ATTRIBUTES])
-
     for entry in conn.response:
         if 'attributes' in entry:
-            if 'userWorkstations' not in entry['attributes']:
+            if 'userWorkstations' not in entry['attributes'] or entry['attributes']['userWorkstations'] == settings.LDAP_SERVER_MACHINE_NAME:
                 available_users.append({
                     "user_dn": entry['dn'],
                     "username": entry['attributes']['cn']
@@ -415,8 +395,10 @@ def assignedComputers(conn):
     for entry in conn.response:
         if 'attributes' in entry:
             if 'userWorkstations' in entry['attributes']:
-                assigned_computers.append(
-                    entry['attributes']['userWorkstations'])
+                computers = entry['attributes']['userWorkstations']
+                computerArray = computers.split(',')
+                for c in computerArray:
+                    assigned_computers.append(c)
     return assigned_computers
 
 
@@ -446,7 +428,7 @@ def retriveComputers(conn):
 
 def retriveAvailableComputers(conn):
     available_computers = []
-    assignedCom = assignedComputers(conn)
+    assignedCom = list(set(assignedComputers(conn)))
     conn.search(search_base='cn=computers,dc=naanal,dc=local',
                 search_filter='(&(objectCategory=computer)(objectClass=computer))',
                 search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
@@ -463,8 +445,25 @@ def retriveAvailableComputers(conn):
 
 
 def mapUserToVm(user_dn, computer, conn):
-    conn.modify(user_dn, {'userWorkstations': [(MODIFY_REPLACE, computer)]})
+    computers = computer + ',' + settings.LDAP_SERVER_MACHINE_NAME
+    conn.modify(user_dn, {'userWorkstations': [(MODIFY_REPLACE, computers)]})
     return conn.result['description']
+
+
+def autoAssignUsersWithVms(map_data, conn):
+    users = map_data
+    map_data = []
+    available_vms = retriveAvailableComputers(conn)
+    user_len = len(users)
+    vm_len = len(available_vms)
+    if (user_len > vm_len):
+        return {"message": "You have selected %s users. But %s computers only available" % (user_len, vm_len)}
+    else:
+        sliced_vms = available_vms[:user_len]
+        for user, vm in zip(users, sliced_vms):
+            map_data.append(
+                {"user_dn": user['user_dn'], "computer": vm['computername']})
+    return map_data
 
 
 def change_userPrincipalName(user_dn, new_username, conn):
@@ -479,19 +478,98 @@ def change_sAMAccountName(user_dn, new_username, conn):
     conn.modify(user_dn,
                 {'sAMAccountName': [(MODIFY_REPLACE, [new_username])]
                  })
-    print "status of change_sAMAccountName::::" + conn.result['description']
+    print("status of change_sAMAccountName::::" + conn.result['description'])
     return conn.result['description']
 
 
 def change_userEmail(user_dn, E_mail, conn):
     conn.modify(user_dn,
                 {'mail': [(MODIFY_REPLACE, [E_mail])]})
-    print "status of change_userEmail::::" + conn.result['description']
+    print("status of change_userEmail::::" + conn.result['description'])
     return conn.result['description']
 
 
 def change_userDN(user_dn, new_username, conn):
     new_username = 'cn=' + new_username
     conn.modify_dn(user_dn, new_username)
-    print "status of change_userDN::::" + conn.result['description']
+    print("status of change_userDN::::" + conn.result['description'])
     return conn.result['description']
+
+
+def userCreationWorkflow(users, isAssignVm, isAssignAuto, conn):
+    user_creation_result = []
+    if isAssignVm == "True":
+        available_vms = retriveAvailableComputers(conn)
+        user_len = len(users)
+        vm_len = len(available_vms)
+        if (user_len > vm_len):
+            notSufficentVMs = "True"
+        else:
+            notSufficentVMs = "False"
+    for user in users:
+        username = user['username']
+        password = user['password'].encode('ascii', 'ignore')
+        if 'mail' in user:
+            mail = user['mail']
+        else:
+            mail = '----'
+        if 'computer' in user:
+            computer = user['computer']
+        dn = getdn(username)
+
+        # 1. Create a new User
+        response = createNewUser(dn, username, mail, conn)
+
+        # 2. If User Creation success then modify the password
+        if response == 'success':
+            response = changePassword(dn, password, conn)
+
+            # 3. If Password Modification success then enable user
+            # account
+            if response == 'success':
+                response = enableUser(dn, conn)
+
+                # 4. If user account enabled then add user to 'normaluser'
+                # group
+                if response == 'success':
+                    response = addToGroup(
+                        settings.DEFAULT_USERS_GROUP_DN, dn, conn)
+
+                    # 5. For Vm Mapping, map a vm to user
+                    if response == 'success':
+                        response = username + " successfully created."
+                        if isAssignVm == 'True':
+                            if notSufficentVMs == 'False':
+                                print notSufficentVMs
+                                if isAssignAuto == 'True':
+                                    computer = available_vms.pop()['computername']
+                                response = mapUserToVm(dn, computer, conn)
+
+                                # 6. Finally if VM get Mapped then add user account to
+                                # allowed group
+                                if response == 'success':
+                                    response = addToGroup(
+                                        settings.ALLOWED_USERS_GROUP_DN, dn, conn)
+                                    if response != 'success':
+                                        response = response + "while adding to allowed group for " + username
+                                    else:
+                                        response = username + " successfully created and " + computer + " is assigned."
+                                else:
+                                    response = username + " created. But " + response + " while map to workstation"
+                            else:
+                                response = "Not Having Sufficient VMs"
+                    else:
+                        response = response + "while adding to default users group for " + username
+                else:
+                    response = response + " while enabling" + username + " account"
+            else:
+                response = response + " while changing password for " + username
+        else:
+            response = response + " while creating " + username
+        user_creation_result.append({
+            "user": username,
+            "user_dn": dn,
+            "action": "creation",
+            "status": response
+        })
+    return user_creation_result
