@@ -1,16 +1,11 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-<div ng-cloak="" ng-controller="identityUsersTableController">
+<div ng-controller="identityUsersTableController">
     <md-card>
 
         <md-card-content>
             <section layout="row" layout-sm="column" layout-align="end center" layout-wrap>
-                <md-button class="md-raised md-primary">Create Users</md-button>
-                <md-button class="md-raised md-primary btn-launch ng-scope"
-                           ng-click="modal.openMapVmsWizard()"
-                           ng-controller="MapVmsModalController as modal">
-                    Map VMs
-                </md-button>
+
             </section>
 
             <md-tabs md-dynamic-height="" md-border-bottom="">
@@ -24,38 +19,44 @@
                                     </md-icon>
                                     <input type="text" ng-model="searchquery" placeholder="Search By name, computer..."/>
                                 </md-input-container>
-                                <md-content ng-show="selected.length">
-                                    <div>{$selected.length$} {$selected.length &gt; 1 ? 'items' : 'item'$} selected
-                                    </div>
+                                <md-content ng-show="selected.length" class="md-padding">
+                                    <p class="md-padding md-title">
+                                        {$selected.length$} {$selected.length &gt; 1 ? 'items' : 'item'$} selected
+                                    </p>
                                 </md-content>
                             </section>
-                            <section flex="" layout-align="center center">
-                                <md-button class="md-fab md-mini md-primary" aria-label="add new" ng-click="refresh()">
-                                    <md-icon>refresh</md-icon>
-                                    <md-tooltip>Refresh Data</md-tooltip>
+                            <span flex=""></span>
+                            <section flex="" layout-align="end center">
+                                <md-button
+                                        class="md-fab md-mini md-primary btn-launch ng-scope" aria-label="view"
+                                        ng-hide="selected.length"
+                                        ng-click="modal.openCreateUsersWizard()"
+                                        ng-controller="CreateUsersModalController as modal">
+                                    <md-icon>group_add</md-icon>
+                                    <md-tooltip>Create New Users</md-tooltip>
                                 </md-button>
-                                <md-button class="md-fab md-mini md-primary" aria-label="add new"
-                                           ui-sref="addEditClinic({passModelData : null, postMode:'addnew'})"
-                                           ng-show="!selected.length">
-                                    <md-icon>add</md-icon>
-                                    <md-tooltip>Add New</md-tooltip>
+                                <md-button class="md-fab md-mini md-primary btn-launch ng-scope"
+                                           ng-click="modal.openMapVmsWizard()"
+                                           ng-controller="MapVmsModalController as modal">
+                                    <md-icon><i class="material-icons">queue_play_next</i></md-icon>
+                                    <md-tooltip>Map VMs to users</md-tooltip>
                                 </md-button>
                                 <md-button class="md-fab md-mini md-primary" aria-label="edit"
-                                           ng-show="selected.length == 1"
-                                           ui-sref="addEditClinic({passModelData : selected[0], postMode: 'edit' })">
+                                           ng-show="selected.length"
+                                          ng-controller="EditUsersModalController as modal"
+                                          ng-click="modal.openEditUsersWizard({users:selected})">
                                     <md-icon>edit</md-icon>
                                     <md-tooltip>Edit</md-tooltip>
                                 </md-button>
-                                <md-button class="md-fab md-mini md-primary" aria-label="delete"
-                                           ng-show="selected.length" ng-click="deleteSelected($event, selected)">
-                                    <md-icon>delete</md-icon>
-                                    <md-tooltip>Delete</md-tooltip>
-                                </md-button>
-                                <md-button class="md-fab md-mini md-primary" aria-label="view"
-                                           ng-show="selected.length == 1"
-                                           ui-sref="viewClinic({passModelData : selected[0]})">
+                                 <md-button class="md-fab md-mini md-primary" aria-label="view"
+                                           ng-show="selected.length == 1">
                                     <md-icon>insert_drive_file</md-icon>
                                     <md-tooltip>View</md-tooltip>
+                                </md-button>
+                                <md-button class="md-fab md-mini md-primary" aria-label="delete"
+                                           ng-show="selected.length">
+                                    <md-icon>delete</md-icon>
+                                    <md-tooltip>Delete</md-tooltip>
                                 </md-button>
                             </section>
                         </section>
@@ -63,22 +64,35 @@
                             <table md-table md-row-select multiple ng-model="selected">
                                 <thead md-head md-order="query.order">
                                 <tr md-row>
-                                    <th md-column>User Name</th>
-                                    <th md-column>Email</th>
-                                    <th md-column>Computer</th>
-                                    <th md-column>Action</th>
+                                    <th md-column><span class="md-title">User Name</span></th>
+                                    <th md-column><span class="md-title">Email</span></th>
+                                    <th md-column><span class="md-title">Assigned Computer</span></th>
+                                    <th md-column><span class="md-title">Last Logon</span></th>
+                                    <th md-column><span class="md-title">Status</span></th>
                                 </tr>
                                 </thead>
                                 <tbody md-body>
                                 <tr md-row md-select="user" md-select-id="name" md-auto-select
                                     ng-repeat="user in ldapusers | filter: searchquery | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
-                                    <td md-cell>{$user.username$}</td>
-                                    <td md-cell>{$user.mail$}</td>
+                                    <td md-cell><span class="md-subhead">{$user.username$}</span></td>
+                                    <td md-cell><span class="md-body-2">{$user.mail$}</span></td>
                                     <td md-cell>
-                                        <span ng-if="user.computer != null">{$user.computer$}</span>
-                                        <span ng-if="user.computer == null">----</span>
+                                        <span class="md-body-2">
+                                            <span ng-if="user.computer != null">{$user.computer$}</span>
+                                            <span ng-if="user.computer == null">----</span>
+                                        </span>
                                     </td>
-                                    <td md-cell></td>
+                                    <td md-cell>
+                                         <span class="md-body-2">
+                                            <span ng-if="user.lastLogon == '1601-01-01 00:00:00+00:00'">
+                                                Never
+                                            </span>
+                                             <span ng-if="user.lastLogon != '1601-01-01 00:00:00+00:00'">
+                                                {$user.lastLogon | date $}
+                                            </span>
+                                         </span>
+                                    </td>
+                                    <td md-cell>{$user.status$}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -88,6 +102,7 @@
                                              md-total="{$ldapuserscount$}" md-page-select="true"
                                              md-boundary-links="true"></md-table-pagination>
 
+                    <pre>{$selected | json $}</pre>
                     </md-content>
                 </md-tab>
             </md-tabs>
