@@ -430,4 +430,12 @@ LDAP_ADMIN_USERNAME = "Administrator@naanal.local"
 
 LDAP_ADMIN_PASSWORD = "p@ssw0rd1"
 
-ENABLE_USERS_GROUP_DN = "cn=allow, ou=groups, ou=police, dc=naanal, dc=local"
+LDAP_SERVER_MACHINE_NAME = 'WIN-46RBIGNC9DF'
+
+LDAP_DNS = "naanal.local"
+
+LDAP_BASE_DIR = "ou=Police, dc=naanal, dc=local"
+
+DEFAULT_USERS_GROUP_DN = "cn=normalusers, ou=groups, ou=police, dc=naanal, dc=local"
+
+ALLOWED_USERS_GROUP_DN = "cn=allow, ou=groups, ou=police, dc=naanal, dc=local"
