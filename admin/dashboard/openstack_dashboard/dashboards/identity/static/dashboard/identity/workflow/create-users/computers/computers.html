@@ -1,0 +1,91 @@
+<style>
+    ._md-select-menu-container
+    {
+        z-index : 9000;
+    }
+    md-select {
+        margin: 0;
+    }
+    .md-virtual-repeat-container.md-autocomplete-suggestions-container{
+        z-index:5000 !important;
+    }
+</style>
+<div ng-controller="selectComputersController as ctrl">
+    <div class="row">
+        <div class="col-md-8">
+            <md-radio-group ng-model="model.newUserSpec.isAssignVm" ng-change="ctrl.getVMs()" required layout-padding="" layout="row" layout-xs="column" layout-align="center center">
+              <md-radio-button value="False" class="md-primary">Map VMs Later</md-radio-button>
+              <md-radio-button value="True" class="md-primary"
+                               ng-disabled="isShortage">
+                  Map VMs Now
+              </md-radio-button>
+            </md-radio-group>
+            <div ng-if="isShortage == true">
+                <p class="md-subhead" style="color:red">Only {$vmCount$} VMs available. But You entered {$model.newUserSpec.users.length$} users.  
+                <a href="" ng-click="ctrl.getVMs()">Refresh</a>
+                </p>
+            </div>
+            <div ng-if="model.newUserSpec.isAssignVm == 'False'">
+                <p class="md-subhead">
+                  <span ng-if="isShortage == true">  Don't Worry :) </span> You Could assign VMs later.
+                </p>
+            </div>
+            <div ng-if="model.newUserSpec.isAssignVm == 'True'">
+                <p class="md-subhead">
+                    Choose Option Below:
+                </p>
+                <md-radio-group ng-model="model.newUserSpec.isAutoMap" ng-change="ctrl.changedMode()" required layout="row" layout-xs="column">
+                  <md-radio-button value="True" class="md-primary">Auto</md-radio-button>
+                  <md-radio-button value="False" class="md-primary"> Manual </md-radio-button>
+                </md-radio-group>
+            </div>
+            <div class="row"  ng-if = "model.newUserSpec.isAutoMap == 'False' &amp;&amp; isShortage == false">
+                <div class="well">
+                    <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th class="col-md-5">User</th>
+                        <th class="col-md-7">Computer</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="user in model.newUserSpec.users">
+                        <td>
+                            {$user.username$}
+                        </td>
+                        <td>
+                              <md-autocomplete
+                                 md-no-cache="true"
+                                md-selected-item="ctrl['selectedComputer'+$index]"
+                                md-search-text="ctrl['computerSearchText' + $index]"
+                                md-items="item in ctrl.computerSearch(ctrl['computerSearchText' + $index])"
+                                md-item-text="item.computername"
+                                md-search-text-change="ctrl.computerTextChange(ctrl['computerSearchText' + $index])"
+                                md-selected-item-change="ctrl.selectedComputerChange(user,item,$index)"
+                                placeholder="Search Computers"
+                                 md-min-length="0">
+                                  placeholder="Choose Computer">
+                                <md-item-template>
+                                  <span md-highlight-text="ctrl['computerSearchText' + $index]">{$item.computername$}</span>
+                                </md-item-template>
+                                <md-not-found>
+                                  "{$ctrl.computerSearchText$}" not found.
+                                </md-not-found>
+                              </md-autocomplete>
+                        </td>
+                      </tr>
+                    </tbody>
+              </table>
+                <a href="" ng-click="ctrl.getVMs()">Refresh</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="well" ng-if="model.newUserSpec.isAssignVm == 'True' ">
+                <p>You could choose <i>auto</i> or <i>manual</i> Vm Mapping.</p>
+                <p><b>Auto Mapping</b> assign available computers in random manner</p>
+                <p><b>Manually Mapping</b> provides options to select available computers.</p>
+            </div>
+        </div>
+    </div>
+</div>

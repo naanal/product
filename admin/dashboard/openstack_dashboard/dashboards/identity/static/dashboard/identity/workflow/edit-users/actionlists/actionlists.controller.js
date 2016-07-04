@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 (function () {
   'use strict';
 
-  /**
-   * @ngdoc overview
-   * @name horizon.dashboard.identity.workflow
-   * @description
-   * module to host identity workflow modules.
-   */
   angular
-    .module('horizon.dashboard.identity.workflow', [
-      'horizon.dashboard.identity.workflow.map-vms',
-        'horizon.dashboard.identity.workflow.create-users',
-        'horizon.dashboard.identity.workflow.edit-users'
-    ]);
+    .module('horizon.dashboard.identity.workflow.edit-users')
+    .controller('selectActionsController', selectActionsController);
+
+  selectActionsController.$inject = [
+    'editUsersModel',
+    '$scope'
+  ];
+
+  function selectActionsController(editUsersModel,$scope) {
+      var ctrl = this;
+      ctrl.selectedUsers = $scope.launchContext.users;
+  }
 })();
