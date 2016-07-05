@@ -125,8 +125,8 @@
      *
      * @returns {Object} The result of the API call
      */
-    function disableUsers() {
-      return apiService.delete('/api/ldap/users/')
+    function disableUsers(data) {
+      return apiService.delete('/api/ldap/users/',data)
         .error(function () {
           toastService.add('error', gettext('Unable to disable the User.'));
         });

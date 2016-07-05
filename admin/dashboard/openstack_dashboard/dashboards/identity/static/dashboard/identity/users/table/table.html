@@ -1,4 +1,4 @@
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <div ng-controller="identityUsersTableController">
     <md-card>
@@ -54,7 +54,7 @@
                                     <md-tooltip>View</md-tooltip>
                                 </md-button>
                                 <md-button class="md-fab md-mini md-primary" aria-label="delete"
-                                           ng-show="selected.length">
+                                           ng-show="selected.length" ng-click="delete_user()" >
                                     <md-icon>delete</md-icon>
                                     <md-tooltip>Delete</md-tooltip>
                                 </md-button>

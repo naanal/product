@@ -101,10 +101,11 @@ class Users(generic.View):
         conn = bind()
         if conn.bind():
             for user in request.DATA['users']:
-                dn = getdn(user['username'], user['ou'])
-                response = disableUser(dn, conn)
+                dn = user['user_dn']
+                username=user['username']                
+                response = disableUser(dn, conn)                        
                 result.append(
-                    {"user": user['username'], "action": "disable",
+                    {"user": user['username'], "action": "Disable",
                      "status": response})
             unbind(conn)
             return result
