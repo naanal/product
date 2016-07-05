@@ -30,6 +30,7 @@ def loginpage(request):
     if request.POST:
         username = request.POST.get('username')
         password = request.POST.get('password')
+
         request.session['username'] = username
         user_name = '%s@naanal.local' % username
         password = password

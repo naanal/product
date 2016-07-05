@@ -30,37 +30,41 @@ def loginpage(request):
     if request.POST:
         username = request.POST.get('username')
         password = request.POST.get('password')
-        request.session['username'] = username
-        user_name = '%s@naanal.local' % username
-        password = password
-        print "-----------------------------------------------------------inside loginpage method---------------------------------------"
-        print "username::::"+user_name,"password::::"+password
-        try:
-            s = Server('windows-server', port=636, use_ssl=True, get_info=ALL)
-            conn = Connection(s, user=user_name, password=password, auto_bind=True)
-            print"------------------------------------------------------loginpage authentication--------------------------"
-            print conn
-            instance_name=get_assigned_computer(username)
-            status = instance_status(instance_name)
-            instance_id=get_instance_id(instance_name)
-            fixed=get_instance_ipaddress(instance_name)
-            floating_ip=get_instance_floatingip(instance_name)
-            console=vnc_console(instance_name)
-            print "instance_id:::::"+instance_id,"\n fixed::::"+fixed,"\n status:::"+status,"\n instance_name"+instance_name
-            print status           
-            if status =="ACTIVE":
-               
-               button_color = "btn btn-danger btn-xs"
-               print console
-            else:
-                button_color = "btn btn-success btn-xs "
-            rdp_file=download_RDP(username,instance_id,instance_name)
-            print "\n rdp_file:::"+rdp_file
-            return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'fixedip':fixed,'floatingip':floating_ip,'RDP_file':rdp_file,'button_color':button_color})
-        except ldap3.core.exceptions.LDAPBindError:           
-            state= 'Wrong username or password'
-        except ldap3.core.exceptions.LDAPSocketOpenError:
-            state= 'AD server not available'
+        if username and password:
+            request.session['username'] = username
+            user_name = '%s@naanal.local' % username
+            password = password
+            print "-----------------------------------------------------------inside loginpage method---------------------------------------"
+            print "username::::"+user_name,"password::::"+password
+            try:
+                s = Server('windows-server', port=636, use_ssl=True, get_info=ALL)
+                conn = Connection(s, user=user_name, password=password, auto_bind=True)
+                print"------------------------------------------------------loginpage authentication--------------------------"
+                print conn
+                instance_name=get_assigned_computer(username)
+                status = instance_status(instance_name)
+                instance_id=get_instance_id(instance_name)
+                fixed=get_instance_ipaddress(instance_name)
+                floating_ip=get_instance_floatingip(instance_name)
+                console=vnc_console(instance_name)
+                print "instance_id:::::"+instance_id,"\n fixed::::"+fixed,"\n status:::"+status,"\n instance_name"+instance_name
+                print status
+                if status =="ACTIVE":
+
+                   button_color = "btn btn-danger btn-xs"
+                   print console
+                else:
+                    button_color = "btn btn-success btn-xs "
+                rdp_file=download_RDP(username,instance_id,instance_name)
+                print "\n rdp_file:::"+rdp_file
+                return render_to_response('index.html',{'password':password, 'username': username,'instancename':instance_name,'instanceid':instance_id,'status':status,'console':console,'fixedip':fixed,'floatingip':floating_ip,'RDP_file':rdp_file,'button_color':button_color})
+            except ldap3.core.exceptions.LDAPBindError:
+                state= 'Wrong username or password'
+            except ldap3.core.exceptions.LDAPSocketOpenError:
+                state= 'AD server not available'
+        else:
+            state="username and password must be NOt Empty...!!!!"
+            return render_to_response('login.html', {'state': state})
     return render_to_response('login.html',{'state':state})
 
 
