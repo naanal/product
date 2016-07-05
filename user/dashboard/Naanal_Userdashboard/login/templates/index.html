@@ -128,15 +128,21 @@
                                           <input type="hidden" name="instance_name" value="{{instancename}}" />
 					                     <button class="{{button_color}} " data-toggle="tooltip" data-placement="right"  align="right" title="Power On/Off"><i class="fa fa-power-off" aria-hidden="true"></i></button>
                                          <a href="/static/RDP/{{RDP_file}}" class="btn btn-success btn-xs" download data-toggle="tooltip" data-placement="right" title="Download RDP File"><i class="fa fa-download" aria-hidden="true"> </i></a>
-
+                             </form>
+                          
+                            <form action="/stop/" method="POST">
                                           <input type="hidden" name="operation" value="reboot" />
                                           <input type="hidden" name="instance_id" value="{{instanceid}}" />
                                           <input type="hidden" name="user_name" value="{{username}}" />
                                           <input type="hidden" name="instance_name" value="{{instancename}}" />
                                           <button class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="right" align="middle" title="Restart"><i class="fa fa-history" aria-hidden="true"></i> </button>
-                             </form>
+                            </form>
+                   
+
+
 
                     </td>
+                    
 
                   </tr>
                   </tbody>

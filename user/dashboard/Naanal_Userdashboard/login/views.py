@@ -45,11 +45,11 @@ def loginpage(request):
             instance_id=get_instance_id(instance_name)
             fixed=get_instance_ipaddress(instance_name)
             floating_ip=get_instance_floatingip(instance_name)
-
+            console=vnc_console(instance_name)
             print "instance_id:::::"+instance_id,"\n fixed::::"+fixed,"\n status:::"+status,"\n instance_name"+instance_name
             print status           
             if status =="ACTIVE":
-               console=vnc_console(instance_name)
+               
                button_color = "btn btn-danger btn-xs"
                print console
             else:
@@ -174,15 +174,17 @@ def instance_stop(request):
            username = request.POST.get('user_name')
            instance_name=request.POST.get('instance_name')
            operation=request.POST.get('operation')
+           print operation
            username=str(username)
            rdp_file = download_RDP(username, instance_id, instance_name)
            nova=get_nova_keystone_auth()
            server = nova.servers.find(name=instance_name)
            status=str(server.status)
            print "\n instance_name:::"+instance_name,"\n instance_id::::"+instance_id
-           if status == 'ACTIVE':
+           if status == 'ACTIVE'and operation == 'start':
                print "------------instance stop-------------------"
                server.stop()
+               print operation
                status = instance_status(instance_name)
                timeout = time.time() + 4*5   # 5 minutes from now
                while status !='SHUTOFF':
@@ -192,11 +194,12 @@ def instance_stop(request):
                         break
                      test = test - 1
                button_color="btn btn-success btn-xs "
-               
-           elif status == 'SHUTOFF':
+               console=vnc_console(instance_name)
+           elif status == 'SHUTOFF' and operation == 'start':
                print "------------instance start-------------------"
                server.start()
                status = instance_status(instance_name)
+               print operation
                timeout = time.time() + 4*5   # 5 minutes from now
                while status !='ACTIVE':
                      status = instance_status(instance_name)
@@ -206,13 +209,13 @@ def instance_stop(request):
                      test = test - 1
                button_color="btn btn-danger btn-xs"
                console=vnc_console(instance_name)
-           elif operation == 'reboot':
+           elif operation == 'reboot' and status== 'ACTIVE':
                print "------------instance reboot-------------------"
                server.reboot(reboot_type='SOFT')
                status = instance_status(instance_name)
                timeout = time.time() + 4*5   # 5 minutes from now
                while status !='ACTIVE':
-                     status=instance_status(instance_id)
+                     status = instance_status(instance_name)
                      test = 0
                      if test == 5 or time.time() > timeout:
                         break
@@ -222,8 +225,13 @@ def instance_stop(request):
                console=console1['url']
                console=str(console)
                button_color = "btn btn-danger btn-xs"
-           elif operation == 'rdp':               
-               print rdp_file
+           else:              
+               Error="Unable to perform your operation..! Try after sometime..!"
+               if status =="ACTIVE":
+                  console=vnc_console(instance_name)
+                  button_color = "btn btn-danger btn-xs"
+               else:
+                  button_color = "btn btn-success btn-xs "
            fixed = get_instance_ipaddress(instance_name)
            floating_ip = get_instance_floatingip(instance_name)
            time.sleep(5)
@@ -276,7 +284,7 @@ def get_instance_ipaddress(instance_name):
     nova = get_nova_keystone_auth()
     server = nova.servers.find(name=instance_name)
     address = server.addresses
-    address = address['net04']
+    address = address['lan-net']
     fixed = address[0]
     fixed = fixed['addr']
     fixed=str(fixed)
@@ -288,7 +296,7 @@ def get_instance_floatingip(instance_name):
     nova = get_nova_keystone_auth()
     server = nova.servers.find(name=instance_name)
     address = server.addresses
-    address = address['net04']
+    address = address['lan-net']
     if len(address)==2:
         floating_ip = address[1]
         floating_ip = floating_ip['addr']
@@ -316,8 +324,8 @@ def get_nova_keystone_auth():
     user_domain_name = 'Default'
     project_name = 'admin'
     project_domain_name = 'Default'
-    password = 'admin'
-    project_id="359d91ddd8744d27be37e79401d7d9fd"
+    password = 'ADMIN'
+    project_id="b8380f9cb7054f518d3316de0b545853"
     auth =v3.Password(auth_url=auth_url,username=username1,password=password,project_id=project_id,
     user_domain_name=user_domain_name)
     sess = session.Session(auth=auth)
