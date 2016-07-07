@@ -1173,6 +1173,10 @@ class InstancesTable(tables.DataTable):
     name = tables.Column("name",
                          link="horizon:virtual:instances:detail",
                          verbose_name=_("Instance Name"))
+    
+    host = tables.Column("OS-EXT-SRV-ATTR:host",
+                         verbose_name=_("Host"),
+                         classes=('nowrap-col',))
     image_name = tables.Column("image_name",
                                verbose_name=_("Image Name"))
     ip = tables.Column(get_ips,

@@ -41,6 +41,14 @@
                                     <md-icon><i class="material-icons">queue_play_next</i></md-icon>
                                     <md-tooltip>Map VMs to users</md-tooltip>
                                 </md-button>
+
+
+                                <md-button class="md-fab md-mini md-primary btn-launch ng-scope"  ng-click="get_Computers()" >
+                                    <md-icon><i class="material-icons">queue_play_next</i></md-icon>
+                                    <md-tooltip>Unused /Available computers</md-tooltip>
+                                </md-button>
+
+
                                 <md-button class="md-fab md-mini md-primary" aria-label="edit"
                                            ng-show="selected.length"
                                           ng-controller="EditUsersModalController as modal"
@@ -59,9 +67,16 @@
                                     <md-tooltip>Delete</md-tooltip>
                                 </md-button>
                             </section>
-                        </section>
+                        </section>            
+                        <style>
+                                .disabled {
+                                        text-decoration: line-through;
+                                     }
+​                        </style>
+                        
+
                         <md-table-container>
-                            <table md-table md-row-select multiple ng-model="selected">
+                            <table md-table md-row-select multiple ng-model="selected" >
                                 <thead md-head md-order="query.order">
                                 <tr md-row>
                                     <th md-column><span class="md-title">User Name</span></th>
@@ -73,7 +88,7 @@
                                 </thead>
                                 <tbody md-body>
                                 <tr md-row md-select="user" md-select-id="name" md-auto-select
-                                    ng-repeat="user in ldapusers | filter: searchquery | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+                                    ng-repeat="user in ldapusers | filter: searchquery | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit" ng-class="{'disabled' : user.status=='514' || user.status=='66050'} ">
                                     <td md-cell><span class="md-subhead">{$user.username$}</span></td>
                                     <td md-cell><span class="md-body-2">{$user.mail$}</span></td>
                                     <td md-cell>
@@ -92,17 +107,58 @@
                                             </span>
                                          </span>
                                     </td>
-                                    <td md-cell>{$user.status$}</td>
+                                    <td md-cell>                                    
+                                    <span ng-if="user.status=='512' || user.status=='66048'"> Enabled</span>
+                                    <span ng-if="user.status=='514' || user.status=='66050'"> Disabled</span>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </md-table-container>
+                        
 
                         <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page"
                                              md-total="{$ldapuserscount$}" md-page-select="true"
                                              md-boundary-links="true"></md-table-pagination>
+                    </md-content>
 
-                    <pre>{$selected | json $}</pre>
+
+                </md-tab>
+                <md-tab label="Computers">
+                    <md-content class="md-padding">
+                        <section layout="row" layout-xs="column">
+        <md-select ng-model="selectedOption" ng-init="selectedOption = 'available'" style="min-width: 200px;">
+                              <md-option ng-value="item.value" ng-repeat="item in sortOptions">{$item.name$}</md-option>
+                            </md-select>
+                        </section>         
+
+                        <md-table-container>
+                            <table md-table multiple ng-model="selected" >
+                                <thead md-head md-order="query.order">
+                                <tr md-row>
+                                    <th md-column><span class="md-title">Computer</span></th>
+                                    <th md-column><span class="md-title">Status</span></th>
+                                </tr>
+                                </thead>
+                                <tbody md-body>
+                                <tr md-row ng-repeat="computer in allComputers | filter:customFilter" >                                  
+                                    <td md-cell>
+                                    {$computer.computername$}                              
+                                    </td>
+
+                                    <td md-cell>
+                                    {$computer.status$}
+                                    </td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </md-table-container>
+                        
+
+                        <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page"
+                                             md-total="{$ldapuserscount$}" md-page-select="true"
+                                             md-boundary-links="true"></md-table-pagination>
                     </md-content>
                 </md-tab>
             </md-tabs>

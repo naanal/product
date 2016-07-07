@@ -128,6 +128,9 @@ class IndexView(tables.DataTableView):
                     msg = ('Unable to retrieve flavor "%s" for instance "%s".'
                            % (flavor_id, instance.id))
                     LOG.info(msg)
+                print "*****************************************"
+                print instances
+                print type(instances)
         return instances
 
     def get_filters(self, filters):

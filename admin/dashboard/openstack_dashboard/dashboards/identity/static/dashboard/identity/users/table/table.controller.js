@@ -72,9 +72,41 @@
             }
             console.log(res)
           })
-
-
         }
+
+
+        $scope.get_Computers=function(){
+          console.log("inside the get get_availablevms method")
+          ldapAPI.getComputers()
+          .then(function(res){                    
+            $scope.allComputers=res.data;            
+          })
+        }
+        $scope.sortOptions = [
+          {
+            "name": "All Computers",
+            "value": "all"
+          },
+          {
+            "name": "Available Conmputers",
+            "value": "available"
+          },
+          {
+            "name":"Assigned Computers",
+            "value" : "not available"
+          }
+
+        ];
+    
+       $scope.customFilter = function (data) {
+          if (data.status === $scope.selectedOption) {
+            return true;
+          } else if($scope.selectedOption == 'all') {
+              return true;
+          } else {
+            return false;
+          }
+        };  
 
       $rootScope.retieveLdapUsers = function(){
            Spinner.showModalSpinner(gettext("Retrieving Users...."));
@@ -88,6 +120,7 @@
           });
       }
       $rootScope.retieveLdapUsers();
+      $scope.get_Computers();
   }
 
 })();
