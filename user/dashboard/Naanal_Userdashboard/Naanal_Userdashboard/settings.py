@@ -102,3 +102,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+LDAP_SERVER = "172.30.1.197"
+
+LDAP_SERVER_PORT = 636
+
+LDAP_SSL = True
+
+LDAP_ADMIN_USERNAME = "Administrator@naanal.local"
+
+LDAP_ADMIN_PASSWORD = "p@ssw0rd1"
+
+LDAP_DNS = "naanal.local"
+
+LDAP_BASE_DIR = "ou=Police, dc=naanal, dc=local"
+
+OPENSTACK_USERNAME="admin"
+OPENSTACK_PASSWORD="ADMIN"
+OPENSTACK_PROJECT_NAME="admin"

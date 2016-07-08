@@ -18,6 +18,7 @@ from django.contrib.sessions.models import Session
 import ldap3
 from ldap3 import Server, Connection, SUBTREE, ALL, ALL_ATTRIBUTES, \
     ALL_OPERATIONAL_ATTRIBUTES, MODIFY_REPLACE, MODIFY_ADD
+from django.conf import settings
 
 
 
@@ -236,6 +237,7 @@ def instance_stop(request):
                   button_color = "btn btn-danger btn-xs"
                else:
                   button_color = "btn btn-success btn-xs "
+                  console = vnc_console(instance_name)
            fixed = get_instance_ipaddress(instance_name)
            floating_ip = get_instance_floatingip(instance_name)
            time.sleep(5)
@@ -269,10 +271,8 @@ def get_assigned_computer(username):
 
 
 def bind():
-    s = Server('windows-server', port=636, use_ssl=True, get_info=ALL)
-    admin_username = 'Administrator@naanal.local'
-    admin_password = 'p@ssw0rd1'
-    conn = Connection(s, user=admin_username, password=admin_password, auto_bind=True)    
+    s = Server(settings.LDAP_SERVER, port=settings.LDAP_SERVER_PORT,use_ssl=settings.LDAP_SSL, get_info=ALL)
+    conn = Connection(s, user=settings.LDAP_ADMIN_USERNAME,password=settings.LDAP_ADMIN_PASSWORD, auto_bind=True)
     return conn
 
 def get_instance_id(instance_name):
@@ -287,10 +287,11 @@ def get_instance_ipaddress(instance_name):
     fixed=''
     nova = get_nova_keystone_auth()
     server = nova.servers.find(name=instance_name)
-    address = server.addresses
-    address = address['lan-net']
-    fixed = address[0]
-    fixed = fixed['addr']
+    network = server.networks
+    for network_name in network:
+        network_name = network_name
+    ip = network[network_name]
+    fixed = ip[0]
     fixed=str(fixed)
     return(fixed)
 
@@ -299,15 +300,15 @@ def get_instance_floatingip(instance_name):
     floating_ip=''
     nova = get_nova_keystone_auth()
     server = nova.servers.find(name=instance_name)
-    address = server.addresses
-    address = address['lan-net']
-    if len(address)==2:
-        floating_ip = address[1]
-        floating_ip = floating_ip['addr']
-        floating_ip = str(floating_ip)
+    network=server.networks
+    for network_name in network:
+        network_name=network_name
+    ip = network[network_name]
+    if len(ip)==2:
+        floating_ip=ip[1]
+        floating_ip=str(floating_ip)
     else:
         floating_ip=''
-    print floating_ip
 
     return(floating_ip)
 
@@ -324,14 +325,9 @@ def instance_status(instance_name):
 
 def get_nova_keystone_auth():
     auth_url = 'http://controller:35357/v3'
-    username1 = 'admin'
     user_domain_name = 'Default'
-    project_name = 'admin'
-    project_domain_name = 'Default'
-    password = 'ADMIN'
-    project_id="b8380f9cb7054f518d3316de0b545853"
-    auth =v3.Password(auth_url=auth_url,username=username1,password=password,project_id=project_id,
-    user_domain_name=user_domain_name)
+    auth =v3.Password(auth_url=auth_url,username=settings.OPENSTACK_USERNAME,password=settings.OPENSTACK_PASSWORD,project_name=settings.OPENSTACK_PROJECT_NAME,
+    user_domain_name=user_domain_name,project_domain_name='default')
     sess = session.Session(auth=auth)
     keystone = ksclient.Client(session=sess)
     keystone.projects.list()
