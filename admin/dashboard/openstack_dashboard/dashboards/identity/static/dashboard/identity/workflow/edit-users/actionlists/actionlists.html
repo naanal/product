@@ -3,13 +3,13 @@
 		Choose Actioos :
 	</h4>
 	<div layout-xs="column" layout="row" layout-wrap="" layout-padding="">
-		<md-checkbox ng-model="data.cb1" flex="40" aria-label="Change Password">
+		<md-checkbox ng-model="model.newEditSpec.change_pswd" flex="40" aria-label="Change Password">
     	Change Password
 	  	</md-checkbox>
-		<md-checkbox ng-model="data.cb2" flex="40" aria-label="Change Computer">
+		<md-checkbox ng-model="model.newEditSpec.isChangeComputer" flex="40" aria-label="Change Computer">
 	    	Change Computer
 	  	</md-checkbox>
-		<md-checkbox ng-model="data.cb3" flex="40" aria-label="Rename">
+		<md-checkbox ng-model="model.newEditSpec.change_dn" flex="40" aria-label="Rename">
 	    	Change Common Name
 	  	</md-checkbox>
 	  	<md-checkbox ng-model="data.cb4" flex="40" aria-label="Enable Users">
@@ -31,4 +31,5 @@
 			</div>
 		</div>
 	</div>
+	<pre>{$ model.newEditSpec | json $}</pre>
 </div>

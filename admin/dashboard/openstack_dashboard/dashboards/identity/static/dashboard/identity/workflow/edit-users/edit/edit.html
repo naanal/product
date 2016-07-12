@@ -1,0 +1,39 @@
+<div ng-controller="editUserController as ctrl">
+    <div class="row">
+       
+    
+      <div ng-if="model.newEditSpec.change_pswd" md-padding="">
+        <h3 class="md-title">Change Password</h3>
+       <!--  <md-divider></md-divider> -->
+         <md-input-container class="md-block" ng-if="model.newEditSpec.change_pswd" >
+            <label>Enter the Reset Password for selected User</label>
+            <md-icon class="material-icon">lock</md-icon>
+            <input required ng-model="model.newEditSpec.password" type="password" name="userPassword" minlength="8" ng-pattern="/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]/"/>
+            <div ng-messages="addUsersForm.userPassword.$error" multiple md-auto-hide="false">
+              <div ng-message="required">
+                Password is Required.
+              </div>
+                <div ng-message="minlength">
+                password must at least 8 character long.
+              </div>
+              <div ng-message="pattern">
+                Password must contain at least 1 Special Character and 1 number.
+              </div>
+            </div>
+
+        </md-input-container>
+      </div>
+
+      <div ng-if="model.newEditSpec.change_dn" md-padding="">
+        <h3 class="md-title">Change Common Name</h3>
+      <!--   <md-divider></md-divider> -->
+      </div>
+
+      <div ng-if="model.newEditSpec.isChangeComputer" md-padding="">
+        <h3 class="md-title">Change Computer</h3>
+       <!--  <md-divider></md-divider> -->
+      </div>
+  
+    </div>    
+    <pre>{$ model.newEditSpec | json $}</pre>
+</div>

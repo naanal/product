@@ -18,16 +18,15 @@
 
   angular
     .module('horizon.dashboard.identity.workflow.edit-users')
-    .controller('selectActionsController', selectActionsController);
+    .controller('EditUserVerifyController', EditUserVerifyController);
 
-  selectActionsController.$inject = [
+  EditUserVerifyController.$inject = [
     'editUsersModel',
     '$scope'
   ];
 
-  function selectActionsController(editUsersModel,$scope) {
-      var ctrl = this;      
-      ctrl.selectedUsers = $scope.launchContext.users;
-      
+  function EditUserVerifyController(editUsersModel,$scope) {
+  	  var ctrl = this;      
+      ctrl.selectedUsers = $scope.launchContext.users;      
   }
 })();

@@ -24,10 +24,12 @@
     return service;
 
     function open(launchContext) {
+      console.log("create-users---create-users,modal.controller.js---->5")
       var localSpec = {
         resolve: {
           launchContext: function () {
             return launchContext;
+
           }
         }
       };
@@ -35,6 +37,7 @@
       angular.extend(localSpec, modalSpec);
 
       var createUsersModal = $modal.open(localSpec);
+      console.log("create-users------2")
       var handleModalClose = function (redirectPropertyName) {
         return function () {
           if (launchContext && launchContext[redirectPropertyName]) {

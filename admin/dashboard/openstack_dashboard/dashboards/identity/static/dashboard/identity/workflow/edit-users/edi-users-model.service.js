@@ -66,9 +66,7 @@
       initializing: false,
       initialized: false,
 
-      newUserSpec: {},
-      singleUser: {},
-      isCurrentModelPushed: false,
+      newEditSpec: {},
       /**
        * cloud service properties, they should be READ-ONLY to all UI controllers
        */
@@ -84,11 +82,12 @@
     // Local function.
     function initializeNewMappingSpec() {
 
-      model.singleUser = {},
-      model.newUserSpec = {
+      model.newEditSpec = {
         users: [],
-        isAssignVm: "False",
-        isAutoMap: "True"
+        password:"",        
+        change_pswd: false,
+        isChangeComputer: false,
+        change_dn: false
       };
 
     }

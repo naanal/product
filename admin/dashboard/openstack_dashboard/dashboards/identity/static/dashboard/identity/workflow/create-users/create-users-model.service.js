@@ -141,6 +141,7 @@
     }
 
     function createUsers() {
+      console.log("create-users.module.service.js")
         if(model.singleUser.hasOwnProperty('username') && model.isCurrentModelPushed == false)
             model.newUserSpec.users.push(model.singleUser);
         Spinner.showModalSpinner(gettext("Creating....."));
