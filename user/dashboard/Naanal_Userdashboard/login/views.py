@@ -1,20 +1,12 @@
-from django.shortcuts import render
+
 from django.shortcuts import render_to_response
-from django.http import HttpResponse
-import ldap
-import ldap.modlist as modlist
-import base64
-import MySQLdb
 from keystoneclient.auth.identity import v3
 from keystoneclient import session
 from keystoneclient.v3 import client as ksclient
-from novaclient import client
 import time
-import unicodedata
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
 import os
-from django.contrib.sessions.models import Session
 import ldap3
 from ldap3 import Server, Connection, SUBTREE, ALL, ALL_ATTRIBUTES, \
     ALL_OPERATIONAL_ATTRIBUTES, MODIFY_REPLACE, MODIFY_ADD
@@ -94,7 +86,7 @@ def index_page(request):
            instance_id = get_instance_id(instance_name)
            fixed = get_instance_ipaddress(instance_name)
            floating_ip = get_instance_floatingip(instance_name)
-           rdp_file = download_RDP(username, instance_id, instance_name)
+           rdp_file = username+".rdp"
            if status == "ACTIVE":
                console = vnc_console(instance_name)
                button_color = "btn btn-danger btn-xs"
@@ -181,7 +173,7 @@ def instance_stop(request):
            operation=request.POST.get('operation')
            print operation
            username=str(username)
-           rdp_file = download_RDP(username, instance_id, instance_name)
+           rdp_file = username+".rdp"
            nova=get_nova_keystone_auth()
            server = nova.servers.find(name=instance_name)
            status=str(server.status)
@@ -346,7 +338,7 @@ def vnc_console(instance_name):
 def download_RDP(username,instance_id,instance_name):
     fixed =''
     floating_ip=get_instance_floatingip(instance_name)
-    file_name="login/static/RDP/"+username+".rdp"
+    file_name = os.path.join(settings.BASE_DIR,'static/RDP/'+username+".rdp")
     Rdpname=username+".rdp"
     content="auto connect:i:1\nfull address:s:%s\nusername:s:%s\n" % (floating_ip, username)     
     fo = open(file_name, "wb")
