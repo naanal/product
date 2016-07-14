@@ -39,6 +39,7 @@
       getAvailableUsers: getAvailableUsers,
       createUsers: createUsers,
       disableUsers: disableUsers,
+      enableUsers: enableUsers,
       getComputers: getComputers,
       getAvailableComputers: getAvailableComputers,
       mapUserToVm: mapUserToVm,
@@ -132,6 +133,27 @@
           toastService.add('error', gettext('Unable to disable the User.'));
         });
     }
+
+    /**
+     * @name enableUsers
+     * @description
+     * enableUsers List of Users.
+     *
+     * @param {array of object} users
+     * Users to enableUsers.
+     *
+     * @param {string} dn
+     * Distinguished name of the user
+     *
+     * @returns {Object} The result of the API call
+     */
+    function enableUsers(data) {
+      return apiService.delete('/api/ldap/users/',data)
+        .error(function () {
+          toastService.add('error', gettext('Unable to disable the User.'));
+        });
+    }
+
 
     
      // Computers

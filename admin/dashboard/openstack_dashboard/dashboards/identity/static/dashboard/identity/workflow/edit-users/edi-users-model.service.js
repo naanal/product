@@ -155,9 +155,9 @@
           var res = response.data;
           for(var i=0;i<res.length;i++) {
               if (res[i].status.includes("success"))
-                  toast.add('success', res[i].status);
+                  toast.add('success', res[i].user+" "+res[i].action+" "+res[i].status);
               else
-                  toast.add('danger', res[i].status);
+                  toast.add('danger',res[i].user+" "+res[i].action+" "+res[i].status);
           }
     }
       function Failed(){

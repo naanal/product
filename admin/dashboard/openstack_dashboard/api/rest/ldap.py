@@ -97,6 +97,24 @@ class Users(generic.View):
         except KeyError as e:
             raise rest_utils.AjaxError(400, 'missing required parameter '
                                             "'%s'" % e.args[0])
+        enable=request.DATA['enable']
+        # Enable user 
+        if(enable==True): 
+            result = []
+            conn = bind()
+            if conn.bind():
+                for user in request.DATA['users']:
+                    dn = user['user_dn']
+                    username=user['username']                
+                    response = enableUser(dn, conn)                     
+                    result.append(
+                        {"user": user['username'], "action": "Enable",
+                         "status": response})
+                unbind(conn)
+                return result
+            else:
+                return "Authentication Failed"
+
         result = []
         conn = bind()
         if conn.bind():
@@ -160,7 +178,7 @@ class Users(generic.View):
                     change_userPrincipalNameStatus = change_userPrincipalName(dn, new_username, conn)
                     change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username, conn)                
                     change_dnstatus = change_userDN(dn, new_username, conn)               
-                    result.append({"user": dn,"action": "change_commonName","status": change_dnstatus})                     
+                    result.append({"user": username,"action": "change_commonName","status": change_dnstatus})                     
                 unbind(conn)
                 return result
             else:
@@ -183,7 +201,7 @@ class Users(generic.View):
                     change_userPrincipalNameStatus = change_userPrincipalName(dn, new_username, conn)
                     change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username, conn)                
                     change_dnstatus = change_userDN(dn, new_username, conn)               
-                    result.append({"user": dn,"action": "change_commonName","status": change_dnstatus})                     
+                    result.append({"user": username,"action": "change_commonName","status": change_dnstatus})                     
                 unbind(conn)
                 return result
             else:
@@ -205,7 +223,7 @@ class Users(generic.View):
                     change_userPrincipalNameStatus = change_userPrincipalName(dn, new_username, conn)
                     change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username, conn)                
                     change_dnstatus = change_userDN(dn, new_username, conn)               
-                    result.append({"user": dn,"action": "change_commonName","status": change_dnstatus})                     
+                    result.append({"user": username,"action": "change_commonName","status": change_dnstatus})                     
                 unbind(conn)
                 return result
             else:
@@ -226,7 +244,7 @@ class Users(generic.View):
                     changepasswordStatus= changePassword(dn, password, conn)
                     result.append({"user": dn,"action": "change_password","status": changepasswordStatus}) 
                     change_computerstatus=mapUserToVm(dn,computer,conn)
-                    result.append({"user": dn,"action": "change_computer","status": change_computerstatus})                                 
+                    result.append({"user": username,"action": "change_computer","status": change_computerstatus})                                 
                 unbind(conn)
                 return result
             else:
@@ -243,7 +261,7 @@ class Users(generic.View):
                     #password=user['password']
                     password = str(password)                    
                     changepasswordStatus= changePassword(dn, password, conn)
-                    result.append({"user": dn,"action": "change_password","status": changepasswordStatus})                                          
+                    result.append({"user": username,"action": "change_password","status": changepasswordStatus})                                          
                 unbind(conn)
                 return result
             else:
@@ -258,7 +276,7 @@ class Users(generic.View):
                     dn=user['dn']
                     computer=user['new_computer']                            
                     change_computerstatus=mapUserToVm(dn,computer,conn)
-                    result.append({"user": dn,"action": "change_computer","status": change_computerstatus}) 
+                    result.append({"user": username,"action": "change_computer","status": change_computerstatus}) 
                 unbind(conn)
                 return result
             else:
@@ -276,15 +294,11 @@ class Users(generic.View):
                     change_userPrincipalNameStatus = change_userPrincipalName(dn, new_username, conn)
                     change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username, conn)                
                     change_dnstatus = change_userDN(dn, new_username, conn)               
-                    result.append({"user": dn,"action": "change_commonName","status": change_dnstatus})                     
+                    result.append({"user": username,"action": "change_commonName","status": change_dnstatus})                     
                 unbind(conn)
                 return result
             else:
                 return "Authentication Failed"
-
-
-
-
 
 @urls.register
 class AvailableUsers(generic.View):

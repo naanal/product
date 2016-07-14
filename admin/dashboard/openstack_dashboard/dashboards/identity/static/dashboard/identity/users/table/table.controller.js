@@ -47,7 +47,7 @@
           page: 1
         };
         $scope.delete_user=function(){     
-          var delete_user={"users":[]};
+          var delete_user={"users":[],"enable":false,};
           var users=[];
           var selected=[];
           selected=$scope.selected          
@@ -60,6 +60,38 @@
         
           console.log(delete_user)
           ldapAPI.disableUsers(delete_user)
+          .then(function(res){
+            $rootScope.retieveLdapUsers();
+            var res = res.data;
+            for(var i=0;i<res.length;i++) {
+              if (res[i].status.includes("success"))   
+                
+                toast.add('success', res[i].user+" "+res[i].action+" "+res[i].status);
+              else                
+                toast.add('danger',res[i].user+" "+res[i].action+" "+res[i].status);
+            }
+            console.log(res)
+          })
+        }
+
+
+
+
+        $scope.enable_user=function(){     
+          var enable_user={"users":[],"enable":true,};
+          var users=[];
+
+          var selected=[];
+          selected=$scope.selected          
+          for(var i=0;i<selected.length;i++)             
+          {
+            var user_dn={}
+            user_dn={user_dn:selected[i].user_dn,username:selected[i].username}                   
+            enable_user.users.push(user_dn)            
+          }         
+        
+          console.log(enable_user)
+          ldapAPI.enableUsers(enable_user)
           .then(function(res){
             $rootScope.retieveLdapUsers();
             var res = res.data;
