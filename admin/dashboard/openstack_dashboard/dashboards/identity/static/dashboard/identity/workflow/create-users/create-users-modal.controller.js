@@ -18,8 +18,7 @@
     ctrl.openCreateUsersWizard = openCreateUsersWizard;
 
     function openCreateUsersWizard(launchContext) {
-      modalService.open(launchContext);
-      console.log("create-users.modal.controller.js------>3")
+      modalService.open(launchContext);      
     }
   }
 

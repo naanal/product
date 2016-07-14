@@ -27,6 +27,21 @@
 
   function EditUserVerifyController(editUsersModel,$scope) {
   	  var ctrl = this;      
-      ctrl.selectedUsers = $scope.launchContext.users;      
+      ctrl.selectedUsers = $scope.launchContext.users;
+      ctrl.onTheAirDelete=onTheAirDelete;        
+      function onTheAirDelete(index){
+           editUsersModel.newEditSpec.users.splice(index,1);
+      }
+
+      for(var i=0;i<$scope.launchContext.users.length;i++){
+        var temp = { 
+          'name':$scope.launchContext.users[i].username,
+          'dn': $scope.launchContext.users[i].user_dn,
+          'computer': $scope.launchContext.users[i].computer,
+          'mail': $scope.launchContext.users[i].mail,
+         }
+
+          editUsersModel.newEditSpec.users.push(temp);
+      }      
   }
 })();

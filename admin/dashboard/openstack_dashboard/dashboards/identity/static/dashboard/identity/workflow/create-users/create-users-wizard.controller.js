@@ -29,8 +29,7 @@
     'horizon.dashboard.identity.workflow.create-users.workflow'
   ];
 
-  function CreateUsersWizardController($scope, createUsersModel, createUsersWorkflow) {
-    console.log("create-users----create-users-wizard-controller.js--->1")
+  function CreateUsersWizardController($scope, createUsersModel, createUsersWorkflow) {    
     // Note: we set these attributes on the $scope so that the scope inheritance used all
     // through the launch instance wizard continues to work.
     $scope.workflow = createUsersWorkflow;     // eslint-disable-line angular/controller-as

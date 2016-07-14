@@ -28,6 +28,15 @@
   function selectActionsController(editUsersModel,$scope) {
       var ctrl = this;      
       ctrl.selectedUsers = $scope.launchContext.users;
-      
+      console.log($scope.launchContext.users.length)       
+      for(var i=0;i>$scope.launchContext.users.length;i++){
+        console.log(i)
+        var temp = { 
+          'name':$scope.launchContext.users[i].username,
+          'dn': $scope.launchContext.users[i].user_dn,
+          'computer': $scope.launchContext.users[i].computer,
+         }          
+          editUsersModel.newEditSpec.users.push(temp);            
+      }      
   }
 })();

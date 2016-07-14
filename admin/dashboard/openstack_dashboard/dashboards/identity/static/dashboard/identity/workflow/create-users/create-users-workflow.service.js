@@ -28,8 +28,7 @@
     'horizon.app.core.workflow.factory'
   ];
 
-  function createUsersWorkflow(basePath, dashboardWorkflow) {
-    console.log("create-users---- create-users-workflow.service.js--->2")
+  function createUsersWorkflow(basePath, dashboardWorkflow) {    
     return dashboardWorkflow({
       title: gettext('Create Users'),
 

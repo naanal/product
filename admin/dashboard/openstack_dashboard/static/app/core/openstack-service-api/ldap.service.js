@@ -41,7 +41,8 @@
       disableUsers: disableUsers,
       getComputers: getComputers,
       getAvailableComputers: getAvailableComputers,
-      mapUserToVm: mapUserToVm
+      mapUserToVm: mapUserToVm,
+      editUsersAttributes: editUsersAttributes
     };
 
     return service;
@@ -193,6 +194,24 @@
       return apiService.post('/api/ldap/map/',data)
         .error(function () {
           toastService.add('error', gettext('Unable to map user to computer.'));
+        });
+    }
+
+    // Edit the user Attributes
+
+    /**
+     * @users{array of users}
+     * @change_password=true -->For reset the selected user password
+     * @change_computer=true -->For change the selected user working machine from available computers
+     * @change_commonName=true --> For change selected user DN 
+     * @password
+     *
+     * @returns {Object} The result of the API call
+     */
+    function editUsersAttributes(data) {
+      return apiService.patch('/api/ldap/users/',data)
+        .error(function () {
+          toastService.add('error', gettext('Unable to Edit user Details..'));
         });
     }
 

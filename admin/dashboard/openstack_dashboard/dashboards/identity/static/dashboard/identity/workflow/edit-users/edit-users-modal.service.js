@@ -13,7 +13,8 @@
   EditUsersModalService.$inject = [
     '$modal',
     '$window',
-    'horizon.dashboard.identity.workflow.edit-users.modal-spec'
+    'horizon.dashboard.identity.workflow.edit-users.modal-spec',
+    'horizon.framework.widgets.modal-wait-spinner.service'
   ];
 
   function EditUsersModalService($modal, $window, modalSpec) {

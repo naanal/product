@@ -1,11 +1,22 @@
+<style>
+    ._md-select-menu-container
+    {
+        z-index : 9000;
+    }
+    md-select {
+        margin: 0;
+    }
+    .md-virtual-repeat-container.md-autocomplete-suggestions-container{
+        z-index:5000 !important;
+    }
+</style>
 <div ng-controller="editUserController as ctrl">
     <div class="row">
        
-    
-      <div ng-if="model.newEditSpec.change_pswd" md-padding="">
+      <div ng-if="model.newEditSpec.change_password" md-padding="">
         <h3 class="md-title">Change Password</h3>
        <!--  <md-divider></md-divider> -->
-         <md-input-container class="md-block" ng-if="model.newEditSpec.change_pswd" >
+         <md-input-container class="md-block" >
             <label>Enter the Reset Password for selected User</label>
             <md-icon class="material-icon">lock</md-icon>
             <input required ng-model="model.newEditSpec.password" type="password" name="userPassword" minlength="8" ng-pattern="/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]/"/>
@@ -22,18 +33,64 @@
             </div>
 
         </md-input-container>
-      </div>
+      </div>     
 
-      <div ng-if="model.newEditSpec.change_dn" md-padding="">
+      <div ng-if="model.newEditSpec.change_commonName" md-padding="">
+
         <h3 class="md-title">Change Common Name</h3>
-      <!--   <md-divider></md-divider> -->
-      </div>
+    
+       <div ng-repeat="user in model.newEditSpec.users" layout="row" layout-align="center center">
 
-      <div ng-if="model.newEditSpec.isChangeComputer" md-padding="">
+           <p flex="30" class="md-block">Old Name: {$user.name$}</p>  
+
+            <md-input-container class="md-block" flex="40">
+                <label>Enter the New UserName</label>
+                <input required ng-model="user.new_username" >  
+            </md-input-container>
+       </div>
+       </div>
+
+      <div ng-if="model.newEditSpec.change_computer" md-padding="">
+
         <h3 class="md-title">Change Computer</h3>
-       <!--  <md-divider></md-divider> -->
-      </div>
-  
+          <div class="well">
+                    <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th class="col-md-5">User</th>
+                        <th class="col-md-6">Computer</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="user in model.newEditSpec.users">
+                        <td>
+                            {$user.name$}
+                        </td>
+                        <td>
+                              <md-autocomplete
+                                 md-no-cache="true"
+                                md-selected-item="ctrl['selectedComputer'+$index]"
+                                md-search-text="ctrl['computerSearchText' + $index]"
+                                md-items="item in ctrl.computerSearch(ctrl['computerSearchText' + $index])"
+                                md-item-text="item.computername"
+                                md-search-text-change="ctrl.computerTextChange(ctrl['computerSearchText' + $index])"
+                                md-selected-item-change="ctrl.selectedComputerChange(user,item,$index)"
+                                placeholder="Search Computers"
+                                 md-min-length="0" ng-model="user.new_computer">
+                                  placeholder="Choose Computer">
+                                <md-item-template>
+                                  <span md-highlight-text="ctrl['computerSearchText' + $index]" >{$item.computername$}</span>
+                                </md-item-template>
+                                <md-not-found>
+                                  "{$ctrl.computerSearchText$}" not found.
+                                </md-not-found>
+                              </md-autocomplete>
+                        </td>
+                      </tr>
+                    </tbody>
+              </table>
+          </div>
+
     </div>    
-    <pre>{$ model.newEditSpec | json $}</pre>
+    
 </div>

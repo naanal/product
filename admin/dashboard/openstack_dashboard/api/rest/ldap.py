@@ -121,153 +121,166 @@ class Users(generic.View):
         try:
             args = (
                 request,
+                request.DATA['users'],
                 request.DATA['change_password'],
                 request.DATA['change_commonName'],
-                request.DATA['change_computer']
+                request.DATA['change_computer'],
+                request.DATA['password']
             )
         except KeyError as e:
             raise rest_utils.AjaxError(400, 'missing required parameter'
                                             "'%s'" % e.args[0])
 
+        users = request.DATA['users']
         change_password = request.DATA['change_password']        
         change_computer = request.DATA['change_computer']
-        change_commonName = request.DATA['change_commonName']  
+        change_commonName = request.DATA['change_commonName'] 
+        password= request.DATA['password']
         print "---------------------Inside the patch method---------"      
-        print change_password,change_computer,change_commonName
+        print change_password,change_computer,change_commonName,password,users
+        
+       
+        if(change_password==True and change_commonName==True and change_computer==True):           
+            print "-------------Inside all true----------------" 
+            result = [] 
+            conn = bind()
+            if conn.bind():
+                for user in users:
+                    username = user['name']
+                    dn=user['dn']
+                    computer=user['new_computer']
+                    new_username=user['new_username']
+                    #password=user['password']
+                    password = str(password)
+                    print username,dn,computer,new_username,password                   
+                    changepasswordStatus= changePassword(dn, password, conn)
+                    result.append({"user": dn,"action": "change_password","status": changepasswordStatus}) 
+                    change_computerstatus=mapUserToVm(dn,computer,conn)
+                    result.append({"user": dn,"action": "change_computer","status": change_computerstatus}) 
+                    change_userPrincipalNameStatus = change_userPrincipalName(dn, new_username, conn)
+                    change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username, conn)                
+                    change_dnstatus = change_userDN(dn, new_username, conn)               
+                    result.append({"user": dn,"action": "change_commonName","status": change_dnstatus})                     
+                unbind(conn)
+                return result
+            else:
+                return "Authentication Failed"
 
-        if(change_password=="True" and change_commonName=="True" and change_computer=="True"):
-            print "-------------Inside all true----------------"
+           
+
+        elif(change_commonName==True and change_computer==True):
+            print "--------------------Inside the changecommonNAme and change computer=True-------------"               
+            result = [] 
+            conn = bind()
+            if conn.bind():
+                for user in users:
+                    username = user['name']
+                    dn=user['dn']
+                    computer=user['new_computer']
+                    new_username=user['new_username']
+                    change_computerstatus=mapUserToVm(dn,computer,conn)
+                    result.append({"user": dn,"action": "change_computer","status": change_computerstatus}) 
+                    change_userPrincipalNameStatus = change_userPrincipalName(dn, new_username, conn)
+                    change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username, conn)                
+                    change_dnstatus = change_userDN(dn, new_username, conn)               
+                    result.append({"user": dn,"action": "change_commonName","status": change_dnstatus})                     
+                unbind(conn)
+                return result
+            else:
+                return "Authentication Failed"
             
-            try:
-                args = (
-                    request,
-                    request.DATA['dns'],
-                    request.DATA['password'],
-                    request.DATA['computers'],
-                    request.DATA['new_username']
-                )
-            except KeyError as e:
-                raise rest_utils.AjaxError(400, 'missing required parameter'
-                                           "'%s'" % e.args[0])
-            dns = request.DATA['dns']
-            password = request.DATA['password']
-            password = str(password)
-            computers=request.DATA['computers']
-            new_username=request.DATA['new_username']
-            changePass=change_passwordStatus(dns,password)
-            computer_changeStatus=change_computerStatus(dns,computers)
-            change_CommonNameStatus =change_CommonNamestatus(dns,new_username)
-            return changePass,computer_changeStatus,change_CommonNameStatus     
-
-        elif(change_commonName=="True" and change_computer=="True"):           
-            try:
-                args = (
-                    request,
-                    request.DATA['dns'],
-                    request.DATA['new_username'],
-                    request.DATA['computers']
-                )
-            except KeyError as e:
-                raise rest_utils.AjaxError(400, 'missing required parameter'
-                                           "'%s'" % e.args[0])
-            dns = request.DATA['dns']            
-            computers=request.DATA['computers']
-            new_username=request.DATA['new_username']           
-            computer_changeStatus=change_computerStatus(dns,computers)
-            change_CommonNameStatus =change_CommonNamestatus(dns,new_username)
-            return computer_changeStatus,change_CommonNameStatus     
-        elif(change_commonName=="True" and change_password=="True"):
-            try:
-                args = (
-                    request,
-                    request.DATA['dns'],
-                    request.DATA['new_username'],
-                    request.DATA['password']
-                )
-            except KeyError as e:
-                raise rest_utils.AjaxError(400, 'missing required parameter'
-                                           "'%s'" % e.args[0])
-
-            dns = request.DATA['dns']
-            password = request.DATA['password']
-            password = str(password)           
-            new_username=request.DATA['new_username']
-            changePass=change_passwordStatus(dns,password)    
-            change_CommonNameStatus =change_CommonNamestatus(dns,new_username)
-            return changePass,change_CommonNameStatus     
+        elif(change_commonName==True and change_password==True):
+            print "--------------------Inside the changepassword and change commonNAme=True-------------"
+            result = [] 
+            conn = bind()
+            if conn.bind():
+                for user in users:
+                    username = user['name']
+                    dn=user['dn']                    
+                    new_username=user['new_username']
+                    #password=user['password']
+                    password = str(password)                              
+                    changepasswordStatus= changePassword(dn, password, conn)
+                    result.append({"user": dn,"action": "change_password","status": changepasswordStatus})                    
+                    change_userPrincipalNameStatus = change_userPrincipalName(dn, new_username, conn)
+                    change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username, conn)                
+                    change_dnstatus = change_userDN(dn, new_username, conn)               
+                    result.append({"user": dn,"action": "change_commonName","status": change_dnstatus})                     
+                unbind(conn)
+                return result
+            else:
+                return "Authentication Failed"
             
-        elif(change_password=="True" and change_computer=="True"):
+            
+        elif(change_password==True and change_computer==True):
             print "--------------------Inside the changepassword and change computer=True-------------"
-            try:
-                args = (
-                    request,
-                    request.DATA['dns'],
-                    request.DATA['password'],
-                    request.DATA['computers']
-                   
-                )
-            except KeyError as e:
-                raise rest_utils.AjaxError(400, 'missing required parameter'
-                                           "'%s'" % e.args[0])
-
-            dns = request.DATA['dns']
-            password = request.DATA['password']
-            password = str(password)
-            computers=request.DATA['computers']
-            changePass=change_passwordStatus(dns,password)
-            computer_changeStatus=change_computerStatus(dns,computers)            
-            return changePass,computer_changeStatus
-        elif(change_password=="True"):
+            result = [] 
+            conn = bind()
+            if conn.bind():
+                for user in users:
+                    username = user['name']
+                    dn=user['dn']
+                    computer=user['new_computer']                    
+                    #password=user['password']
+                    password = str(password)                           
+                    changepasswordStatus= changePassword(dn, password, conn)
+                    result.append({"user": dn,"action": "change_password","status": changepasswordStatus}) 
+                    change_computerstatus=mapUserToVm(dn,computer,conn)
+                    result.append({"user": dn,"action": "change_computer","status": change_computerstatus})                                 
+                unbind(conn)
+                return result
+            else:
+                return "Authentication Failed"
+               
+        elif(change_password==True):
             print"-------------INside the change password=True-------------------"
-            try:
-                args = (
-                    request,
-                    request.DATA['dns'],
-                    request.DATA['password']                    
-                   
-                )
-            except KeyError as e:
-                raise rest_utils.AjaxError(400, 'missing required parameter'
-                                           "'%s'" % e.args[0])
-            dns = request.DATA['dns']
-            password = request.DATA['password']
-            password = str(password) 
-            changePass=change_passwordStatus(dns,password)
-            return changePass         
-
-        elif(change_computer=="True"):
+            result = [] 
+            conn = bind()
+            if conn.bind():
+                for user in users:
+                    username = user['name']
+                    dn=user['dn']                    
+                    #password=user['password']
+                    password = str(password)                    
+                    changepasswordStatus= changePassword(dn, password, conn)
+                    result.append({"user": dn,"action": "change_password","status": changepasswordStatus})                                          
+                unbind(conn)
+                return result
+            else:
+                return "Authentication Failed"
+        elif(change_computer==True):
             print"-------------INside the change_computer=True-------------------"
-            try:
-                args = (
-                    request,
-                    request.DATA['dns'],                   
-                    request.DATA['computers']
-                   
-                )
-            except KeyError as e:
-                raise rest_utils.AjaxError(400, 'missing required parameter'
-                                           "'%s'" % e.args[0])
-            dns = request.DATA['dns']           
-            computers=request.DATA['computers']
-            computer_changeStatus=change_computerStatus(dns,computers)
-            return computer_changeStatus
+            result = [] 
+            conn = bind()
+            if conn.bind():
+                for user in users:
+                    username = user['name']
+                    dn=user['dn']
+                    computer=user['new_computer']                            
+                    change_computerstatus=mapUserToVm(dn,computer,conn)
+                    result.append({"user": dn,"action": "change_computer","status": change_computerstatus}) 
+                unbind(conn)
+                return result
+            else:
+                return "Authentication Failed"
 
-        elif(change_commonName=="True"):
+        elif(change_commonName==True):
             print"-------------INside the change_commonName=True-------------------"
-            try:
-                args = (
-                    request,
-                    request.DATA['dns'],
-                    request.DATA['new_username']
-                   
-                )
-            except KeyError as e:
-                raise rest_utils.AjaxError(400, 'missing required parameter'
-                                           "'%s'" % e.args[0])
-            dns = request.DATA['dns']           
-            new_username=request.DATA['new_username']
-            change_CommonNameStatus =change_CommonNamestatus(dns,new_username)
-            return change_CommonNameStatus
+            result = [] 
+            conn = bind()
+            if conn.bind():
+                for user in users:
+                    username = user['name']
+                    dn=user['dn']                    
+                    new_username=user['new_username']                    
+                    change_userPrincipalNameStatus = change_userPrincipalName(dn, new_username, conn)
+                    change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username, conn)                
+                    change_dnstatus = change_userDN(dn, new_username, conn)               
+                    result.append({"user": dn,"action": "change_commonName","status": change_dnstatus})                     
+                unbind(conn)
+                return result
+            else:
+                return "Authentication Failed"
 
 
 
@@ -419,7 +432,7 @@ def enableUser(dn, conn):
     return conn.result['description']
 
 
-def changePassword(dn, password, conn):        
+def changePassword(dn, password, conn):   
     unicode_pass = unicode('"' + password + '"', 'iso-8859-1')
     encoded_pass = unicode_pass.encode('utf-16-le')
     conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
@@ -669,47 +682,3 @@ def userCreationWorkflow(users, isAssignVm, isAssignAuto, conn):
         })
     return user_creation_result
 
-def change_passwordStatus(dns,password):
-    result = [] 
-    conn = bind()
-    if conn.bind():
-        for dn in dns:
-            print dn,password
-            change_pswdStatus = changePassword(dn, password, conn)
-            result.append({"user": dn,"action": "change_password","status": change_pswdStatus})                     
-        unbind(conn)
-        return result
-    else:
-        return "Authentication Failed"
-
-def change_computerStatus(dns,computers):
-    result=[]
-    conn = bind()
-    if conn.bind():
-        i=0
-        for dn in dns:
-            change_computerstatus=mapUserToVm(dn,computers[i],conn)
-            result.append({"user": dn,"action": "change_computer","status": change_computerstatus})                     
-            print change_computerstatus
-            i=i+1
-        unbind(conn)
-        return result
-    else:
-        return "Authentication Failed"            
-
-def change_CommonNamestatus(dns,new_username):
-    result=[]
-    conn=bind()
-    i=0
-    if conn.bind():
-        for dn in dns:
-            print dn,new_username[i]
-            change_userPrincipalNameStatus = change_userPrincipalName(dn, new_username[i], conn)
-            change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username[i], conn)                
-            change_dnstatus = change_userDN(dn, new_username[i], conn)
-            i=i+1     
-            result.append({"user": dn,"action": "change_commonName","status": change_dnstatus})                                    
-        unbind(conn)
-        return result
-    else:
-        return "Authentication Failed"

@@ -3,18 +3,15 @@
 		Choose Actioos :
 	</h4>
 	<div layout-xs="column" layout="row" layout-wrap="" layout-padding="">
-		<md-checkbox ng-model="model.newEditSpec.change_pswd" flex="40" aria-label="Change Password">
+		<md-checkbox ng-model="model.newEditSpec.change_password" flex="40" aria-label="Change Password">
     	Change Password
 	  	</md-checkbox>
-		<md-checkbox ng-model="model.newEditSpec.isChangeComputer" flex="40" aria-label="Change Computer">
-	    	Change Computer
+		<md-checkbox ng-model="model.newEditSpec.change_computer" flex="40" aria-label="Change Computer">
+	    	Change Computer	    	
 	  	</md-checkbox>
-		<md-checkbox ng-model="model.newEditSpec.change_dn" flex="40" aria-label="Rename">
+		<md-checkbox ng-model="model.newEditSpec.change_commonName" flex="40" aria-label="Rename">
 	    	Change Common Name
-	  	</md-checkbox>
-	  	<md-checkbox ng-model="data.cb4" flex="40" aria-label="Enable Users">
-	    	Enable Users
-	  	</md-checkbox>
+	  	</md-checkbox>	  	
 	</div>
 
 	<h4 class="md-subhead">
@@ -24,12 +21,12 @@
 		<div class="row">
 			<div class="col-md-4" ng-repeat="user in ctrl.selectedUsers">
 				<md-card>
-					<md-card-content>
-					<p>{$user.username$}</p>
-					</md-card-content>
+					<md-card-content ng-init="ctrl.insertUser(user)">
+					<p>{$user.username$} </p>					
+					</md-card-content>					
 				</md-card>
 			</div>
 		</div>
 	</div>
-	<pre>{$ model.newEditSpec | json $}</pre>
+	
 </div>

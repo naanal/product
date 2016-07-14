@@ -84,10 +84,13 @@
 
       model.newEditSpec = {
         users: [],
-        password:"",        
-        change_pswd: false,
-        isChangeComputer: false,
-        change_dn: false
+        dns:[],
+        password:"",
+        computers:[],        
+        new_username:[],                
+        change_password: false,
+        change_computer: false,
+        change_commonName: false
       };
 
     }
@@ -140,10 +143,11 @@
     }
 
     function editUsers() {
-        if(model.singleUser.hasOwnProperty('username') && model.isCurrentModelPushed == false)
-            model.newUserSpec.users.push(model.singleUser);
-        Spinner.showModalSpinner(gettext("Creating....."));
-        return ldapAPI.editUsers(model.newUserSpec).then(successMessage,Failed);
+        console.log("Inside the Edit users")
+        console.log(model.newEditSpec)
+        console.log(model.newEditSpec.password)                         
+        Spinner.showModalSpinner(gettext("changing in progress..!"));
+        return ldapAPI.editUsersAttributes(model.newEditSpec).then(successMessage,Failed);
     }
       function successMessage(response) {
           Spinner.hideModalSpinner();
