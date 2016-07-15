@@ -420,7 +420,7 @@ CSRF_COOKIE_AGE = None
 
 # Belows are LDAP Credentials
 
-LDAP_SERVER = "172.30.1.197"
+LDAP_SERVER = "windows-server"
 
 LDAP_SERVER_PORT = 636
 

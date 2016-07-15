@@ -89,7 +89,7 @@
                                 <tbody md-body>
                                 <tr md-row md-select="user" md-select-id="name" md-auto-select
                                     ng-repeat="user in ldapusers | filter: searchquery | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit" ng-class="{'disabled' : user.status=='514' || user.status=='66050'} ">
-                                    <td md-cell><span class="md-subhead">{$user.username$}</span></td>
+                                    <td md-cell><span class="md-body-2" >{$user.username$}</span></td>
                                     <td md-cell><span class="md-body-2">{$user.mail$}</span></td>
                                     <td md-cell>
                                         <span class="md-body-2">
@@ -129,25 +129,37 @@
                         <section layout="row" layout-xs="column">
         <md-select ng-model="selectedOption" ng-init="selectedOption = 'available'" style="min-width: 200px;">
                               <md-option ng-value="item.value" ng-repeat="item in sortOptions">{$item.name$}</md-option>
-                            </md-select>
-                        </section>         
+                            </md-select> 
+                            <md-input-container layout="row" layout-xs="column" style="min-width: 200px;">
+                              <md-icon>
+                                <i class="material-icons">search</i>
+                                 </md-icon>
+                                <input type="text" ng-model="searchquery1" placeholder="Search By Computer Name"/>
+                            </md-input-container>                                    
+                        </section>                          
+                        
 
                         <md-table-container>
                             <table md-table multiple ng-model="selected" >
                                 <thead md-head md-order="query.order">
                                 <tr md-row>
                                     <th md-column><span class="md-title">Computer</span></th>
+                                     <th md-column><span class="md-title">UserName</span></th>
                                     <th md-column><span class="md-title">Status</span></th>
                                 </tr>
                                 </thead>
                                 <tbody md-body>
-                                <tr md-row ng-repeat="computer in allComputers | filter:customFilter" >                                  
+                                <tr md-row ng-repeat="computer in allComputers | filter:customFilter| filter: searchquery1 | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit"" >                                  
                                     <td md-cell>
                                     {$computer.computername$}                              
                                     </td>
-
                                     <td md-cell>
-                                    {$computer.status$}
+                                    {$computer.username$}                              
+                                    </td>
+                                    <td md-cell>
+                                    <span ng-if="computer.status=='available'"> Available</span>
+                                    <span ng-if="computer.status=='not available'"> Assigned</span>
+                                   
                                     </td>
 
                                 </tr>

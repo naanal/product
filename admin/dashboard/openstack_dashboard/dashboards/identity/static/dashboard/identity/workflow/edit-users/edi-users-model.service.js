@@ -142,10 +142,7 @@
       model.initialized = false;
     }
 
-    function editUsers() {
-        console.log("Inside the Edit users")
-        console.log(model.newEditSpec)
-        console.log(model.newEditSpec.password)                         
+    function editUsers() {                         
         Spinner.showModalSpinner(gettext("changing in progress..!"));
         return ldapAPI.editUsersAttributes(model.newEditSpec).then(successMessage,Failed);
     }

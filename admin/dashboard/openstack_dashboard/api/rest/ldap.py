@@ -172,9 +172,9 @@ class Users(generic.View):
                     password = str(password)
                     print username,dn,computer,new_username,password                   
                     changepasswordStatus= changePassword(dn, password, conn)
-                    result.append({"user": dn,"action": "change_password","status": changepasswordStatus}) 
+                    result.append({"user": username,"action": "change_password","status": changepasswordStatus}) 
                     change_computerstatus=mapUserToVm(dn,computer,conn)
-                    result.append({"user": dn,"action": "change_computer","status": change_computerstatus}) 
+                    result.append({"user": username,"action": "change_computer","status": change_computerstatus}) 
                     change_userPrincipalNameStatus = change_userPrincipalName(dn, new_username, conn)
                     change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username, conn)                
                     change_dnstatus = change_userDN(dn, new_username, conn)               
@@ -299,6 +299,10 @@ class Users(generic.View):
                 return result
             else:
                 return "Authentication Failed"
+
+
+
+
 
 @urls.register
 class AvailableUsers(generic.View):
@@ -509,7 +513,7 @@ def retriveAvailableUsers(conn):
 
 
 def assignedComputers(conn):
-    assigned_computers = []
+    assigned_computers = []   
     conn.search(search_base='dc=naanal,dc=local',
                 search_filter='(&(objectCategory=person)(objectClass=user))',
                 search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
@@ -517,6 +521,7 @@ def assignedComputers(conn):
     for entry in conn.response:
         if 'attributes' in entry:
             if 'userWorkstations' in entry['attributes']:
+
                 computers = entry['attributes']['userWorkstations']
                 computerArray = computers.split(',')
                 for c in computerArray:
@@ -536,16 +541,32 @@ def retriveComputers(conn):
         if 'attributes' in entry:
             if entry['attributes']['cn'] in assignedCom:
                 status = "not available"
+                computername=entry['attributes']['cn']
+                username=findUsername(computername,conn)
             else:
                 status = "available"
+                username="-----"
 
             computers.append({
                 "dn": entry['dn'],
+                "username":username,
                 "computername": entry['attributes']['cn'],
                 "status": status
             })
     unbind(conn)
     return computers
+def findUsername(computername,conn):
+    users=retriveUsers(conn)    
+    print type(users)
+    assigned_computer=[]
+    for user in users:
+        computer=user['computer']
+        print type(computer)
+        if computer is not None:       
+            computerArray = computer.split(',')
+            if computername in computerArray:
+                username=user['username']               
+                return username 
 
 
 def retriveAvailableComputers(conn):

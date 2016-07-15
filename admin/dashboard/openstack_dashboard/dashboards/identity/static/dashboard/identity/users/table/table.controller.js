@@ -111,7 +111,8 @@
           console.log("inside the get get_availablevms method")
           ldapAPI.getComputers()
           .then(function(res){                    
-            $scope.allComputers=res.data;            
+            $scope.allComputers=res.data;   
+                        
           })
         }
         $scope.sortOptions = [
@@ -146,6 +147,7 @@
           .then(function(res){
               Spinner.hideModalSpinner();
               $scope.ldapusers = res.data;
+              $rootScope.ldapusers = res.data;
               $scope.ldapuserscount = $scope.ldapusers.length;
           },function(error){
               Spinner.hideModalSpinner();
