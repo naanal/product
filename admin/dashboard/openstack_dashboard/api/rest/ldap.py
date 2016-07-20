@@ -21,6 +21,9 @@ from openstack_dashboard.api.rest import utils as rest_utils
 from django.conf import settings
 from ldap3 import Server, Connection, SUBTREE, ALL, ALL_ATTRIBUTES, \
     ALL_OPERATIONAL_ATTRIBUTES, MODIFY_REPLACE, MODIFY_ADD, MODIFY_INCREMENT
+import ldap3
+import logging
+admininfo = logging.getLogger('admininfo')
 
 
 @urls.register
@@ -100,6 +103,7 @@ class Users(generic.View):
         enable=request.DATA['enable']
         # Enable user 
         if(enable==True): 
+            admininfo.info("Enable user accounts::%S",request.DATA['users'])
             result = []
             conn = bind()
             if conn.bind():
@@ -111,6 +115,7 @@ class Users(generic.View):
                         {"user": user['username'], "action": "Enable",
                          "status": response})
                 unbind(conn)
+                admininfo.info("Status Enable user accounts:: %s",result)
                 return result
             else:
                 return "Authentication Failed"
@@ -118,6 +123,7 @@ class Users(generic.View):
         result = []
         conn = bind()
         if conn.bind():
+            admininfo.info("Disable user accounts::",request.DATA['users'])
             for user in request.DATA['users']:
                 dn = user['user_dn']
                 username=user['username']                
@@ -126,6 +132,7 @@ class Users(generic.View):
                     {"user": user['username'], "action": "Disable",
                      "status": response})
             unbind(conn)
+            admininfo.info("Status Disable user accounts:: %s",result)
             return result
         else:
             return "Authentication Failed"
@@ -153,13 +160,9 @@ class Users(generic.View):
         change_password = request.DATA['change_password']        
         change_computer = request.DATA['change_computer']
         change_commonName = request.DATA['change_commonName'] 
-        password= request.DATA['password']
-        print "---------------------Inside the patch method---------"      
-        print change_password,change_computer,change_commonName,password,users
-        
+        password= request.DATA['password']  
        
-        if(change_password==True and change_commonName==True and change_computer==True):           
-            print "-------------Inside all true----------------" 
+        if(change_password==True and change_commonName==True and change_computer==True):                       
             result = [] 
             conn = bind()
             if conn.bind():
@@ -179,15 +182,14 @@ class Users(generic.View):
                     change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username, conn)                
                     change_dnstatus = change_userDN(dn, new_username, conn)               
                     result.append({"user": username,"action": "change_commonName","status": change_dnstatus})                     
-                unbind(conn)
+                unbind(conn)                
                 return result
             else:
                 return "Authentication Failed"
 
            
 
-        elif(change_commonName==True and change_computer==True):
-            print "--------------------Inside the changecommonNAme and change computer=True-------------"               
+        elif(change_commonName==True and change_computer==True):                        
             result = [] 
             conn = bind()
             if conn.bind():
@@ -202,13 +204,12 @@ class Users(generic.View):
                     change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username, conn)                
                     change_dnstatus = change_userDN(dn, new_username, conn)               
                     result.append({"user": username,"action": "change_commonName","status": change_dnstatus})                     
-                unbind(conn)
+                unbind(conn)                
                 return result
             else:
                 return "Authentication Failed"
             
-        elif(change_commonName==True and change_password==True):
-            print "--------------------Inside the changepassword and change commonNAme=True-------------"
+        elif(change_commonName==True and change_password==True):            
             result = [] 
             conn = bind()
             if conn.bind():
@@ -224,14 +225,13 @@ class Users(generic.View):
                     change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username, conn)                
                     change_dnstatus = change_userDN(dn, new_username, conn)               
                     result.append({"user": username,"action": "change_commonName","status": change_dnstatus})                     
-                unbind(conn)
+                unbind(conn)                
                 return result
             else:
                 return "Authentication Failed"
             
             
-        elif(change_password==True and change_computer==True):
-            print "--------------------Inside the changepassword and change computer=True-------------"
+        elif(change_password==True and change_computer==True):            
             result = [] 
             conn = bind()
             if conn.bind():
@@ -245,13 +245,12 @@ class Users(generic.View):
                     result.append({"user": dn,"action": "change_password","status": changepasswordStatus}) 
                     change_computerstatus=mapUserToVm(dn,computer,conn)
                     result.append({"user": username,"action": "change_computer","status": change_computerstatus})                                 
-                unbind(conn)
+                unbind(conn)                
                 return result
             else:
                 return "Authentication Failed"
                
-        elif(change_password==True):
-            print"-------------INside the change password=True-------------------"
+        elif(change_password==True):            
             result = [] 
             conn = bind()
             if conn.bind():
@@ -262,12 +261,11 @@ class Users(generic.View):
                     password = str(password)                    
                     changepasswordStatus= changePassword(dn, password, conn)
                     result.append({"user": username,"action": "change_password","status": changepasswordStatus})                                          
-                unbind(conn)
+                unbind(conn)                
                 return result
             else:
                 return "Authentication Failed"
-        elif(change_computer==True):
-            print"-------------INside the change_computer=True-------------------"
+        elif(change_computer==True):            
             result = [] 
             conn = bind()
             if conn.bind():
@@ -277,13 +275,12 @@ class Users(generic.View):
                     computer=user['new_computer']                            
                     change_computerstatus=mapUserToVm(dn,computer,conn)
                     result.append({"user": username,"action": "change_computer","status": change_computerstatus}) 
-                unbind(conn)
+                unbind(conn)                
                 return result
             else:
                 return "Authentication Failed"
 
-        elif(change_commonName==True):
-            print"-------------INside the change_commonName=True-------------------"
+        elif(change_commonName==True):            
             result = [] 
             conn = bind()
             if conn.bind():
@@ -295,7 +292,7 @@ class Users(generic.View):
                     change_sAMAccountNameStatus = change_sAMAccountName(dn, new_username, conn)                
                     change_dnstatus = change_userDN(dn, new_username, conn)               
                     result.append({"user": username,"action": "change_commonName","status": change_dnstatus})                     
-                unbind(conn)
+                unbind(conn)                
                 return result
             else:
                 return "Authentication Failed"
@@ -370,6 +367,7 @@ class Map(generic.View):
 
         This returns status of user creation.
         """
+        admininfo.info("Assing Virtual Machine to users")
         try:
             args = (
                 request,
@@ -386,6 +384,7 @@ class Map(generic.View):
 
         if(isAuto == 'True'):
             map_data = autoAssignUsersWithVms(map_data, conn)
+            admininfo.debug("Status Assing Virtual Machine to users:%s",map_data)
 
         if conn.bind():
             for data in map_data:
@@ -406,6 +405,7 @@ class Map(generic.View):
                                "action": "maping",
                                "status": response})
             unbind(conn)
+            admininfo.debug("Status Assing Virtual Machine to users:%s",result)
             return result
 
         else:
@@ -413,17 +413,29 @@ class Map(generic.View):
 
 
 def bind():
-    s = Server(settings.LDAP_SERVER, port=settings.LDAP_SERVER_PORT,
+    try:        
+        s = Server(settings.LDAP_SERVER[0], port=settings.LDAP_SERVER_PORT,
                use_ssl=settings.LDAP_SSL, get_info=ALL)
-    conn = Connection(s, user=settings.LDAP_ADMIN_USERNAME,
+        conn = Connection(s, user=settings.LDAP_ADMIN_USERNAME,
                       password=settings.LDAP_ADMIN_PASSWORD, auto_bind=True)
-    conn.start_tls()
-    return conn
-
-
+        conn.start_tls()
+        return conn      
+    except ldap3.LDAPSocketOpenError:        
+        print "BACKUP SERVER.....ON!!!!!!"  
+        admininfo.info("Error occured to Connect:: %s the Windows Server",settings.LDAP_SERVER[0])             
+        try:
+            s = Server(settings.LDAP_SERVER[1], port=settings.LDAP_SERVER_PORT,
+               use_ssl=settings.LDAP_SSL, get_info=ALL)
+            conn = Connection(s, user=settings.LDAP_ADMIN_USERNAME,
+                          password=settings.LDAP_ADMIN_PASSWORD, auto_bind=True)
+            conn.start_tls()
+            return conn             
+        except Exception, e:
+            admininfo.info("Error occured to  Connect  both %s the Windows Servers",settings.LDAP_SERVER)             
+            admininfo.exception("Error occured to Connect the Windows Server")       
+        
 def unbind(c):
     c.unbind()
-
 
 def getdn(username):
     return 'cn=%s,ou=users,ou=Police,dc=naanal,dc=local' % (username)
@@ -451,10 +463,12 @@ def enableUser(dn, conn):
 
 
 def changePassword(dn, password, conn):   
+    admininfo.info("change_password of the user:%s",dn)
     unicode_pass = unicode('"' + password + '"', 'iso-8859-1')
     encoded_pass = unicode_pass.encode('utf-16-le')
     conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
     conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
+    admininfo.info("STATUS: change_password of the user:%s",conn.result['description'])
     return conn.result['description']
 
 
@@ -463,8 +477,8 @@ def addToGroup(group_dn, user_dn, conn):
     return conn.result['description']
 
 
-def retriveUsers(conn):
-    users = []
+def retriveUsers(conn):    
+    users = []    
     conn.search(search_base=settings.LDAP_BASE_DIR,
                 search_filter='(&(objectCategory=person)(objectClass=user))',
                 search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
@@ -484,12 +498,16 @@ def retriveUsers(conn):
                 groups = entry['attributes']['memberOf']
             else:
                 groups = None
+            if 'lastLogon' in entry['attributes']:
+                lastLogon=entry['attributes']['lastLogon'].isoformat(" ").split(".")[0]
+            else:
+                lastLogon=''
             users.append({
                 "user_dn": entry['dn'],
                 "username": entry['attributes']['cn'],
                 "mail": mail,
                 "group": groups,
-                "lastLogon": entry['attributes']['lastLogon'].isoformat(" ").split(".")[0],
+                "lastLogon": lastLogon,
                 "computer": assigned_computer,
                 "status": entry['attributes']['userAccountControl']
             })
@@ -497,6 +515,7 @@ def retriveUsers(conn):
 
 
 def retriveAvailableUsers(conn):
+    admininfo.info("Retrive AvailableUsers details")
     available_users = []
     conn.search(search_base=settings.LDAP_BASE_DIR,
                 search_filter='(&(objectCategory=person)(objectClass=user)(memberof=cn=normalusers,ou=groups,ou=police,dc=naanal,dc=local)(|(userAccountControl=512)(userAccountControl=66048)))',
@@ -513,6 +532,7 @@ def retriveAvailableUsers(conn):
 
 
 def assignedComputers(conn):
+    admininfo.info("Retrive assignedComputers details")
     assigned_computers = []   
     conn.search(search_base='dc=naanal,dc=local',
                 search_filter='(&(objectCategory=person)(objectClass=user))',
@@ -530,6 +550,7 @@ def assignedComputers(conn):
 
 
 def retriveComputers(conn):
+    admininfo.info("Retrive retriveComputers details")
     computers = []
     assignedCom = assignedComputers(conn)
     conn.search(search_base='cn=computers,dc=naanal,dc=local',
@@ -556,12 +577,10 @@ def retriveComputers(conn):
     unbind(conn)
     return computers
 def findUsername(computername,conn):
-    users=retriveUsers(conn)    
-    print type(users)
+    users=retriveUsers(conn)        
     assigned_computer=[]
     for user in users:
-        computer=user['computer']
-        print type(computer)
+        computer=user['computer']        
         if computer is not None:       
             computerArray = computer.split(',')
             if computername in computerArray:
@@ -588,8 +607,10 @@ def retriveAvailableComputers(conn):
 
 
 def mapUserToVm(user_dn, computer, conn):
+    admininfo.info("Action:::change_computer for users :%s",user_dn)
     computers = computer + ',' + settings.LDAP_SERVER_MACHINE_NAME
     conn.modify(user_dn, {'userWorkstations': [(MODIFY_REPLACE, computers)]})
+    admininfo.info("Status:::change_computer for users :%s",conn.result['description'])
     return conn.result['description']
 
 
@@ -633,13 +654,16 @@ def change_userEmail(user_dn, E_mail, conn):
 
 
 def change_userDN(user_dn, new_username, conn):
+    admininfo.info("change CommonName user:%s",user_dn)
     new_username = 'cn=' + new_username
     conn.modify_dn(user_dn, new_username)
     print("status of change_userDN::::" + conn.result['description'])
+    admininfo.info("change CommonName user:%s status::%s",user_dn,conn.result['description'])
     return conn.result['description']
 
 
 def userCreationWorkflow(users, isAssignVm, isAssignAuto, conn):
+    admininfo.info("user creation process user:%s",users)
     user_creation_result = []
     if isAssignVm == "True":
         available_vms = retriveAvailableComputers(conn)
@@ -715,5 +739,6 @@ def userCreationWorkflow(users, isAssignVm, isAssignAuto, conn):
             "action": "creation",
             "status": response
         })
+    admininfo.info("user creation status :%s" ,user_creation_result)   
     return user_creation_result
 
