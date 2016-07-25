@@ -21,10 +21,12 @@ from django.contrib import messages as _messages
 from django.contrib.messages import constants
 from django.utils.encoding import force_text
 from django.utils.safestring import SafeData  # noqa
-
+from django.conf import settings
+import logging
+adminlog = logging.getLogger('adminlog')
 
 def horizon_message_already_queued(request, message):
-    _message = force_text(message)
+    _message = force_text(message)                                       
     if request.is_ajax():
         for tag, msg, extra in request.horizon['async_messages']:
             if _message == msg:
@@ -54,6 +56,10 @@ def add_message(request, level, message, extra_tags='', fail_silently=False):
 
 
 def debug(request, message, extra_tags='', fail_silently=False):
+    ip=get_ip(request)
+    user = request.user       
+    d={'clientip':ip,'username':user} 
+    adminlog.debug(message,extra=d)       
     """Adds a message with the ``DEBUG`` level."""
     add_message(request, constants.DEBUG, message, extra_tags=extra_tags,
                 fail_silently=fail_silently)
@@ -61,23 +67,47 @@ def debug(request, message, extra_tags='', fail_silently=False):
 
 def info(request, message, extra_tags='', fail_silently=False):
     """Adds a message with the ``INFO`` level."""
+    ip=get_ip(request)
+    user = request.user       
+    d={'clientip':ip,'username':user} 
+    adminlog.info(message,extra=d)   
     add_message(request, constants.INFO, message, extra_tags=extra_tags,
                 fail_silently=fail_silently)
 
 
 def success(request, message, extra_tags='', fail_silently=False):
     """Adds a message with the ``SUCCESS`` level."""
+    ip=get_ip(request)
+    user = request.user       
+    d={'clientip':ip,'username':user} 
+    adminlog.success(message,extra=d)   
     add_message(request, constants.SUCCESS, message, extra_tags=extra_tags,
                 fail_silently=fail_silently)
 
 
 def warning(request, message, extra_tags='', fail_silently=False):
     """Adds a message with the ``WARNING`` level."""
+    ip=get_ip(request)
+    user = request.user       
+    d={'clientip':ip,'username':user} 
+    adminlog.warning(message,extra=d)   
     add_message(request, constants.WARNING, message, extra_tags=extra_tags,
                 fail_silently=fail_silently)
 
 
 def error(request, message, extra_tags='', fail_silently=False):
     """Adds a message with the ``ERROR`` level."""
+    ip=get_ip(request)
+    user = request.user       
+    d={'clientip':ip,'username':user} 
+    adminlog.error(message,extra=d) 
     add_message(request, constants.ERROR, message, extra_tags=extra_tags,
                 fail_silently=fail_silently)
+
+def get_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip

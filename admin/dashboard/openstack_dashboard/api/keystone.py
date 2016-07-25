@@ -43,7 +43,8 @@ DEFAULT_ROLE = None
 DEFAULT_DOMAIN = getattr(settings, 'OPENSTACK_KEYSTONE_DEFAULT_DOMAIN',
                          'default')
 
-
+client_username=''
+client_ip=''
 # Set up our data structure for managing Identity API versions, and
 # add a couple utility methods to it.
 class IdentityAPIVersionManager(base.APIVersionManager):
@@ -146,9 +147,14 @@ def keystoneclient(request, admin=False):
     The client is cached so that subsequent API calls during the same
     request/response cycle don't have to be re-authenticated.
     """
+    global client_username
+    global client_ip
     api_version = VERSIONS.get_active_version()
     user = request.user
     token_id = user.token.id
+    client_username=user
+    ip=get_client_ip(request)
+    client_ip=ip
 
     if is_multi_domain_enabled:
         # Cloud Admin, Domain Admin or Mixed Domain Admin
@@ -936,3 +942,11 @@ def protocol_delete(request, identity_provider, protocol):
 def protocol_list(request, identity_provider):
     manager = keystoneclient(request).federation.protocols
     return manager.list(identity_provider)
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip

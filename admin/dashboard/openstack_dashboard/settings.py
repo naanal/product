@@ -354,6 +354,7 @@ STATICFILES_DIRS = get_staticfiles_dirs(STATIC_URL) + \
         THEME_COLLECTION_DIR,
         ROOT_PATH)
 
+
 if CUSTOM_THEME_PATH is not None:
     logging.warning("CUSTOM_THEME_PATH has been deprecated.  Please convert "
                     "your settings to make use of AVAILABLE_THEMES.")

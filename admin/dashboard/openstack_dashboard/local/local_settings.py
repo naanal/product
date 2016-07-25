@@ -384,7 +384,7 @@ LOGGING = {
         'datefmt': '%Y-%m-%d %H:%M:%S'
         },
         'verbose': {
-            'format': '[%(asctime)s]  %(levelname)s %(funcName)s  %(message)s',
+            'format': '[%(asctime)s  %(funcName)s %(clientip)s %(username)s]  %(levelname)s %(message)s',
         'datefmt': '%Y-%m-%d %H:%M:%S'
         },
     },
@@ -494,13 +494,13 @@ LOGGING = {
             'handlers': ['null'],
             'propagate': False,
         },
-        'admininfo': {
-            'handlers': ['console','admin_logfile'],
+        'adminlog': {
+            'handlers': ['admin_logfile'],
             'propagate': False,
             'level':'INFO',
          },
-         'admininfo': {
-            'handlers': ['console','admin_logfile'],
+         'adminlog': {
+            'handlers': ['admin_logfile'],
             'propagate': False,
             'level':'DEBUG',
          },                 
