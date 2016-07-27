@@ -27,31 +27,36 @@ class TaskStart(generic.View):
     """API for rally volumes.
     """
     url_regex = r'rally/task/$'
-
+    jsn=[]
     @rest_utils.ajax(data_required=True)
     def post(self, request):
         rtask = json.dumps(request.DATA)
- #       command='rally task start {0}'.str(rtask)
- #       rallyTask= subprocess.check_call(["rally","task","start", rtask], shell=False,stdout=file_out)
+        print(rtask)
+#        command='rally task start {0}'.str(rtask)
+#        rallyTask= subprocess.check_call(["rally","task","start", rtask], shell=False,stdout=file_out)
         rallyTask= subprocess.check_output(["rally","task","start", rtask], shell=False)
+        print(rallyTask)
+#        print ("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5")
         report=rallyTask.split(" ")
+#        print(report)
         chars=[]
         for line in report:
             chars.extend(line)
 #            print (line)
             if "UUID" in line:
                 i=line.split(' ')
-                print(i)
+#                print(i)
                 id = [x[:x.index('\n')] if '\n' in x else x for x in i]
                 uuid=''.join(map(str, id))
+                print (uuid)
                 jsn= subprocess.check_output(["rally","task","results", uuid], shell=False)         
- #       result=[rallyTask,jsn]
-#        print(result[0])
-#        print("!!!!!!!!!!!!!!!!!!!!!!!!!1")
-#        print(jsn)
+#         result=[rallyTask,jsn]
+#         print(result[0])
+#         print("!!!!!!!!!!!!!!!!!!!!!!!!!1")
+#         print(jsn)
                 htm=subprocess.check_output(["rally","task","report","--out=report.html"], shell = False)
- #               print(htm)
-                file=open("/home/sss/gitclone/product/admin/dashboard/openstack_dashboard/dashboards/overview/static/dashboard/overview/workflow/rally-test/input/rally_html.html","w")
+#                print(htm)
+                file=open("/home/grafana/test/product/admin/dashboard/openstack_dashboard/dashboards/overview/static/dashboard/overview/workflow/rally-test/input/rally_html.html","w")
                 r_report=(htm)
                 file.write(r_report)
                 file.close()

@@ -40,7 +40,6 @@
     ctrl.Schema = $scope.model.orginalSchema.rallytask;
     
     
-    // toggle selection for a given fruit by name
     $scope.toggleSelection = function toggleSelection(task) {
       var idx = $scope.model.initializeScenario.selections.indexOf(task);
       
@@ -55,5 +54,22 @@
       }
     };
 
+    $scope.checkAll = function (selectedComponent) 
+    {
+        for (var comp in $scope.model.orginalSchema.rallytask) 
+        {   
+          if(selectedComponent == $scope.model.orginalSchema.rallytask[comp].component)
+          {
+            var count=$scope.model.orginalSchema.rallytask[comp].tasks;
+            for(var j=0;j<count.length;j++)
+            {
+              $scope.toggleSelection($scope.model.orginalSchema.rallytask[comp].tasks[j]);
+            }
+          }
+        }
+   
+    };
+
   }
 })();
+

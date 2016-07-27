@@ -27,22 +27,44 @@
    */
   angular
     .module('horizon.dashboard.overview.workflow.rally-test')
-    .controller('RallyTestMaketestController', RallyTestMaketestController);
+    .controller('RallyTestMaketestController', RallyTestMaketestController)
+    .controller('secondmodal', secondmodal);
 
   RallyTestMaketestController.$inject = [
     '$scope',
-    'RallyTestModel'
+    'RallyTestModel',
+    '$modal'
   ];
 
-  function RallyTestMaketestController($scope,RallyTestModel) {
+  function RallyTestMaketestController($scope,RallyTestModel,$modal) {
     var ctrl = this;
    ctrl.runTest = runTest;
-//   ctrl.viewhtml = viewhtml;
    function runTest(){
     $scope.model.runRally();
    }
-/**   function viewhtml () {
-    $scope.model.viewhtml();
-   }**/
+
+   $scope.openHtml = function(size){
+      var modalInstanceSecond = $modal.open({
+        templateUrl: 'rally_html_output',
+        controller: 'secondmodal',
+        size: size,
+        resolve: {
+          items: function () {
+          return $scope.items;
+        }
+      }
+      });
+    };
+
   }
+
+  secondmodal.$inject = [
+    '$scope'
+  ];
+
+  function secondmodal($scope) {
+    $scope.name = "hai";
+  };
+
 })();
+

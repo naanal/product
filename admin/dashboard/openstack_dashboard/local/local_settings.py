@@ -401,7 +401,7 @@ LOGGING = {
         'admin_logfile': {
             'level': 'DEBUG',            
             'class': 'logging.FileHandler',
-            'filename': '/var/log/usergui/admin.log',
+            'filename': '/var/log/admin.log',
             'formatter': 'verbose'
         },
     },

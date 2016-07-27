@@ -101,17 +101,18 @@
           model.htm = response.data.html_result;
         });
     }**/
+
     function runRally() {
-      model.isProcessing=true;
 
       var finalselections = angular.copy(model.initializeScenario.selections); 
-
+      cleanNullProperties(finalselections);
+ //     model.isProcessing=true;
       for (var i=0; i<finalselections.length; i++){
         angular.extend(model.initializeScenario.processedScenarios, finalselections[i].task)
       }
 
       var processedselections = angular.copy(model.initializeScenario.processedScenarios);
-      modalWaitSpinnerService.showModalSpinner(gettext("Please Wait.. Test is Running"));
+      modalWaitSpinnerService.showModalSpinner(gettext("Please Wait...     Test is Running"));
       return rallyAPI.rallyStartTest(processedselections)
       .then(function(response){
         model.log = response.data.log_result;
@@ -119,14 +120,26 @@
         model.id = response.data.id;
         processResult(model.jn);
         modalWaitSpinnerService.hideModalSpinner();
-        
+        model.initializeScenario.selections=[];
+        model.initializeScenario.processedScenarios={};
       },
       function(data) {
         // Handle error here
+        model.initializeScenario.selections=[];
+        model.initializeScenario.processedScenarios={};
         modalWaitSpinnerService.hideModalSpinner();
-        toast.add('error', interpolate("Failed to select inputs", "1"));
+        toast.add('error', interpolate("Failed to select Tasks or Inputs", "1"));
       });
-      model.isProcessing=false;
+//      model.isProcessing=false;
+    }
+
+    function cleanNullProperties(finalselections) {
+      // Initially clean fields that don't have any value.
+      for (var key in finalselections) {
+        if (finalselections.hasOwnProperty(key) && finalselections[key] === null) {
+          delete finalselections[key];
+        }
+      }
     }
 
     function initresultschema(){
@@ -193,6 +206,7 @@
 
       } else {
         model.initializing = true;
+        model.finalresults.length = 0;
 
         promise = $q.all([
           getImages(),
@@ -254,3 +268,4 @@
   }
 
 })();
+

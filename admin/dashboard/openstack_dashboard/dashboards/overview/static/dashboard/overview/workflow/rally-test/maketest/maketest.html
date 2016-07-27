@@ -2,11 +2,53 @@
   .parent{
     padding: 0 5% 0 0;
   }
+.modal-fullscreen
+{
+      width: 130%;
+      margin-left: -15%;
+}
+.modal-fullscreen .modal-content {
+  border: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.modal-backdrop.modal-backdrop-fullscreen {
+  
+}
+.modal-backdrop.modal-backdrop-fullscreen.in {
+  opacity: .97;
+  filter: alpha(opacity=97);
+}
+
+/* .modal-fullscreen size: we use Bootstrap media query breakpoints */
+
+.modal-fullscreen .modal-dialog {
+  margin: 0 !important;
+  margin-right: auto !important;
+  margin-left: auto !important;
+  width: 100% !important;
+}
+@media (min-width: 768px) {
+  .modal-fullscreen .modal-dialog {
+    width: 750px !important;
+  }
+}
+@media (min-width: 992px) {
+  .modal-fullscreen .modal-dialog {
+    width: 970px !important;
+  }
+}
+@media (min-width: 1200px) {
+  .modal-fullscreen .modal-dialog {
+     width: 1170px !important;
+  }
+}
 </style>
+
 <script type="text/javascript">
   function reload() {
-    document.getElementById('frame_id').src="/static/dashboard/overview/workflow/rally-test/input/rally_html.html";
-  } btn_id.onclick = reload;
+    document.getElementById('frame_id2').src="/static/dashboard/overview/workflow/rally-test/input/rally_html_output.html";
+  } btn_id2.onclick = reload;
 </script>
 
 <div class="parent" ng-controller="RallyTestMaketestController as ctrl">
@@ -20,7 +62,7 @@
   <div class="box-body">
 
     <button class="btn btn-success btn-md" ng-click="ctrl.runTest()" ng-disabled="model.isProcessing">Click Here to Run Test</button>
-    <hr/> 
+    <hr/>
     <div ng-hide="model.log.length == 0 ">
     <h3>Your Test has been Completed</h3>
 
@@ -52,21 +94,42 @@
     </tbody>
   </table>
 
-  <button class="btn btn-primary btn-md" ng-click="log234=true">View Log</button>
-  <pre ng-show="log234">
-  {$model.log$}
-  <button class="btn btn-primary btn-md" ng-click="log234 = false">Close Log</button>
-  </pre>
-  <button id="btn_id" class="btn btn-primary btn-md" ng-click="btn=true">view Html Output</button>
+	<button class="btn btn-primary btn-md" ng-click="log234=true">View Log</button>
+	<pre ng-show="log234">
+	{$model.log$}
+	<button class="btn btn-primary btn-md" ng-click="log234 = false">Close Log</button>
+	</pre>
+  <button id="btn_id1" class="btn btn-primary btn-md" ng-click="btn=true">view Html Output</button>
   <pre ng-show="btn">
-  <iframe  id="frame_id" name="display" width="200%" height="200%" frameborder="0" marginwidth="0" marginheight="0" ></iframe>
+  <iframe  id="frame_id1" name="display" width="200%" height="200%" frameborder="0" marginwidth="0" marginheight="0" ></iframe>
   <button class="btn btn-primary btn-md" ng-click="btn = false">Close Html view</button>
   </pre>
-<!--   <div>
-  <button id="btn_id" class="btn btn-primary btn-md" ng-click="ctrl.viewhtml()">view Html Output</button>
-  <iframe  id="frame_id" name="display" width="100%" height="200%" frameborder="0" marginwidth="0" marginheight="0" ></iframe>
-  </div>-->
+
+  <div>
+  <button type="button"  id="btn_id2" data-toggle="modal" data-target="#modal-fullscreen" class="btn btn-primary btn-md">
+  Launch Output Fullscreen
+</button>
+
+  <div class="modal modal-fullscreen fade" id="modal-fullscreen" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>Close...</button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+      
+       <div class="embed-responsive embed-responsive-16by9">
+          <iframe id="frame_id2" class="embed-responsive-item" ></iframe>
+        </div>
+      </div>
+
+    </div>
+  </div>
+ </div>
+  </div>
   </div>
   </div><!-- /.box-body -->
 </div>
 </div>
+
