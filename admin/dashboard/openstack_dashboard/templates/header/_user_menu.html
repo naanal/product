@@ -18,6 +18,12 @@
           {% trans "Settings" %}
         </a>
       </li>
+      <li>
+        <a href="{% url 'horizon:settings:user:index' %}" target="_self">
+          <span class="fa fa-bug"></span>
+          {% trans "Log" %}
+        </a>
+      </li>
       {% if HORIZON_CONFIG.bug_url %}
         <li>
           <a href="{{ HORIZON_CONFIG.bug_url }}" target="_blank">
