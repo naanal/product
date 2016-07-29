@@ -3,6 +3,7 @@ import os
 from django.utils.translation import ugettext_lazy as _
 
 from openstack_dashboard import exceptions
+from pythonjsonlogger import jsonlogger
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -379,10 +380,10 @@ LOGGING = {
     # django.db.backends will still log unless it is disabled explicitly.
     'disable_existing_loggers': False,
     'formatters': {
-        'simple': {
-            'format': '[%(asctime)s] %(levelname)s %(message)s',
-        'datefmt': '%Y-%m-%d %H:%M:%S'
-        },
+         'json': {
+           '()': jsonlogger.JsonFormatter,
+           'fmt': '%(levelname)s %(asctime)s %(clientip)s %(username)s %(message)s',
+       },
         'verbose': {
             'format': '[%(asctime)s  %(funcName)s %(clientip)s %(username)s]  %(levelname)s %(message)s',
         'datefmt': '%Y-%m-%d %H:%M:%S'
@@ -401,8 +402,8 @@ LOGGING = {
         'admin_logfile': {
             'level': 'DEBUG',            
             'class': 'logging.FileHandler',
-            'filename': '/var/log/admin.log',
-            'formatter': 'verbose'
+            'filename': 'admin.log',
+            'formatter': 'json'
         },
     },
     'loggers': {
