@@ -34,4 +34,3 @@ from . import policy       # noqa
 from . import swift        # noqa
 from . import rally        # noqa
 from . import ldap         # noqa
-from . import adminevent   # noqa
