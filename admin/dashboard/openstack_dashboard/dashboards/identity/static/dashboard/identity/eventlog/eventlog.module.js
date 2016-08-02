@@ -18,29 +18,14 @@
   'use strict';
 
   /**
-   * @ngdoc horizon.dashboard.identity
+   * @ngdoc horizon.dashboard.identity.eventlog
    * @ngModule
    *
    * @description
-   * Dashboard module to host various identity panels.
+   * Provides all of the services and widgets required
+   * to support and display the identity eventlog panel.
    */
   angular
-    .module('horizon.dashboard.identity', [
-      'horizon.dashboard.identity.users',
-      'horizon.dashboard.identity.projects',
-      'horizon.dashboard.identity.workflow',
-      'horizon.dashboard.identity.eventlog'
-    ])
-    .config(config);
-
-  config.$inject = [
-    '$provide',
-    '$windowProvider'
-  ];
-
-  function config($provide, $windowProvider) {
-    var path = $windowProvider.$get().STATIC_URL + 'dashboard/identity/';
-    $provide.constant('horizon.dashboard.identity.basePath', path);
-  }
+    .module('horizon.dashboard.identity.eventlog', []);
 
 })();

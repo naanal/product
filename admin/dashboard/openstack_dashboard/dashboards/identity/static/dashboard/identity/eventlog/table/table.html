@@ -1,0 +1,58 @@
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<div ng-controller="identityeventlogTableController">
+    <md-card>
+     <section flex="" layout-align="center center">
+                                <md-input-container ng-show="!selected.length" md-no-float="" class="md-block left">
+                                    <md-icon>
+                                        <i class="material-icons">search</i>
+                                    </md-icon>
+                                    <input type="text" ng-model="searchquery" placeholder="Search By username, levelname,message..."/>
+                                </md-input-container>
+                                
+                            </section>
+
+        <md-card-content>
+        <md-table-container>
+                            <table md-table md-row-select multiple ng-model="selected" >
+                                <thead md-head md-order="query.order">
+                                <tr md-row>
+                                    <th md-column><span class="md-title">Level Name</span></th>
+                                    <th md-column><span class="md-title">Time</span></th>
+                                    <th md-column><span class="md-title">User Name</span></th>
+                                    <th md-column><span class="md-title">IP Address</span></th>
+                                    <th md-column><span class="md-title">Message</span></th>
+                                </tr>
+                                </thead>
+                                <tbody md-body>
+                                <tr md-row md-select="user" md-select-id="name" md-auto-select
+                                    ng-repeat="log in eventlog | filter: searchquery | orderBy: query.order | orderBy:'asctime':true | limitTo: query.limit : (query.page -1) * query.limit" >
+                                    <td md-cell><span class="md-body-2" >{$log.levelname$}</span></td>
+                                    <td md-cell><span class="md-body-2">{$log.asctime$}</span></td>
+                                    <td md-cell>
+                                        <span class="md-body-2">
+                                            <span ng-if="log.username != null">{$log.username$}</span>
+                                            <span ng-if="log.username == null">----</span>
+                                        </span>
+                                    </td>
+                                    <td md-cell>
+                                         <span class="md-body-2">
+                                            <span ng-if="log.clientip != null">{$log.clientip$}</span>
+                                            <span ng-if="log.clientip == null">----</span>
+                                        </span>
+                                    </td>
+                                    </td>
+                                    <td md-cell>                                    
+                                    <span class="md-body-2">{$log.message$}</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </md-table-container> 
+                        <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page"
+                                             md-total="{$ldapuserscount$}" md-page-select="true"
+                                             md-boundary-links="true"></md-table-pagination>      
+           
+        </md-card-content>
+    </md-card>
+</div>

@@ -24,7 +24,6 @@ from ldap3 import Server, Connection, SUBTREE, ALL, ALL_ATTRIBUTES, \
 import ldap3
 import logging
 adminlog = logging.getLogger('adminlog')
-adminlog.info("Active Directory user Management............!")
 ip=''
 user=''
 from openstack_dashboard.api import keystone
@@ -38,10 +37,11 @@ class Users(generic.View):
     @rest_utils.ajax()
     def get(self, request):
         """ Get a list of AD Users
-        """
-        print keystone.client_username
-        print keystone.client_ip
-        d={'clientip':keystone.client_ip,'username':keystone.client_username} 
+        """ 
+        global user  
+        ip=get_ip(request)
+        user = request.user       
+        d={'clientip':ip,'username':user} 
         print d
 
         conn = bind()
@@ -101,8 +101,11 @@ class Users(generic.View):
         :ou: Organizaional Unit of User
 
         This returns status of Disabled User.
-        """        
-        d={'clientip':keystone.client_ip,'username':keystone.client_username} 
+        """ 
+        global user  
+        ip=get_ip(request)
+        user = request.user       
+        d={'clientip':ip,'username':user} 
         try:
             args = (request, request.DATA['users'],)
         except KeyError as e:
@@ -119,7 +122,7 @@ class Users(generic.View):
                     username=user['username']                
                     adminlog.info("Enable user::%s",username,extra=d)
                     response = enableUser(dn, conn) 
-                    adminlog.info("Status Enable user ::%s %s ",username,response,extra=d)                                          
+                    adminlog.info(" Enable user ::%s %s ",username,response,extra=d)                                          
                     result.append(
                         {"user": user['username'], "action": "Enable",
                          "status": response})
@@ -134,10 +137,9 @@ class Users(generic.View):
             
             for user in request.DATA['users']:
                 dn = user['user_dn']
-                username=user['username'] 
-                adminlog.info("Disable user:: %s",username,extra=d)               
+                username=user['username']                 
                 response = disableUser(dn, conn)                 
-                adminlog.info("Status Disable user :: %s %s",username,response,extra=d)                      
+                adminlog.info(" Disable user :: %s %s",username,response,extra=d)                      
                 result.append(
                     {"user": user['username'], "action": "Disable",
                      "status": response})
@@ -152,7 +154,10 @@ class Users(generic.View):
 
     @rest_utils.ajax()
     def patch(self, request):
-        d={'clientip':keystone.client_ip,'username':keystone.client_username} 
+        global user  
+        ip=get_ip(request)
+        user = request.user       
+        d={'clientip':ip,'username':user}         
         try:
             args = (
                 request,
@@ -170,8 +175,7 @@ class Users(generic.View):
         change_password = request.DATA['change_password']        
         change_computer = request.DATA['change_computer']
         change_commonName = request.DATA['change_commonName'] 
-        password= request.DATA['password']  
-        adminlog.info("Edit the user Details.........................................!",extra=d)
+        password= request.DATA['password']         
        
         if(change_password==True and change_commonName==True and change_computer==True):                       
             result = [] 
@@ -378,7 +382,10 @@ class Map(generic.View):
 
         This returns status of user creation.
         """
-        d={'clientip':keystone.client_ip,'username':keystone.client_username} 
+        global user  
+        ip=get_ip(request)
+        user = request.user       
+        d={'clientip':ip,'username':user}       
         adminlog.info("Assing Virtual Machine to users",extra=d)
         try:
             args = (
@@ -417,16 +424,15 @@ class Map(generic.View):
                                "action": "maping",
                                "status": response})
             unbind(conn)
-            adminlog.debug("Status Assing Virtual Machine to users:%s",result,extra=d)
+            adminlog.debug(" Assing Virtual Machine to users:%s",result,extra=d)
             return result
 
         else:
             return "Authentication Failed"
 
 
-def bind():
-
-    d={'clientip':keystone.client_ip,'username':keystone.client_username} 
+def bind():    
+    d={'clientip':ip,'username':user} 
     try:        
         s = Server(settings.LDAP_SERVER[0], port=settings.LDAP_SERVER_PORT,
                use_ssl=settings.LDAP_SSL, get_info=ALL)
@@ -456,15 +462,14 @@ def getdn(username):
 
 
 def createNewUser(dn, username, mail, conn):    
-    d={'clientip':keystone.client_ip,'username':keystone.client_username} 
-    adminlog.info("CREATE New User: %s",username,extra=d)
+    d={'clientip':ip,'username':user}     
     conn.add(dn, ['Top', 'person', 'user'],
              {'cn': username,
               'userPrincipalName': '%s@%s' % (username, settings.LDAP_DNS),
               'userWorkstations': settings.LDAP_SERVER_MACHINE_NAME,
               'mail': mail,
               'sAMAccountName': username})
-    adminlog.info("STATUS: of Create New User:%s  %s",username,conn.result['description'],extra=d)
+    adminlog.info(" Create New User:%s  %s",username,conn.result['description'],extra=d)
     return conn.result['description']
 
 
@@ -478,14 +483,13 @@ def enableUser(dn, conn):
     return conn.result['description']
 
 
-def changePassword(dn, password, conn):       
-    d={'clientip':keystone.client_ip,'username':keystone.client_username} 
-    adminlog.info("change_password of the user:%s",dn,extra=d)
+def changePassword(dn, password, conn):    
+    d={'clientip':ip,'username':user}     
     unicode_pass = unicode('"' + password + '"', 'iso-8859-1')
     encoded_pass = unicode_pass.encode('utf-16-le')
     conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
     conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
-    adminlog.info("STATUS: change_password of the user:%s   %s",dn,conn.result['description'],extra=d)
+    adminlog.info(" change_password of the user:%s   %s",dn,conn.result['description'],extra=d)
     return conn.result['description']
 
 
@@ -531,10 +535,7 @@ def retriveUsers(conn):
     return users
 
 
-def retriveAvailableUsers(conn):
-
-    d={'clientip':keystone.client_ip,'username':keystone.client_username} 
-    adminlog.info("Retrive AvailableUsers details",extra=d)
+def retriveAvailableUsers(conn):        
     available_users = []
     conn.search(search_base=settings.LDAP_BASE_DIR,
                 search_filter='(&(objectCategory=person)(objectClass=user)(memberof=cn=normalusers,ou=groups,ou=police,dc=naanal,dc=local)(|(userAccountControl=512)(userAccountControl=66048)))',
@@ -550,9 +551,7 @@ def retriveAvailableUsers(conn):
     return available_users
 
 
-def assignedComputers(conn):
-    d={'clientip':keystone.client_ip,'username':keystone.client_username} 
-    adminlog.info("Retrive assignedComputers details",extra=d)
+def assignedComputers(conn):       
     assigned_computers = []   
     conn.search(search_base='dc=naanal,dc=local',
                 search_filter='(&(objectCategory=person)(objectClass=user))',
@@ -625,12 +624,11 @@ def retriveAvailableComputers(conn):
     return available_computers
 
 
-def mapUserToVm(user_dn, computer, conn):    
-    d={'clientip':keystone.client_ip,'username':keystone.client_username} 
-    adminlog.info("Map virtual Machine to user: %s  computer Name: %s",user_dn,computer,extra=d)
+def mapUserToVm(user_dn, computer, conn):     
+    d={'clientip':ip,'username':user}     
     computers = computer + ',' + settings.LDAP_SERVER_MACHINE_NAME
     conn.modify(user_dn, {'userWorkstations': [(MODIFY_REPLACE, computers)]})
-    adminlog.info("STATUS: Map virtual Machine to user: %s  computer Name: %s   %s",user_dn,computer,conn.result['description'],extra=d)
+    adminlog.info(" Map virtual Machine to user: %s  computer Name: %s   %s",user_dn,computer,conn.result['description'],extra=d)
     return conn.result['description']
 
 
@@ -640,7 +638,7 @@ def autoAssignUsersWithVms(map_data, conn):
     available_vms = retriveAvailableComputers(conn)
     user_len = len(users)
     vm_len = len(available_vms)    
-    d={'clientip':keystone.client_ip,'username':keystone.client_username} 
+    d={'clientip':ip,'username':user} 
     if (user_len > vm_len):
         adminlog.error( "You have selected %s users. But %s computers only available" , user_len, vm_len,extra=d)
         return {"message": "You have selected %s users. But %s computers only available" % (user_len, vm_len)}
@@ -653,8 +651,8 @@ def autoAssignUsersWithVms(map_data, conn):
     return map_data
 
 
-def change_userPrincipalName(user_dn, new_username, conn):    
-    d={'clientip':keystone.client_ip,'username':keystone.client_username} 
+def change_userPrincipalName(user_dn, new_username, conn):     
+    d={'clientip':ip,'username':user} 
     adminlog.info("change_userPrincipalName Process",extra=d)
     new_username = new_username + '@naanal.local'
     conn.modify(user_dn,
@@ -663,8 +661,8 @@ def change_userPrincipalName(user_dn, new_username, conn):
     return conn.result['description']
 
 
-def change_sAMAccountName(user_dn, new_username, conn):    
-    d={'clientip':keystone.client_ip,'username':keystone.client_username} 
+def change_sAMAccountName(user_dn, new_username, conn):     
+    d={'clientip':ip,'username':user} 
     adminlog.info("Change _sAMAccountName Process",extra=d)
     conn.modify(user_dn,
                 {'sAMAccountName': [(MODIFY_REPLACE, [new_username])]
@@ -680,13 +678,12 @@ def change_userEmail(user_dn, E_mail, conn):
     return conn.result['description']
 
 
-def change_userDN(user_dn, new_username, conn):           
-    d={'clientip':keystone.client_ip,'username':keystone.client_username} 
-    adminlog.info("change CommonName user:%s with new username:  %s",user_dn,new_username,extra=d)
+def change_userDN(user_dn, new_username, conn):               
+    d={'clientip':ip,'username':user}     
     new_username = 'cn=' + new_username
     conn.modify_dn(user_dn, new_username)
     print("status of change_userDN::::" + conn.result['description'])
-    adminlog.info("STATUS:change CommonName user:%s with new username:  %s   %s",user_dn,new_username,conn.result['description'],extra=d)
+    adminlog.info("change CommonName user:%s with new username:  %s   %s",user_dn,new_username,conn.result['description'],extra=d)
     return conn.result['description']
 
 
@@ -774,6 +771,8 @@ def get_ip(request):
     if x_forwarded_for:
         ip = x_forwarded_for.split(',')[0]
     else:       
-        ip = request.META.get('REMOTE_ADDR')         
+        ip = request.META.get('REMOTE_ADDR') 
+    print "ipaddresss"  
+    print ip      
    
     return ip

@@ -80,7 +80,7 @@ def success(request, message, extra_tags='', fail_silently=False):
     ip=get_ip(request)
     user = request.user       
     d={'clientip':ip,'username':user} 
-    adminlog.success(message,extra=d)   
+    adminlog.info(message,extra=d)   
     add_message(request, constants.SUCCESS, message, extra_tags=extra_tags,
                 fail_silently=fail_silently)
 
