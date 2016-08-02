@@ -3,7 +3,6 @@ import os
 from django.utils.translation import ugettext_lazy as _
 
 from openstack_dashboard import exceptions
-from pythonjsonlogger import jsonlogger
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -379,16 +378,6 @@ LOGGING = {
     # if nothing is specified here and disable_existing_loggers is True,
     # django.db.backends will still log unless it is disabled explicitly.
     'disable_existing_loggers': False,
-    'formatters': {
-         'json': {
-           '()': jsonlogger.JsonFormatter,
-           'fmt': '%(levelname)s %(asctime)s %(clientip)s %(username)s %(message)s',
-       },
-        'verbose': {
-            'format': '[%(asctime)s  %(funcName)s %(clientip)s %(username)s]  %(levelname)s %(message)s',
-        'datefmt': '%Y-%m-%d %H:%M:%S'
-        },
-    },
     'handlers': {
         'null': {
             'level': 'DEBUG',
@@ -398,12 +387,6 @@ LOGGING = {
             # Set the level to "DEBUG" for verbose output logging.
             'level': 'INFO',
             'class': 'logging.StreamHandler',
-        },
-        'admin_logfile': {
-            'level': 'DEBUG',            
-            'class': 'logging.FileHandler',
-            'filename': 'admin.log',
-            'formatter': 'json'
         },
     },
     'loggers': {
@@ -495,16 +478,6 @@ LOGGING = {
             'handlers': ['null'],
             'propagate': False,
         },
-        'adminlog': {
-            'handlers': ['admin_logfile'],
-            'propagate': False,
-            'level':'INFO',
-         },
-         'adminlog': {
-            'handlers': ['admin_logfile'],
-            'propagate': False,
-            'level':'DEBUG',
-         },                 
     }
 }
 
