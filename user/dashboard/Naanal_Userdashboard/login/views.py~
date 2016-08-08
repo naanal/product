@@ -325,6 +325,7 @@ def get_nova_keystone_auth():
     keystone.projects.list()
     from novaclient import client
     nova = client.Client(2, session=keystone.session)
+    print nova.servers
     return(nova)
 
 def vnc_console(instance_name):   
