@@ -149,7 +149,7 @@
     }
       function successMessage(response) {
           Spinner.hideModalSpinner();
-          $rootScope.retieveLdapUsers();
+          // $rootScope.retieveLdapUsers();
           var res = response.data;
           for(var i=0;i<res.length;i++) {
               if (res[i].status.includes("success"))

@@ -41,9 +41,14 @@
   function identityUsersTableController(toast, gettext, ldapAPI,Spinner, $scope, $rootScope) {
 
       $scope.selected = [];
-        $scope.query = {
+        $scope.userquery = {
           order: 'username',
-          limit: 5,
+          limit: 15,
+          page: 1
+        };
+        $scope.computerquery = {
+          order: 'username',
+          limit: 15,
           page: 1
         };
         $scope.delete_user=function(){     
@@ -61,6 +66,7 @@
           console.log(delete_user)
           ldapAPI.disableUsers(delete_user)
           .then(function(res){
+            $scope.selected = [];
             $rootScope.retieveLdapUsers();
             var res = res.data;
             for(var i=0;i<res.length;i++) {
@@ -93,6 +99,7 @@
           console.log(enable_user)
           ldapAPI.enableUsers(enable_user)
           .then(function(res){
+             $scope.selected = [];
             $rootScope.retieveLdapUsers();
             var res = res.data;
             for(var i=0;i<res.length;i++) {

@@ -19,6 +19,5 @@ import horizon
 
 class NGUsers(horizon.Panel):
     name = _("Users")
+    icon = 'fa fa-users'
     slug = 'ngusers'
-    policy_rules = (("identity", "identity:get_user"),
-                    ("identity", "identity:list_users"))
