@@ -1,6 +1,30 @@
 {% load branding i18n %}
 {% load context_selection %}
 {% load breadcrumb_nav %}
+{% load themes %}
+{% load kwacros %}
+
+{% kwacro sidebar %}
+     {% block sidebar %}
+          {% include 'horizon/common/_sidebar.html' %}
+      {% endblock %}
+{% endkwacro %}
+
+{% kwacro breadcrumb %}
+      {% block breadcrumb_nav %}
+          {% breadcrumb_nav %}
+      {% endblock %}
+{% endkwacro %}
+
+{% kwacro page_header %}
+      {% block page_header %}
+        {% include "horizon/common/_page_header.html" with title=page_title %}
+      {% endblock %}
+{% endkwacro %}
+
+{% kwacro main %}
+      {% block main %}{% endblock %}
+{% endkwacro %}
 
 <!DOCTYPE html>
 <html>
@@ -21,6 +45,8 @@
     {% block ng_route_base %} {% endblock %}
   </head>
   <body class=" hold-transition skin-blue sidebar-mini" id="{% block body_id %}{% endblock %}" ng-app='horizon.app' ng-strict-di>
+  {% current_theme as current_theme %}
+
     <noscript>
       <div class="javascript_disabled_alert">
         {% trans "This application requires JavaScript to be enabled in your web browser." %}
@@ -28,32 +54,44 @@
     </noscript>
     <div class="wrapper">
     {% block content %}
-      <div class='topbar'>
-        {% include "header/_header.html" %}
-      </div>
-      <div id='main_content'>
-        {% include "horizon/_messages.html" %}
-        {% block sidebar %}
-          {% include 'horizon/common/_sidebar.html' %}
-        {% endblock %}
-        <div id='content_body' class="content-wrapper">
-          <div class='container-fluid'>
-            <div class="row">
-              <div class="col-xs-12">
-
-                {% block breadcrumb_nav %}
-                  {% breadcrumb_nav %}
-                {% endblock %}
-
-                {% block page_header %}
-                  {% include "horizon/common/_page_header.html" with title=page_title %}
-                {% endblock %}
-                {% block main %}{% endblock %}
+       {% if current_theme == 'default' %}
+              <div class='topbar'>
+                {% include "header/_header.html" %}
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
+              <div id='main_content'>
+                {% include "horizon/_messages.html" %}
+                {% usekwacro sidebar %}
+                <div id='content_body'>
+                  <div class='container-fluid'>
+                    <div class="row">
+                      <div class="col-xs-12">
+                       {% usekwacro breadcrumb %}
+                        {% usekwacro page_header %}
+                        {% usekwacro main %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+       {% endif %}
+
+        {% if current_theme == 'naanal_theme' %}
+              {% include "header/_header.html" %}
+               {% usekwacro sidebar %}
+                {% include "horizon/_messages.html" %}
+
+              <div class="content-wrapper">
+                <section class="content-header">
+                   {% usekwacro breadcrumb %}
+                  {% usekwacro page_header %}
+                </section>
+                
+                <section class="content">
+                  {% usekwacro main %}
+                </section>
+              </div>
+       {% endif %}
+
     {% endblock %}
     <div id="footer">
       {% block footer %}
