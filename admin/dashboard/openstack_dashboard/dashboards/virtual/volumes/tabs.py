@@ -156,25 +156,23 @@ class SnapshotTab(PagedTableMixin, tabs.TableTab):
     preload = False
 
     def get_volume_snapshots_data(self):
-        snapshots = []
-        volumes = {}
-        if api.base.is_service_enabled(self.request, 'volumev2'):
+        if api.base.is_service_enabled(self.request, 'volume'):
             try:
-                marker, sort_dir = self._get_marker()
-                snapshots, self._has_more_data, self._has_prev_data = \
-                    api.cinder.volume_snapshot_list_paged(
-                        self.request, paginate=True, marker=marker,
-                        sort_dir=sort_dir)
+                snapshots = api.cinder.volume_snapshot_list(self.request)
                 volumes = api.cinder.volume_list(self.request)
                 volumes = dict((v.id, v) for v in volumes)
             except Exception:
+                snapshots = []
+                volumes = {}
                 exceptions.handle(self.request, _("Unable to retrieve "
                                                   "volume snapshots."))
 
-        for snapshot in snapshots:
-            volume = volumes.get(snapshot.volume_id)
-            setattr(snapshot, '_volume', volume)
+            for snapshot in snapshots:
+                volume = volumes.get(snapshot.volume_id)
+                setattr(snapshot, '_volume', volume)
 
+        else:
+            snapshots = []
         return snapshots
 
 
@@ -234,5 +232,5 @@ class CGroupsTab(tabs.TableTab, VolumeTableMixIn):
 
 class VolumeAndSnapshotTabs(tabs.TabGroup):
     slug = "volumes_and_snapshots"
-    tabs = (VolumeTab, SnapshotTab, BackupsTab, CGroupsTab)
+    tabs = (VolumeTab, SnapshotTab)
     sticky = True
