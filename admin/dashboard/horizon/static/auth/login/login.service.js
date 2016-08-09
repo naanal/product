@@ -34,7 +34,7 @@
             }).then(function(response) { //returns a call back
                 return response.status;
             }, function errorCallback(response) {
-                $window.location.href = "/seriouserror/endpointnotfound/"
+                // $window.location.href = "/seriouserror/endpointnotfound/"
             });
         }
         obj.validateKeystone = function(endpoint) {
@@ -51,8 +51,8 @@
                 window.stop();
                 if(response.status == 401)
                      $rootScope.keystone = true;
-                 else
-                    $window.location.href = "/seriouserror/keystone_malfunctioned/"
+                 // else
+                 //    $window.location.href = "/seriouserror/keystone_malfunctioned/"
             });
             
         }
