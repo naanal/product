@@ -1,3 +1,53 @@
 {"levelname": "INFO", "asctime": "2016-08-02 06:55:57,469", "clientip": "192.168.1.23", "username": "admin", "message": "Retrive assignedComputers details"}
 {"levelname": "INFO", "asctime": "2016-08-02 06:55:59,653", "clientip": "192.168.1.23", "username": "admin", "message": " Disable user :: ins success"}
 {"levelname": "INFO", "asctime": "2016-08-02 06:57:28,575", "clientip": "192.168.1.23", "username": "admin", "message": "Scheduled deletion of Instance: shan"}
+{"levelname": "ERROR", "asctime": "2016-08-09 10:48:08,446", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve instances."}
+{"levelname": "ERROR", "asctime": "2016-08-09 11:33:26,095", "clientip": "172.30.64.76", "username": "admin", "message": "Failed to perform requested operation on instance \"migrate\", the instance has an error status: Please try again later [Error: Unknown]."}
+{"levelname": "ERROR", "asctime": "2016-08-09 12:09:55,523", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve instances."}
+{"levelname": "ERROR", "asctime": "2016-08-09 12:11:20,813", "clientip": "172.30.64.76", "username": "admin", "message": "Unable to retrieve project list."}
+{"levelname": "ERROR", "asctime": "2016-08-09 13:17:45,622", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve instances."}
+{"levelname": "INFO", "asctime": "2016-08-09 13:28:02,718", "clientip": "172.30.64.76", "username": "admin", "message": "Paused Instance: migrate"}
+{"levelname": "INFO", "asctime": "2016-08-09 13:28:39,197", "clientip": "172.30.64.76", "username": "admin", "message": "Resumed Instance: migrate"}
+{"levelname": "INFO", "asctime": "2016-08-09 13:28:55,819", "clientip": "172.30.64.76", "username": "admin", "message": "Paused Instance: migrate"}
+{"levelname": "INFO", "asctime": "2016-08-09 13:29:12,759", "clientip": "172.30.64.76", "username": "admin", "message": "Locked Instance: migrate"}
+{"levelname": "INFO", "asctime": "2016-08-09 13:29:29,700", "clientip": "172.30.64.76", "username": "admin", "message": "Resumed Instance: migrate"}
+{"levelname": "INFO", "asctime": "2016-08-09 13:30:01,976", "clientip": "172.30.64.76", "username": "admin", "message": "Paused Instance: migrate"}
+{"levelname": "ERROR", "asctime": "2016-08-09 13:40:52,567", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve instances."}
+{"levelname": "INFO", "asctime": "2016-08-09 13:41:12,502", "clientip": "172.30.64.76", "username": "admin", "message": "Resumed Instance: migrate"}
+{"levelname": "INFO", "asctime": "2016-08-09 13:42:29,558", "clientip": "172.30.64.76", "username": "admin", "message": "Creating volume \"wind_server\""}
+{"levelname": "ERROR", "asctime": "2016-08-09 13:46:12,538", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve volume/instance attachment information"}
+{"levelname": "ERROR", "asctime": "2016-08-09 13:46:12,539", "clientip": "172.30.64.76", "username": "AnonymousUser", "message": "Unauthorized. Please try logging in again."}
+{"levelname": "ERROR", "asctime": "2016-08-09 13:46:12,540", "clientip": "172.30.64.76", "username": "AnonymousUser", "message": "Unauthorized. Please try logging in again."}
+{"levelname": "ERROR", "asctime": "2016-08-09 13:54:59,949", "clientip": "172.30.64.76", "username": "rally", "message": "Unable to retrieve project list."}
+{"levelname": "ERROR", "asctime": "2016-08-09 15:05:50,594", "clientip": "172.30.64.28", "username": "admin", "message": "Unable to retrieve project list."}
+{"levelname": "ERROR", "asctime": "2016-08-09 15:08:36,967", "clientip": "172.30.64.28", "username": "admin", "message": "Failed to perform requested operation on instance \"new-win-5\", the instance has an error status: Please try again later [Error: Unknown]."}
+{"levelname": "ERROR", "asctime": "2016-08-09 15:08:38,077", "clientip": "172.30.64.28", "username": "admin", "message": "Failed to perform requested operation on instance \"new-win-4\", the instance has an error status: Please try again later [Error: Unknown]."}
+{"levelname": "ERROR", "asctime": "2016-08-09 15:08:38,445", "clientip": "172.30.64.28", "username": "admin", "message": "Failed to perform requested operation on instance \"new-win-2\", the instance has an error status: Please try again later [Error: Unknown]."}
+{"levelname": "ERROR", "asctime": "2016-08-09 15:13:29,928", "clientip": "172.30.64.28", "username": "admin", "message": "Failed to perform requested operation on instance \"new-win-3\", the instance has an error status: Please try again later [Error: Unknown]."}
+{"levelname": "INFO", "asctime": "2016-08-09 15:32:28,421", "clientip": "172.30.64.28", "username": "admin", "message": "Scheduled deletion of Instances: new-win-10, new-win-9, new-win-8, new-win-7, new-win-6"}
+{"levelname": "INFO", "asctime": "2016-08-09 15:32:49,521", "clientip": "172.30.64.28", "username": "admin", "message": "Scheduled deletion of Instances: new-win-5, new-win-3, new-win-2"}
+{"levelname": "INFO", "asctime": "2016-08-09 15:33:40,328", "clientip": "172.30.64.28", "username": "admin", "message": "Scheduled deletion of Instance: new-win-5"}
+{"levelname": "ERROR", "asctime": "2016-08-09 16:37:37,993", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve instances."}
+{"levelname": "ERROR", "asctime": "2016-08-09 16:45:35,920", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized. Please try logging in again."}
+{"levelname": "ERROR", "asctime": "2016-08-09 16:48:18,797", "clientip": "172.30.64.76", "username": "rally", "message": "Unable to retrieve project list."}
+{"levelname": "INFO", "asctime": "2016-08-09 16:56:12,322", "clientip": "172.30.64.76", "username": "rally", "message": "Successfully disassociated Floating IP: 172.30.66.95"}
+{"levelname": "INFO", "asctime": "2016-08-09 16:56:57,522", "clientip": "172.30.64.76", "username": "rally", "message": "Released Floating IPs: 172.30.66.164, 172.30.66.213, 172.30.66.101, 172.30.66.97"}
+{"levelname": "INFO", "asctime": "2016-08-09 16:57:35,106", "clientip": "172.30.64.76", "username": "rally", "message": "Released Floating IP: 172.30.66.76"}
+{"levelname": "ERROR", "asctime": "2016-08-09 16:59:39,366", "clientip": "172.30.64.76", "username": "rally", "message": "Unauthorized: Unable to retrieve instance list."}
+{"levelname": "INFO", "asctime": "2016-08-09 17:01:25,665", "clientip": "172.30.64.76", "username": "admin", "message": "Successfully disassociated Floating IP: 172.30.66.2"}
+{"levelname": "INFO", "asctime": "2016-08-09 17:01:36,516", "clientip": "172.30.64.76", "username": "admin", "message": "Successfully disassociated Floating IP: 172.30.67.53"}
+{"levelname": "INFO", "asctime": "2016-08-09 17:01:54,830", "clientip": "172.30.64.76", "username": "admin", "message": "Allocated Floating IP 172.30.67.54."}
+{"levelname": "INFO", "asctime": "2016-08-09 17:02:06,411", "clientip": "172.30.64.76", "username": "admin", "message": "Allocated Floating IP 172.30.67.55."}
+{"levelname": "ERROR", "asctime": "2016-08-09 17:03:06,358", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve volume limit information."}
+{"levelname": "ERROR", "asctime": "2016-08-09 17:03:06,360", "clientip": "172.30.64.76", "username": "AnonymousUser", "message": "Unauthorized. Please try logging in again."}
+{"levelname": "ERROR", "asctime": "2016-08-09 17:03:06,361", "clientip": "172.30.64.76", "username": "AnonymousUser", "message": "Unauthorized. Please try logging in again."}
+{"levelname": "ERROR", "asctime": "2016-08-09 17:44:13,165", "clientip": "172.30.64.76", "username": "admin", "message": "Unable to retrieve project list."}
+{"levelname": "INFO", "asctime": "2016-08-09 18:19:20,017", "clientip": "172.30.64.76", "username": "admin", "message": " Disable user :: soundar success"}
+{"levelname": "INFO", "asctime": "2016-08-09 19:05:51,061", "clientip": "172.30.64.76", "username": "admin", "message": "Assing Virtual Machine to users"}
+{"levelname": "INFO", "asctime": "2016-08-09 19:05:51,267", "clientip": "172.30.64.76", "username": "admin", "message": " Map virtual Machine to user: CN=police2,OU=users,OU=Police,DC=naanal,DC=local  computer Name: S-RALLY-1B8D5B8   success"}
+{"levelname": "DEBUG", "asctime": "2016-08-09 19:05:51,269", "clientip": "172.30.64.76", "username": "admin", "message": " Assing Virtual Machine to users:[{'action': 'maping', 'assigned_computer': u'S-RALLY-1B8D5B8', 'status': 'success', 'user': u'CN=police2,OU=users,OU=Police,DC=naanal,DC=local'}]"}
+{"levelname": "INFO", "asctime": "2016-08-09 19:06:59,532", "clientip": "172.30.64.76", "username": "admin", "message": "Scheduled deletion of Instance: new-win-5"}
+{"levelname": "ERROR", "asctime": "2016-08-09 19:15:32,067", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve flavor list."}
+{"levelname": "ERROR", "asctime": "2016-08-09 19:18:16,812", "clientip": "172.30.64.76", "username": "admin", "message": "Unable to retrieve flavor access list. Please try again later."}
+{"levelname": "ERROR", "asctime": "2016-08-09 19:20:07,149", "clientip": "172.30.64.76", "username": "admin", "message": "Unable to retrieve flavor access list. Please try again later."}
+{"levelname": "ERROR", "asctime": "2016-08-09 19:26:10,286", "clientip": "172.30.64.76", "username": "admin", "message": "Unable to retrieve flavor access list. Please try again later."}

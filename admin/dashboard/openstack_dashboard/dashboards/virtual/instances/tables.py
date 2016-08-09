@@ -1177,13 +1177,13 @@ class InstancesTable(tables.DataTable):
     host = tables.Column("OS-EXT-SRV-ATTR:host",
                          verbose_name=_("Host"),
                          classes=('nowrap-col',))
-    image_name = tables.Column("image_name",
-                               verbose_name=_("Image Name"))
+    # image_name = tables.Column("image_name",
+    #                            verbose_name=_("Image Name"))
     ip = tables.Column(get_ips,
                        verbose_name=_("IP Address"),
                        attrs={'data-type': "ip"})
     size = tables.Column(get_size, sortable=False, verbose_name=_("Size"))
-    keypair = tables.Column(get_keyname, verbose_name=_("Key Pair"))
+    # keypair = tables.Column(get_keyname, verbose_name=_("Key Pair"))
     status = tables.Column("status",
                            filters=(title, filters.replace_underscores),
                            verbose_name=_("Status"),

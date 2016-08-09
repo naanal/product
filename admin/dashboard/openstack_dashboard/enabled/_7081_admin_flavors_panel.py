@@ -24,8 +24,7 @@ PANEL_GROUP = 'admin'
 # The slug of the panel to be added to HORIZON_CONFIG. Required.
 PANEL = 'ngflavors'
 
-# If set to True, this settings file will not be added to the settings.
-DISABLED = True
-
 # Python panel class of the PANEL to be added.
 ADD_PANEL = 'openstack_dashboard.dashboards.admin.ngflavors.panel.NGFlavors'
+
+REMOVE_PANEL = True	

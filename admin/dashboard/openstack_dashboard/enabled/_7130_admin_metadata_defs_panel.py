@@ -20,3 +20,4 @@ PANEL_GROUP = 'admin'
 # Python panel class of the PANEL to be added.
 ADD_PANEL = ('openstack_dashboard.dashboards.admin.'
              'metadata_defs.panel.MetadataDefinitions')
+REMOVE_PANEL = True	

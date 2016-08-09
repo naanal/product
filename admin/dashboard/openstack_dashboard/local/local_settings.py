@@ -8,7 +8,9 @@ from pythonjsonlogger import jsonlogger
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-
+# COMPRESS_OFFLINE = False
+# COMPRESS_ENABLED = False
+SESSION_TIMEOUT = 300000
 # WEBROOT is the location relative to Webserver root
 # should end with a slash.
 WEBROOT = '/'
@@ -150,7 +152,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #    ('http://cluster2.example.com:5000/v2.0', 'cluster2'),
 #]
 
-OPENSTACK_HOST = "naanal-host"
+OPENSTACK_HOST = "172.30.65.2"
 OPENSTACK_KEYSTONE_URL = "http://%s:5000/v2.0" % OPENSTACK_HOST
 OPENSTACK_KEYSTONE_DEFAULT_ROLE = "_member_"
 

@@ -21,3 +21,5 @@ DEFAULT_PANEL = 'overview'
 
 # Python panel class of the PANEL to be added.
 ADD_PANEL = 'openstack_dashboard.dashboards.admin.overview.panel.Overview'
+
+REMOVE_PANEL = True	

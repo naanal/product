@@ -18,3 +18,5 @@ PANEL_GROUP = 'admin'
 PANEL_GROUP_NAME = _('System')
 # The slug of the dashboard the PANEL_GROUP associated with. Required.
 PANEL_GROUP_DASHBOARD = 'admin'
+
+REMOVE_PANEL = True	

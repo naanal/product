@@ -19,3 +19,5 @@ PANEL_GROUP = 'admin'
 
 # Python panel class of the PANEL to be added.
 ADD_PANEL = 'openstack_dashboard.dashboards.admin.info.panel.Info'
+
+REMOVE_PANEL = True	
