@@ -150,5 +150,5 @@ LDAP_DNS = "naanal.local"
 LDAP_BASE_DIR = "ou=Police, dc=naanal, dc=local"
 
 OPENSTACK_USERNAME="admin"
-OPENSTACK_PASSWORD="ADMIN"
+OPENSTACK_PASSWORD="admin"
 OPENSTACK_PROJECT_NAME="admin"

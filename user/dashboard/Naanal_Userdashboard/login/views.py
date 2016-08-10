@@ -42,8 +42,8 @@ def loginpage(request):
                     return render_to_response('login.html', {'state': state})
 
                 status = instance_status(instance_name)
-                if status == '':
-                    state = "problem occured to find the vm  from server"
+                if status =="vm not found....!":
+                    state = "Instance not found..! or Problem occuerd to find the instace from the server..!"
                     userlog.info(state)
                     return render_to_response('login.html', {'state': state})
                 instance_id = get_instance_id(instance_name)
@@ -337,13 +337,17 @@ def get_instance_floatingip(instance_name):
 
 def instance_status(instance_name):
     status = ''
+    from novaclient import client
+    nova = get_nova_keystone_auth()
     try:
-        nova = get_nova_keystone_auth()
         server = nova.servers.find(name=instance_name)
-        status = str(server.status)
-        return (status)
-    except:
-        return (status)
+        status =str(server.status)
+    except client.exceptions.NotFound:
+        status = "vm not found....!"
+        userlog.exception(status)
+    except Exception:
+        userlog.exception("Error:To find the server from the controller...!")
+    return (status)
 
 
 def get_nova_keystone_auth():
