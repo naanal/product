@@ -644,9 +644,9 @@ def autoAssignUsersWithVms(map_data, conn):
         return {"message": "You have selected %s users. But %s computers only available" % (user_len, vm_len)}
     else:
         sliced_vms = available_vms[:user_len]
-        for user, vm in zip(users, sliced_vms):
+        for iuser, vm in zip(users, sliced_vms):
             map_data.append(
-                {"user_dn": user['user_dn'], "computer": vm['computername']})
+                {"user_dn": iuser['user_dn'], "computer": vm['computername']})
     adminlog.info("Automatically assign user with vm:: %s",map_data)
     return map_data
 

@@ -33,7 +33,7 @@
     'horizon.framework.widgets.toast.service',
     'horizon.framework.util.i18n.gettext',
     'horizon.app.core.openstack-service-api.ldap',
-      'horizon.framework.widgets.modal-wait-spinner.service',
+    'horizon.framework.widgets.modal-wait-spinner.service',
     '$scope',
     '$rootScope'
   ];
@@ -147,6 +147,10 @@
             return false;
           }
         };  
+
+      $rootScope.$on("callretieveLdapUsers", function(){
+           $rootScope.retieveLdapUsers();
+        });
 
       $rootScope.retieveLdapUsers = function(){
            Spinner.showModalSpinner(gettext("Retrieving Users...."));

@@ -10,13 +10,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from django.utils.translation import ugettext_lazy as _
+
 from horizon import views
 
-
-class IndexView(views.APIView):
+class IndexView(views.HorizonTemplateView):
     # A very simple class-based view...
     template_name = 'physical/storage/index.html'
-
-    def get_data(self, request, context, *args, **kwargs):
-        # Add data to the context here...
-        return context
+    page_title = _("SAN Storage")

@@ -149,7 +149,7 @@
     }
       function successMessage(response) {
           Spinner.hideModalSpinner();
-          $rootScope.retieveLdapUsers();
+           $rootScope.$emit("callretieveLdapUsers", {});
           var res = response.data;
           var count = res.length;
           if(res.hasOwnProperty('message'))

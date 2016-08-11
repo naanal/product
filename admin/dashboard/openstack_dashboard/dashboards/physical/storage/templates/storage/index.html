@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{% trans "Storage" %}{% endblock %}
+{% block title %}{% trans "San Storage" %}{% endblock %}
 
 {% block page_header %}
-  {% include "horizon/common/_page_header.html" with title=_("Storage") %}
 {% endblock page_header %}
 
 {% block main %}
+<div class="embed-responsive embed-responsive-16by9">
+  <iframe class="embed-responsive-item myframe" src="http://172.30.64.63"></iframe>
+</div>
+<br/><br/>
+<a class="btn btn-primary btn-xs pull-right" href="http://172.30.64.63" target="_blank">Open in New Windows</a>
 {% endblock %}
 
 

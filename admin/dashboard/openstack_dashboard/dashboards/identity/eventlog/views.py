@@ -12,8 +12,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from django.views import generic
+from django.utils.translation import ugettext_lazy as _
+
+from horizon import views
 
 
-class IndexView(generic.TemplateView):
+class IndexView(views.HorizonTemplateView):
     template_name = 'identity/eventlog/index.html'
+    page_title = _("Event Logs")

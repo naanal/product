@@ -25,7 +25,7 @@
     '$rootScope',
     'horizon.app.core.openstack-service-api.ldap',
     'horizon.framework.widgets.toast.service',
-    'horizon.framework.widgets.modal-wait-spinner.service'
+    'horizon.framework.widgets.modal-wait-spinner.service',
   ];
 
   /**
@@ -149,7 +149,7 @@
     }
       function successMessage(response) {
           Spinner.hideModalSpinner();
-          // $rootScope.retieveLdapUsers();
+           $rootScope.$emit("callretieveLdapUsers", {});
           var res = response.data;
           for(var i=0;i<res.length;i++) {
               if (res[i].status.includes("success"))
