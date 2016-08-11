@@ -1,0 +1,12 @@
+ .nav-sm .container.body .right_col {
+    min-height: 100vh;
+ }
+span.fa {
+    display: -webkit-inline-box !important;
+}
+a > span.fa.fa-chevron-down {
+    display: none !important;
+}
+a:not(.md-button) {
+    color: #428bca;
+}

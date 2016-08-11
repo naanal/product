@@ -1,0 +1,26 @@
+{% load branding i18n %}
+{% load context_selection %}
+{% load themes %}
+
+
+{% theme_dir as theme_dir %}
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="{{ STATIC_URL }}{{ theme_dir }}/naanal_monitor/css/custom.min.css" rel="stylesheet" />
+
+    <link href="{{ STATIC_URL }}{{ theme_dir }}/naanal_monitor/css/nprogress.css" rel="" />
+
+    <script src='{{ STATIC_URL }}{{ theme_dir }}/naanal_monitor/js/custom.min.js'></script>
+    <script src='{{ STATIC_URL }}{{ theme_dir }}/naanal_monitor/js/nprogress.js'></script>
+    <script src='{{ STATIC_URL }}{{ theme_dir }}/naanal_monitor/js/fastclick.js'></script>
+
+ <div class="nav_menu">
+    <nav>
+      <div class="nav toggle">
+        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+      </div>
+
+      <ul class="nav navbar-nav navbar-right">
+        {% include "header/_user_menu.html" %}
+      </ul>
+    </nav>
+</div>
