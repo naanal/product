@@ -132,3 +132,138 @@
 {"levelname": "INFO", "asctime": "2016-08-11 06:00:38,862", "clientip": "192.168.1.23", "username": "admin", "message": "Scheduled deletion of Instance: final"}
 {"levelname": "INFO", "asctime": "2016-08-11 06:47:48,628", "clientip": "192.168.1.23", "username": "admin", "message": "Modified instance \"zookeeper_2\"."}
 {"levelname": "INFO", "asctime": "2016-08-11 06:47:59,875", "clientip": "192.168.1.23", "username": "admin", "message": "Modified instance \"zookeeper_2\"."}
+{"levelname": "INFO", "asctime": "2016-08-02 06:55:57,469", "clientip": "192.168.1.23", "username": "admin", "message": "Retrive assignedComputers details"}
+{"levelname": "INFO", "asctime": "2016-08-02 06:55:59,653", "clientip": "192.168.1.23", "username": "admin", "message": " Disable user :: ins success"}
+{"levelname": "INFO", "asctime": "2016-08-02 06:57:28,575", "clientip": "192.168.1.23", "username": "admin", "message": "Scheduled deletion of Instance: shan"}
+{"levelname": "ERROR", "asctime": "2016-08-09 10:48:08,446", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve instances."}
+{"levelname": "ERROR", "asctime": "2016-08-09 11:33:26,095", "clientip": "172.30.64.76", "username": "admin", "message": "Failed to perform requested operation on instance \"migrate\", the instance has an error status: Please try again later [Error: Unknown]."}
+{"levelname": "ERROR", "asctime": "2016-08-09 12:09:55,523", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve instances."}
+{"levelname": "ERROR", "asctime": "2016-08-09 12:11:20,813", "clientip": "172.30.64.76", "username": "admin", "message": "Unable to retrieve project list."}
+{"levelname": "ERROR", "asctime": "2016-08-09 13:17:45,622", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve instances."}
+{"levelname": "INFO", "asctime": "2016-08-09 13:28:02,718", "clientip": "172.30.64.76", "username": "admin", "message": "Paused Instance: migrate"}
+{"levelname": "INFO", "asctime": "2016-08-09 13:28:39,197", "clientip": "172.30.64.76", "username": "admin", "message": "Resumed Instance: migrate"}
+{"levelname": "INFO", "asctime": "2016-08-09 13:28:55,819", "clientip": "172.30.64.76", "username": "admin", "message": "Paused Instance: migrate"}
+{"levelname": "INFO", "asctime": "2016-08-09 13:29:12,759", "clientip": "172.30.64.76", "username": "admin", "message": "Locked Instance: migrate"}
+{"levelname": "INFO", "asctime": "2016-08-09 13:29:29,700", "clientip": "172.30.64.76", "username": "admin", "message": "Resumed Instance: migrate"}
+{"levelname": "INFO", "asctime": "2016-08-09 13:30:01,976", "clientip": "172.30.64.76", "username": "admin", "message": "Paused Instance: migrate"}
+{"levelname": "ERROR", "asctime": "2016-08-09 13:40:52,567", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve instances."}
+{"levelname": "INFO", "asctime": "2016-08-09 13:41:12,502", "clientip": "172.30.64.76", "username": "admin", "message": "Resumed Instance: migrate"}
+{"levelname": "INFO", "asctime": "2016-08-09 13:42:29,558", "clientip": "172.30.64.76", "username": "admin", "message": "Creating volume \"wind_server\""}
+{"levelname": "ERROR", "asctime": "2016-08-09 13:46:12,538", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve volume/instance attachment information"}
+{"levelname": "ERROR", "asctime": "2016-08-09 13:46:12,539", "clientip": "172.30.64.76", "username": "AnonymousUser", "message": "Unauthorized. Please try logging in again."}
+{"levelname": "ERROR", "asctime": "2016-08-09 13:46:12,540", "clientip": "172.30.64.76", "username": "AnonymousUser", "message": "Unauthorized. Please try logging in again."}
+{"levelname": "ERROR", "asctime": "2016-08-09 13:54:59,949", "clientip": "172.30.64.76", "username": "rally", "message": "Unable to retrieve project list."}
+{"levelname": "ERROR", "asctime": "2016-08-09 15:05:50,594", "clientip": "172.30.64.28", "username": "admin", "message": "Unable to retrieve project list."}
+{"levelname": "ERROR", "asctime": "2016-08-09 15:08:36,967", "clientip": "172.30.64.28", "username": "admin", "message": "Failed to perform requested operation on instance \"new-win-5\", the instance has an error status: Please try again later [Error: Unknown]."}
+{"levelname": "ERROR", "asctime": "2016-08-09 15:08:38,077", "clientip": "172.30.64.28", "username": "admin", "message": "Failed to perform requested operation on instance \"new-win-4\", the instance has an error status: Please try again later [Error: Unknown]."}
+{"levelname": "ERROR", "asctime": "2016-08-09 15:08:38,445", "clientip": "172.30.64.28", "username": "admin", "message": "Failed to perform requested operation on instance \"new-win-2\", the instance has an error status: Please try again later [Error: Unknown]."}
+{"levelname": "ERROR", "asctime": "2016-08-09 15:13:29,928", "clientip": "172.30.64.28", "username": "admin", "message": "Failed to perform requested operation on instance \"new-win-3\", the instance has an error status: Please try again later [Error: Unknown]."}
+{"levelname": "INFO", "asctime": "2016-08-09 15:32:28,421", "clientip": "172.30.64.28", "username": "admin", "message": "Scheduled deletion of Instances: new-win-10, new-win-9, new-win-8, new-win-7, new-win-6"}
+{"levelname": "INFO", "asctime": "2016-08-09 15:32:49,521", "clientip": "172.30.64.28", "username": "admin", "message": "Scheduled deletion of Instances: new-win-5, new-win-3, new-win-2"}
+{"levelname": "INFO", "asctime": "2016-08-09 15:33:40,328", "clientip": "172.30.64.28", "username": "admin", "message": "Scheduled deletion of Instance: new-win-5"}
+{"levelname": "ERROR", "asctime": "2016-08-09 16:37:37,993", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve instances."}
+{"levelname": "ERROR", "asctime": "2016-08-09 16:45:35,920", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized. Please try logging in again."}
+{"levelname": "ERROR", "asctime": "2016-08-09 16:48:18,797", "clientip": "172.30.64.76", "username": "rally", "message": "Unable to retrieve project list."}
+{"levelname": "INFO", "asctime": "2016-08-09 16:56:12,322", "clientip": "172.30.64.76", "username": "rally", "message": "Successfully disassociated Floating IP: 172.30.66.95"}
+{"levelname": "INFO", "asctime": "2016-08-09 16:56:57,522", "clientip": "172.30.64.76", "username": "rally", "message": "Released Floating IPs: 172.30.66.164, 172.30.66.213, 172.30.66.101, 172.30.66.97"}
+{"levelname": "INFO", "asctime": "2016-08-09 16:57:35,106", "clientip": "172.30.64.76", "username": "rally", "message": "Released Floating IP: 172.30.66.76"}
+{"levelname": "ERROR", "asctime": "2016-08-09 16:59:39,366", "clientip": "172.30.64.76", "username": "rally", "message": "Unauthorized: Unable to retrieve instance list."}
+{"levelname": "INFO", "asctime": "2016-08-09 17:01:25,665", "clientip": "172.30.64.76", "username": "admin", "message": "Successfully disassociated Floating IP: 172.30.66.2"}
+{"levelname": "INFO", "asctime": "2016-08-09 17:01:36,516", "clientip": "172.30.64.76", "username": "admin", "message": "Successfully disassociated Floating IP: 172.30.67.53"}
+{"levelname": "INFO", "asctime": "2016-08-09 17:01:54,830", "clientip": "172.30.64.76", "username": "admin", "message": "Allocated Floating IP 172.30.67.54."}
+{"levelname": "INFO", "asctime": "2016-08-09 17:02:06,411", "clientip": "172.30.64.76", "username": "admin", "message": "Allocated Floating IP 172.30.67.55."}
+{"levelname": "ERROR", "asctime": "2016-08-09 17:03:06,358", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve volume limit information."}
+{"levelname": "ERROR", "asctime": "2016-08-09 17:03:06,360", "clientip": "172.30.64.76", "username": "AnonymousUser", "message": "Unauthorized. Please try logging in again."}
+{"levelname": "ERROR", "asctime": "2016-08-09 17:03:06,361", "clientip": "172.30.64.76", "username": "AnonymousUser", "message": "Unauthorized. Please try logging in again."}
+{"levelname": "ERROR", "asctime": "2016-08-09 17:44:13,165", "clientip": "172.30.64.76", "username": "admin", "message": "Unable to retrieve project list."}
+{"levelname": "INFO", "asctime": "2016-08-09 18:19:20,017", "clientip": "172.30.64.76", "username": "admin", "message": " Disable user :: soundar success"}
+{"levelname": "INFO", "asctime": "2016-08-09 19:05:51,061", "clientip": "172.30.64.76", "username": "admin", "message": "Assing Virtual Machine to users"}
+{"levelname": "INFO", "asctime": "2016-08-09 19:05:51,267", "clientip": "172.30.64.76", "username": "admin", "message": " Map virtual Machine to user: CN=police2,OU=users,OU=Police,DC=naanal,DC=local  computer Name: S-RALLY-1B8D5B8   success"}
+{"levelname": "DEBUG", "asctime": "2016-08-09 19:05:51,269", "clientip": "172.30.64.76", "username": "admin", "message": " Assing Virtual Machine to users:[{'action': 'maping', 'assigned_computer': u'S-RALLY-1B8D5B8', 'status': 'success', 'user': u'CN=police2,OU=users,OU=Police,DC=naanal,DC=local'}]"}
+{"levelname": "INFO", "asctime": "2016-08-09 19:06:59,532", "clientip": "172.30.64.76", "username": "admin", "message": "Scheduled deletion of Instance: new-win-5"}
+{"levelname": "ERROR", "asctime": "2016-08-09 19:15:32,067", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve flavor list."}
+{"levelname": "ERROR", "asctime": "2016-08-09 19:18:16,812", "clientip": "172.30.64.76", "username": "admin", "message": "Unable to retrieve flavor access list. Please try again later."}
+{"levelname": "ERROR", "asctime": "2016-08-09 19:20:07,149", "clientip": "172.30.64.76", "username": "admin", "message": "Unable to retrieve flavor access list. Please try again later."}
+{"levelname": "ERROR", "asctime": "2016-08-09 19:26:10,286", "clientip": "172.30.64.76", "username": "admin", "message": "Unable to retrieve flavor access list. Please try again later."}
+{"levelname": "ERROR", "asctime": "2016-08-09 20:12:02,123", "clientip": "172.30.64.76", "username": "admin", "message": "Unable to retrieve details for instance \"instances\"."}
+{"levelname": "ERROR", "asctime": "2016-08-09 20:23:41,553", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve details for instance \"5a67eb68-78e6-4b56-94d1-5e518ace9a2e\"."}
+{"levelname": "ERROR", "asctime": "2016-08-09 20:23:41,555", "clientip": "172.30.64.76", "username": "AnonymousUser", "message": "Unauthorized. Please try logging in again."}
+{"levelname": "INFO", "asctime": "2016-08-09 21:10:56,956", "clientip": "172.30.64.76", "username": "admin", "message": " Create New User:d1  invalidAttributeSyntax"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:11:28,611", "clientip": "172.30.64.76", "username": "admin", "message": " Create New User:d1  invalidAttributeSyntax"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:12:09,860", "clientip": "172.30.64.76", "username": "admin", "message": " Create New User:raj  invalidAttributeSyntax"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:12:48,292", "clientip": "172.30.64.76", "username": "admin", "message": " Create New User:dummy  invalidAttributeSyntax"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:16:10,987", "clientip": "172.30.64.76", "username": "admin", "message": " Create New User:raja  success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:16:11,271", "clientip": "172.30.64.76", "username": "admin", "message": " change_password of the user:cn=raja,ou=users,ou=Police,dc=naanal,dc=local   success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:22:56,745", "clientip": "", "username": "", "message": " Create New User:thfdthhg  success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:22:56,818", "clientip": "", "username": "", "message": " change_password of the user:cn=thfdthhg,ou=users,ou=Police,dc=naanal,dc=local   success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:23:38,316", "clientip": "", "username": "", "message": " Create New User:gvbjh  success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:23:38,371", "clientip": "", "username": "", "message": " change_password of the user:cn=gvbjh,ou=users,ou=Police,dc=naanal,dc=local   success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:24:40,341", "clientip": "172.30.64.76", "username": "admin", "message": " Create New User:kjhnkhnkj  invalidAttributeSyntax"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:25:14,902", "clientip": "172.30.64.76", "username": "admin", "message": " Create New User:hgfhgfhgf  success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:25:14,967", "clientip": "172.30.64.76", "username": "admin", "message": " change_password of the user:cn=hgfhgfhgf,ou=users,ou=Police,dc=naanal,dc=local   success"}
+{"levelname": "ERROR", "asctime": "2016-08-09 21:25:26,387", "clientip": "172.30.64.76", "username": "admin", "message": "Unauthorized: Unable to retrieve instances."}
+{"levelname": "INFO", "asctime": "2016-08-09 21:26:20,444", "clientip": "172.30.64.76", "username": "admin", "message": " Create New User:jhjhgj  success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:26:20,519", "clientip": "172.30.64.76", "username": "admin", "message": " change_password of the user:cn=jhjhgj,ou=users,ou=Police,dc=naanal,dc=local   success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:27:09,834", "clientip": "172.30.64.76", "username": "admin", "message": " Disable user :: hgfhgfhgf success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:28:19,884", "clientip": "172.30.64.76", "username": "admin", "message": " Disable user :: police success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:28:23,597", "clientip": "172.30.64.76", "username": "admin", "message": " Disable user :: police2 success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:28:27,908", "clientip": "172.30.64.76", "username": "admin", "message": " Disable user :: jhjhgj success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:28:34,551", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::jhjhgj"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:28:34,553", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::jhjhgj success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:29:06,322", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::jhjhgj"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:29:06,324", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::jhjhgj success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:29:10,073", "clientip": "172.30.64.76", "username": "admin", "message": " Disable user :: hgfhgfhgf success"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:29:13,398", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::hgfhgfhgf"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:29:13,399", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::hgfhgfhgf success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,185", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::jhjhgj"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,187", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::jhjhgj success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,188", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::gvbjh"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,189", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::gvbjh success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,190", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::hgfhgfhgf"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,191", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::hgfhgfhgf success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,191", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::police"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,192", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::police success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,192", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::police2"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,193", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::police2 success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,193", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::profile"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,194", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::profile success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,195", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::raja"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,196", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::raja success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,196", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::share"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,197", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::share success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,197", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::soundar"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,198", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::soundar success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,199", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::soundar_user1"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,200", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::soundar_user1 success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,200", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::soundar_user2"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,201", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::soundar_user2 success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,201", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::soundar_user3"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,203", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::soundar_user3 success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,203", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::test"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,204", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::test success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,204", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::test1"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,206", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::test1 success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,206", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::test2"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,207", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::test2 success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,208", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::test3"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,209", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::test3 success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,209", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::test4"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,210", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::test4 success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,211", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::test5"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,212", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::test5 success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,212", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::test6"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,213", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::test6 success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,214", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::thfdthhg"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:38,215", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::thfdthhg success "}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:45,251", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::test3"}
+{"levelname": "INFO", "asctime": "2016-08-09 21:30:45,253", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::test3 success "}
+{"levelname": "INFO", "asctime": "2016-08-11 05:50:38,311", "clientip": "192.168.1.23", "username": "admin", "message": "Scheduled deletion of Instance: make"}
+{"levelname": "ERROR", "asctime": "2016-08-11 05:51:50,712", "clientip": "192.168.1.23", "username": "admin", "message": "Failed to perform requested operation on instance \"shan\", the instance has an error status: Please try again later [Error: No valid host was found. There are not enough hosts available.]."}
+{"levelname": "INFO", "asctime": "2016-08-11 05:52:00,445", "clientip": "192.168.1.23", "username": "admin", "message": "Scheduled deletion of Instance: shan"}
+{"levelname": "INFO", "asctime": "2016-08-11 05:52:42,555", "clientip": "192.168.1.23", "username": "admin", "message": "Modified instance \"final1\"."}
+{"levelname": "INFO", "asctime": "2016-08-11 05:56:54,609", "clientip": "192.168.1.23", "username": "admin", "message": "Modified instance \"final\"."}
+{"levelname": "ERROR", "asctime": "2016-08-11 06:00:29,410", "clientip": "192.168.1.23", "username": "admin", "message": "Failed to perform requested operation on instance \"final\", the instance has an error status: Please try again later [Error: No valid host was found. There are not enough hosts available.]."}
+{"levelname": "INFO", "asctime": "2016-08-11 06:00:38,862", "clientip": "192.168.1.23", "username": "admin", "message": "Scheduled deletion of Instance: final"}
+{"levelname": "INFO", "asctime": "2016-08-11 06:47:48,628", "clientip": "192.168.1.23", "username": "admin", "message": "Modified instance \"zookeeper_2\"."}
+{"levelname": "INFO", "asctime": "2016-08-11 06:47:59,875", "clientip": "192.168.1.23", "username": "admin", "message": "Modified instance \"zookeeper_2\"."}
+{"levelname": "INFO", "asctime": "2016-08-11 09:57:31,972", "clientip": "192.168.1.23", "username": "admin", "message": " Disable user :: bala success"}

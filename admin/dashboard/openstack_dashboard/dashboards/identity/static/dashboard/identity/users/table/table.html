@@ -37,6 +37,7 @@
                                 </md-button>
                                 <md-button class="md-fab md-mini md-primary btn-launch ng-scope"
                                            ng-click="modal.openMapVmsWizard()"
+                                           ng-hide="selected.length"
                                            ng-controller="MapVmsModalController as modal">
                                     <md-icon><i class="material-icons">queue_play_next</i></md-icon>
                                     <md-tooltip>Map VMs to users</md-tooltip>

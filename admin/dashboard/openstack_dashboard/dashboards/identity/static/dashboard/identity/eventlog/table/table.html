@@ -14,7 +14,7 @@
 
         <md-card-content>
         <md-table-container>
-                            <table md-table md-row-select multiple ng-model="selected" >
+                            <table md-table multiple ng-model="selected" >
                                 <thead md-head md-order="query.order">
                                 <tr md-row>
                                     <th md-column><span class="md-title">Level Name</span></th>
@@ -28,7 +28,7 @@
                                 <tr md-row md-select="user" md-select-id="name" md-auto-select
                                     ng-repeat="log in eventlog | filter: searchquery | orderBy: query.order | orderBy:'asctime':true | limitTo: query.limit : (query.page -1) * query.limit" >
                                     <td md-cell><span class="md-body-2" >{$log.levelname$}</span></td>
-                                    <td md-cell><span class="md-body-2">{$log.asctime$}</span></td>
+                                    <td md-cell><span class="md-body-2">{$log.asctime | date $}</span></td>
                                     <td md-cell>
                                         <span class="md-body-2">
                                             <span ng-if="log.username != null">{$log.username$}</span>
@@ -50,7 +50,7 @@
                             </table>
                         </md-table-container> 
                         <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page"
-                                             md-total="{$ldapuserscount$}" md-page-select="true"
+                                             md-total="{$eventcount$}" md-page-select="true"
                                              md-boundary-links="true"></md-table-pagination>      
            
         </md-card-content>

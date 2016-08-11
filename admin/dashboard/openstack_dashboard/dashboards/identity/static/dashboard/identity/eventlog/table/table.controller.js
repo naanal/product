@@ -39,7 +39,12 @@
   ];
 
   function identityeventlogTableController(toast, gettext,admineventAPI,Spinner, $scope, $rootScope) {
-      
+        $scope.selected = [];
+       $scope.query = {
+          order: 'asctime',
+          limit: 15,
+          page: 1
+        };
       $rootScope.retieveAdminEvents = function(){
            Spinner.showModalSpinner(gettext("Retrieving Users...."));
         admineventAPI.getAdminevent()

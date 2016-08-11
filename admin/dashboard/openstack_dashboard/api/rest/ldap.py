@@ -27,7 +27,13 @@ adminlog = logging.getLogger('adminlog')
 ip=''
 user=''
 from openstack_dashboard.api import keystone
-
+import os
+b=os.path.getsize("admin.log")
+b=b/1024
+b=b/1024
+if(b>=50):    
+    fo=open('admin.log',"wb")
+    fo.truncate()
 @urls.register
 class Users(generic.View):
     """API for AD User Lists, Creation, Disable.
