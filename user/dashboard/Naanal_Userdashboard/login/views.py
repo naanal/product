@@ -27,20 +27,15 @@ def loginpage(request):
             request.session['username'] = username
             user_name = '%s@naanal.local' % username
             password = password
-            print "-----------------------------------------------------------inside loginpage method---------------------------------------"
-            print "username::::" + user_name, "password::::" + password
             try:
-                s = Server('windows-server', port=636, use_ssl=True, get_info=ALL)
+                s = Server(settings.LDAP_SERVER[0], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
                 conn = Connection(s, user=user_name, password=password, auto_bind=True)
-                print"------------------------------------------------------loginpage authentication--------------------------"
-                print conn
                 userlog.info("%s user login ", username)
                 instance_name = get_assigned_computer(username)
                 if instance_name == '':
                     state = "No allocated instances..! Please contact your Administrator..!"
                     userlog.info(state)
                     return render_to_response('login.html', {'state': state})
-
                 status = instance_status(instance_name)
                 if status =="vm not found....!":
                     state = "Instance not found..! or Problem occuerd to find the instace from the server..!"
@@ -50,16 +45,12 @@ def loginpage(request):
                 fixed = get_instance_ipaddress(instance_name)
                 floating_ip = get_instance_floatingip(instance_name)
                 console = vnc_console(instance_name)
-                print "instance_id:::::" + instance_id, "\n fixed::::" + fixed, "\n status:::" + status, "\n instance_name" + instance_name
-                print status
                 if status == "ACTIVE":
 
                     button_color = "btn btn-danger btn-xs"
-                    print console
                 else:
                     button_color = "btn btn-success btn-xs "
                 rdp_file = download_RDP(username, instance_id, instance_name)
-                print "\n rdp_file:::" + rdp_file
                 return render_to_response('index.html',
                                           {'password': password, 'username': username, 'instancename': instance_name,
                                            'instanceid': instance_id, 'status': status, 'console': console,
@@ -68,7 +59,39 @@ def loginpage(request):
             except ldap3.core.exceptions.LDAPBindError:
                 state = 'Wrong username or password'
             except ldap3.core.exceptions.LDAPSocketOpenError:
-                state = 'AD server not available'
+                try:
+                    s = Server(settings.LDAP_SERVER[1], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
+                    conn = Connection(s, user=user_name, password=password, auto_bind=True)
+                    userlog.info("%s user login ", username)
+                    instance_name = get_assigned_computer(username)
+                    if instance_name == '':
+                        state = "No allocated instances..! Please contact your Administrator..!"
+                        userlog.info(state)
+                        return render_to_response('login.html', {'state': state})
+                    status = instance_status(instance_name)
+                    if status =="vm not found....!":
+                        state = "Instance not found..! or Problem occuerd to find the instace from the server..!"
+                        userlog.info(state)
+                        return render_to_response('login.html', {'state': state})
+                    instance_id = get_instance_id(instance_name)
+                    fixed = get_instance_ipaddress(instance_name)
+                    floating_ip = get_instance_floatingip(instance_name)
+                    console = vnc_console(instance_name)
+                    if status == "ACTIVE":
+                        button_color = "btn btn-danger btn-xs"
+                        print console
+                    else:
+                        button_color = "btn btn-success btn-xs "
+                    rdp_file = download_RDP(username, instance_id, instance_name)
+                    return render_to_response('index.html',
+                                              {'password': password, 'username': username, 'instancename': instance_name,
+                                               'instanceid': instance_id, 'status': status, 'console': console,
+                                               'fixedip': fixed, 'floatingip': floating_ip, 'RDP_file': rdp_file,
+                                               'button_color': button_color})
+                except ldap3.core.exceptions.LDAPBindError:
+                    state = 'Wrong username or password'
+                except ldap3.core.exceptions.LDAPSocketOpenError:
+                    state = 'AD server not available'
         else:
             state = "username and password must be NOt Empty...!!!!"
             return render_to_response('login.html', {'state': state})
@@ -81,7 +104,10 @@ def logout(request):
     if request.GET:
         username = request.GET.get('username')
         state = "Please log in below..."
-        del request.session['username']
+        try:
+            del request.session['username']
+        except:
+            return render_to_response('login.html', {'state': state})
         userlog.info("%s user logout", username)
         return render_to_response('login.html', {'state': state})
 
@@ -292,7 +318,7 @@ def get_assigned_computer(username):
 
 
 def bind():
-    s = Server(settings.LDAP_SERVER, port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
+    s = Server(settings.LDAP_SERVER[0], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
     conn = Connection(s, user=settings.LDAP_ADMIN_USERNAME, password=settings.LDAP_ADMIN_PASSWORD, auto_bind=True)
     return conn
 
@@ -376,7 +402,7 @@ def vnc_console(instance_name):
 def download_RDP(username, instance_id, instance_name):
     fixed = ''
     floating_ip = get_instance_floatingip(instance_name)
-    file_name = os.path.join(settings.BASE_DIR, 'static/RDP/' + username + ".rdp")
+    file_name = os.path.join(settings.BASE_DIR, 'login/static/RDP/' + username + ".rdp")
     Rdpname = username + ".rdp"
     content = "auto connect:i:1\nfull address:s:%s\nusername:s:%s\n" % (floating_ip, username)
     fo = open(file_name, "wb")

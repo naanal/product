@@ -89,3 +89,61 @@ NotFound: No Server matching {'name': u'mylap-pc'}. (HTTP 404)
 [2016-08-10 06:47:56  loginpage]  INFO soundar user login 
 [2016-08-10 06:55:50  loginpage]  INFO soundar user login 
 [2016-08-10 06:56:41  logout]  INFO soundar user logout
+[2016-08-11 12:26:09  loginpage]  INFO shan user login 
+[2016-08-11 12:26:35  logout]  INFO shan user logout
+[2016-08-11 12:26:45  loginpage]  INFO shan1 user login 
+[2016-08-11 12:27:41  loginpage]  INFO shan1 user login 
+[2016-08-11 12:28:13  instance_stop]  INFO shan1 reboot instance zookeeper_1
+[2016-08-11 13:10:40  loginpage]  INFO shan1 user login 
+[2016-08-11 13:14:16  loginpage]  INFO shan1 user login 
+[2016-08-11 13:17:24  loginpage]  INFO shan user login 
+[2016-08-11 13:18:56  loginpage]  INFO shan user login 
+[2016-08-11 13:19:01  logout]  INFO shan user logout
+[2016-08-11 13:21:45  loginpage]  INFO shan user login 
+[2016-08-11 13:21:48  logout]  INFO shan user logout
+[2016-08-11 13:24:12  loginpage]  INFO shan user login 
+[2016-08-11 13:24:20  logout]  INFO shan user logout
+[2016-08-11 13:24:27  loginpage]  INFO p@sswesdf user login 
+[2016-08-11 13:24:27  loginpage]  INFO No allocated instances..! Please contact your Administrator..!
+[2016-08-11 13:24:43  loginpage]  INFO shan user login 
+[2016-08-11 13:24:48  logout]  INFO shan user logout
+[2016-08-11 13:24:55  loginpage]  INFO shan user login 
+[2016-08-11 13:24:58  logout]  INFO shan user logout
+[2016-08-11 13:26:23  loginpage]  INFO shan1 user login 
+[2016-08-11 13:28:41  loginpage]  INFO mang user login 
+[2016-08-11 13:31:43  loginpage]  INFO shan user login 
+[2016-08-11 13:51:59  loginpage]  INFO shan user login 
+[2016-08-11 13:54:35  loginpage]  INFO shan user login 
+[2016-08-11 13:55:52  loginpage]  INFO shan user login 
+[2016-08-11 13:56:33  loginpage]  INFO shan user login 
+[2016-08-11 13:57:39  logout]  INFO shan user logout
+[2016-08-11 13:57:45  loginpage]  INFO shan user login 
+[2016-08-11 13:57:51  logout]  INFO shan user logout
+[2016-08-11 14:01:31  loginpage]  INFO shan user login 
+[2016-08-11 14:02:34  logout]  INFO shan user logout
+[2016-08-11 14:02:39  loginpage]  INFO shan user login 
+[2016-08-11 14:03:12  logout]  INFO shan user logout
+[2016-08-11 14:04:08  loginpage]  INFO shan user login 
+[2016-08-11 14:04:13  logout]  INFO shan user logout
+[2016-08-11 14:05:40  loginpage]  INFO shan user login 
+[2016-08-11 14:05:45  logout]  INFO shan user logout
+[2016-08-11 14:06:24  loginpage]  INFO shan user login 
+[2016-08-11 14:06:25  instance_status]  ERROR vm not found....!
+Traceback (most recent call last):
+  File "/home/grafana/aug11/product/user/dashboard/Naanal_Userdashboard/login/views.py", line 369, in instance_status
+    server = nova.servers.find(name=instance_name)
+  File "/usr/local/lib/python2.7/dist-packages/novaclient/base.py", line 388, in find
+    raise exceptions.NotFound(404, msg)
+NotFound: No Server matching {'name': u'zookeeper_24'}. (HTTP 404)
+[2016-08-11 14:06:25  loginpage]  INFO Instance not found..! or Problem occuerd to find the instace from the server..!
+[2016-08-11 14:06:57  loginpage]  INFO shan user login 
+[2016-08-11 14:06:58  instance_status]  ERROR vm not found....!
+Traceback (most recent call last):
+  File "/home/grafana/aug11/product/user/dashboard/Naanal_Userdashboard/login/views.py", line 369, in instance_status
+    server = nova.servers.find(name=instance_name)
+  File "/usr/local/lib/python2.7/dist-packages/novaclient/base.py", line 388, in find
+    raise exceptions.NotFound(404, msg)
+NotFound: No Server matching {'name': u'zookeeper_24'}. (HTTP 404)
+[2016-08-11 14:06:58  loginpage]  INFO Instance not found..! or Problem occuerd to find the instace from the server..!
+[2016-08-11 14:07:08  loginpage]  INFO shan1 user login 
+[2016-08-11 14:07:13  logout]  INFO shan1 user logout

@@ -135,7 +135,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 STATIC_URL = '/static/'
 
-LDAP_SERVER = "172.30.1.197"
+LDAP_SERVER = ["172.30.1.197","172.30.1.198"]
 
 LDAP_SERVER_PORT = 636
 
@@ -150,5 +150,7 @@ LDAP_DNS = "naanal.local"
 LDAP_BASE_DIR = "ou=Police, dc=naanal, dc=local"
 
 OPENSTACK_USERNAME="admin"
+
 OPENSTACK_PASSWORD="admin"
+
 OPENSTACK_PROJECT_NAME="admin"
