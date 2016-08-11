@@ -10,3 +10,11 @@ a > span.fa.fa-chevron-down {
 a:not(.md-button) {
     color: #428bca;
 }
+a.btn.btn-primary {
+    color: #fff !important;
+}
+.btn-success {
+    color: #fff !important;
+    background-color: #5cb85c !important;
+    border-color: #4cae4c !important;
+}
