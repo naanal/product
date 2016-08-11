@@ -72,7 +72,7 @@
 
     <button type="button" class="btn btn-default next"
       ng-click="switchTo(currentIndex + 1)"
-      ng-disabled="currentIndex===steps.length - 1">
+      ng-disabled="currentIndex===steps.length - 1 || wizardForm[steps[currentIndex].formName].$invalid">
       <span ng-bind="::viewModel.btnText.next"></span>
       <span ng-class="::viewModel.btnIcon.next||'fa fa-angle-right'"></span>
     </button>

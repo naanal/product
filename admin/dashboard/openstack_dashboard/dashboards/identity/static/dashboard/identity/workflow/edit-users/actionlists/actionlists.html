@@ -1,0 +1,32 @@
+<div ng-controller="selectActionsController as ctrl">
+	<h4 class="md-subhead">
+		Choose Actioos :
+	</h4>
+	<div layout-xs="column" layout="row" layout-wrap="" layout-padding="">
+		<md-checkbox ng-model="model.newEditSpec.change_password" flex="40" aria-label="Change Password">
+    	Change Password
+	  	</md-checkbox>
+		<md-checkbox ng-model="model.newEditSpec.change_computer" flex="40" aria-label="Change Computer">
+	    	Change Computer	    	
+	  	</md-checkbox>
+		<md-checkbox ng-model="model.newEditSpec.change_commonName" flex="40" aria-label="Rename">
+	    	Change Common Name
+	  	</md-checkbox>	  	
+	</div>
+
+	<h4 class="md-subhead">
+		Selected Users :
+	</h4>
+	<div class="well" >
+		<div class="row">
+			<div class="col-md-4" ng-repeat="user in ctrl.selectedUsers">
+				<md-card>
+					<md-card-content ng-init="ctrl.insertUser(user)">
+					<p>{$user.username$} </p>					
+					</md-card-content>					
+				</md-card>
+			</div>
+		</div>
+	</div>
+	
+</div>

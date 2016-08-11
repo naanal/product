@@ -20,7 +20,7 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.project.networks.subnets \
+from openstack_dashboard.dashboards.virtual.networks.subnets \
     import workflows as project_workflows
 
 

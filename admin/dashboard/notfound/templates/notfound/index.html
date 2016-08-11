@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{title}}</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/styles.css">
+    </head>
+
+    <body>
+    
+        <div class="container">
+            <div class="col-md-6 col-sm-6 imgSec">
+                <div class="icon">
+                    <div class="victor"></div>
+                    <div class="animation"></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6 content">
+                <h2 class="heading">OOPS!</h2>
+                <p>{{reason}}</p>
+                <p><small>{{description}}</small></p>
+                <p><small>{{solution}}</small></p>
+                <a href="" class="button"> Monitoring</a>
+                <a href="" class="button"> Check Logs</a>
+            </div>
+        </div>
+    </body>
+</html>

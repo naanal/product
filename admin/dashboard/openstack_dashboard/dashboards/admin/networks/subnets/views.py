@@ -14,7 +14,7 @@
 
 from django.core.urlresolvers import reverse
 
-from openstack_dashboard.dashboards.project.networks.subnets \
+from openstack_dashboard.dashboards.virtual.networks.subnets \
     import views as project_views
 
 from openstack_dashboard.dashboards.admin.networks.subnets \

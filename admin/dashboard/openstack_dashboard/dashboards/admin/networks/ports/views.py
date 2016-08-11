@@ -27,7 +27,7 @@ from openstack_dashboard.dashboards.admin.networks.ports \
     import tables as ports_tables
 from openstack_dashboard.dashboards.admin.networks.ports \
     import tabs as ports_tabs
-from openstack_dashboard.dashboards.project.networks.ports \
+from openstack_dashboard.dashboards.virtual.networks.ports \
     import views as project_views
 
 

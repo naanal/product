@@ -24,7 +24,7 @@ from horizon import tables
 from horizon.utils import memoized
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.project.networks.subnets \
+from openstack_dashboard.dashboards.virtual.networks.subnets \
     import tables as proj_tables
 
 

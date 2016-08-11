@@ -32,27 +32,27 @@ from openstack_dashboard.dashboards.admin.instances \
     import forms as project_forms
 from openstack_dashboard.dashboards.admin.instances \
     import tables as project_tables
-from openstack_dashboard.dashboards.project.instances import views
-from openstack_dashboard.dashboards.project.instances.workflows \
+from openstack_dashboard.dashboards.virtual.instances import views
+from openstack_dashboard.dashboards.virtual.instances.workflows \
     import update_instance
 
 
-# re-use console from project.instances.views to make reflection work
+# re-use console from virtual.instances.views to make reflection work
 def console(args, **kvargs):
     return views.console(args, **kvargs)
 
 
-# re-use vnc from project.instances.views to make reflection work
+# re-use vnc from virtual.instances.views to make reflection work
 def vnc(args, **kvargs):
     return views.vnc(args, **kvargs)
 
 
-# re-use spice from project.instances.views to make reflection work
+# re-use spice from virtual.instances.views to make reflection work
 def spice(args, **kvargs):
     return views.spice(args, **kvargs)
 
 
-# re-use rdp from project.instances.views to make reflection work
+# re-use rdp from virtual.instances.views to make reflection work
 def rdp(args, **kvargs):
     return views.rdp(args, **kvargs)
 

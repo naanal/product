@@ -18,4 +18,5 @@ PANEL_DASHBOARD = 'overview'
 PANEL_GROUP = 'default'
 
 # Python panel class of the PANEL to be added.
-ADD_PANEL = 'openstack_dashboard.dashboards.overview.user_monitor.panel.User_Monitor'
+ADD_PANEL = ('openstack_dashboard.dashboards.overview.'
+             'user_monitor.panel.User_Monitor')

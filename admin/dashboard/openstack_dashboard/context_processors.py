@@ -22,6 +22,7 @@ Context processors used by Horizon.
 import re
 
 from django.conf import settings
+from local.local_settings import *
 
 from horizon import conf
 
@@ -68,5 +69,7 @@ def openstack(request):
     all_plugins = conf.HORIZON_CONFIG['plugins']
     js_catalog.extend(p for p in all_plugins if not regex.search(p))
     context['JS_CATALOG'] = '+'.join(js_catalog)
+
+    context['KEYSTONE_URL'] = OPENSTACK_KEYSTONE_URL
 
     return context

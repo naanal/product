@@ -32,46 +32,136 @@
   identityUsersTableController.$inject = [
     'horizon.framework.widgets.toast.service',
     'horizon.framework.util.i18n.gettext',
-    'horizon.app.core.openstack-service-api.policy',
-    'horizon.app.core.openstack-service-api.keystone'
+    'horizon.app.core.openstack-service-api.ldap',
+      'horizon.framework.widgets.modal-wait-spinner.service',
+    '$scope',
+    '$rootScope'
   ];
 
-  function identityUsersTableController(toast, gettext, policy, keystone) {
+  function identityUsersTableController(toast, gettext, ldapAPI,Spinner, $scope, $rootScope) {
 
-    var ctrl = this;
-    ctrl.users = [];
-    ctrl.iusers = [];
-    ctrl.userSession = {};
-    ctrl.checked = {};
+      $scope.selected = [];
+        $scope.userquery = {
+          order: 'username',
+          limit: 15,
+          page: 1
+        };
+        $scope.computerquery = {
+          order: 'username',
+          limit: 15,
+          page: 1
+        };
+        $scope.delete_user=function(){     
+          var delete_user={"users":[],"enable":false,};
+          var users=[];
+          var selected=[];
+          selected=$scope.selected          
+          for(var i=0;i<selected.length;i++)             
+          {
+            var user_dn={}
+            user_dn={user_dn:selected[i].user_dn,username:selected[i].username}                   
+            delete_user.users.push(user_dn)            
+          }         
+        
+          console.log(delete_user)
+          ldapAPI.disableUsers(delete_user)
+          .then(function(res){
+            $scope.selected = [];
+            $rootScope.retieveLdapUsers();
+            var res = res.data;
+            for(var i=0;i<res.length;i++) {
+              if (res[i].status.includes("success"))   
+                
+                toast.add('success', res[i].user+" "+res[i].action+" "+res[i].status);
+              else                
+                toast.add('danger',res[i].user+" "+res[i].action+" "+res[i].status);
+            }
+            console.log(res)
+          })
+        }
 
-    init();
 
-    ////////////////////////////////
 
-    function init() {
-      // if user has permission
-      // fetch table data and populate it
-      var rules = [['identity', 'identity:list_users']];
-      policy.ifAllowed({ rules: rules }).then(policySuccess, policyFailed);
-    }
 
-    function policySuccess() {
-      keystone.getUsers().success(getUsersSuccess);
-      keystone.getCurrentUserSession().success(getSessionSuccess);
-    }
+        $scope.enable_user=function(){     
+          var enable_user={"users":[],"enable":true,};
+          var users=[];
 
-    function policyFailed() {
-      var msg = gettext('Insufficient privilege level to view user information.');
-      toast.add('warning', msg);
-    }
+          var selected=[];
+          selected=$scope.selected          
+          for(var i=0;i<selected.length;i++)             
+          {
+            var user_dn={}
+            user_dn={user_dn:selected[i].user_dn,username:selected[i].username}                   
+            enable_user.users.push(user_dn)            
+          }         
+        
+          console.log(enable_user)
+          ldapAPI.enableUsers(enable_user)
+          .then(function(res){
+             $scope.selected = [];
+            $rootScope.retieveLdapUsers();
+            var res = res.data;
+            for(var i=0;i<res.length;i++) {
+              if (res[i].status.includes("success"))   
+                
+                toast.add('success', res[i].user+" "+res[i].action+" "+res[i].status);
+              else                
+                toast.add('danger',res[i].user+" "+res[i].action+" "+res[i].status);
+            }
+            console.log(res)
+          })
+        }
 
-    function getUsersSuccess(response) {
-      ctrl.users = response.items;
-    }
 
-    function getSessionSuccess(response) {
-      ctrl.userSession = response;
-    }
+        $scope.get_Computers=function(){
+          console.log("inside the get get_availablevms method")
+          ldapAPI.getComputers()
+          .then(function(res){                    
+            $scope.allComputers=res.data;   
+                        
+          })
+        }
+        $scope.sortOptions = [
+          {
+            "name": "All Computers",
+            "value": "all"
+          },
+          {
+            "name": "Available Conmputers",
+            "value": "available"
+          },
+          {
+            "name":"Assigned Computers",
+            "value" : "not available"
+          }
+
+        ];
+    
+       $scope.customFilter = function (data) {
+          if (data.status === $scope.selectedOption) {
+            return true;
+          } else if($scope.selectedOption == 'all') {
+              return true;
+          } else {
+            return false;
+          }
+        };  
+
+      $rootScope.retieveLdapUsers = function(){
+           Spinner.showModalSpinner(gettext("Retrieving Users...."));
+        ldapAPI.getUsers()
+          .then(function(res){
+              Spinner.hideModalSpinner();
+              $scope.ldapusers = res.data;
+              $rootScope.ldapusers = res.data;
+              $scope.ldapuserscount = $scope.ldapusers.length;
+          },function(error){
+              Spinner.hideModalSpinner();
+          });
+      }
+      $rootScope.retieveLdapUsers();
+      $scope.get_Computers();
   }
 
 })();

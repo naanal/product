@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import tables
 
-from openstack_dashboard.dashboards.project.volumes \
+from openstack_dashboard.dashboards.virtual.volumes \
     .volumes import tables as volumes_tables
 
 

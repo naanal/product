@@ -20,7 +20,7 @@ from mox3.mox import IsA  # noqa
 from horizon.workflows import views
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.project.networks import tests
+from openstack_dashboard.dashboards.virtual.networks import tests
 from openstack_dashboard.test import helpers as test
 
 DETAIL_URL = 'horizon:admin:networks:subnets:detail'

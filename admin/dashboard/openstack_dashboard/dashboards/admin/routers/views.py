@@ -25,7 +25,7 @@ from openstack_dashboard.dashboards.admin.networks import views as n_views
 from openstack_dashboard.dashboards.admin.routers import forms as rforms
 from openstack_dashboard.dashboards.admin.routers import tables as rtbl
 from openstack_dashboard.dashboards.admin.routers import tabs as rtabs
-from openstack_dashboard.dashboards.project.routers import views as r_views
+from openstack_dashboard.dashboards.virtual.routers import views as r_views
 
 
 class IndexView(r_views.IndexView, n_views.IndexView):

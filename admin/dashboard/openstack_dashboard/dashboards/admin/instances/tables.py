@@ -21,7 +21,7 @@ from horizon import tables
 from horizon.utils import filters
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.project.instances \
+from openstack_dashboard.dashboards.virtual.instances \
     import tables as project_tables
 from openstack_dashboard import policy
 

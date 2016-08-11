@@ -15,7 +15,7 @@
 
 from django.utils.translation import ugettext_lazy as _
 
-from openstack_dashboard.dashboards.project.routers.extensions.extraroutes\
+from openstack_dashboard.dashboards.virtual.routers.extensions.extraroutes\
     import tables as routes_table
 
 

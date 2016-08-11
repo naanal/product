@@ -24,7 +24,7 @@ from horizon import exceptions
 from horizon import tables
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.project.networks \
+from openstack_dashboard.dashboards.virtual.networks \
     import tables as project_tables
 from openstack_dashboard import policy
 

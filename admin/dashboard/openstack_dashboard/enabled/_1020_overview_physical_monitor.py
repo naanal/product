@@ -20,5 +20,5 @@ PANEL_GROUP = 'default'
 # If set, it will update the default panel of the PANEL_DASHBOARD.
 DEFAULT_PANEL = 'physical_monitor'
 
-# Python panel class of the PANEL to be added.
-ADD_PANEL = 'openstack_dashboard.dashboards.overview.physical_monitor.panel.Physical_Monitor'
+ADD_PANEL = ('openstack_dashboard.dashboards.overview.'
+             'physical_monitor.panel.Physical_Monitor')

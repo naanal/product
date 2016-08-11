@@ -12,7 +12,7 @@
 
 from django.core.urlresolvers import reverse_lazy
 
-from openstack_dashboard.dashboards.project.routers import forms as r_forms
+from openstack_dashboard.dashboards.virtual.routers import forms as r_forms
 
 
 class UpdateForm(r_forms.UpdateForm):

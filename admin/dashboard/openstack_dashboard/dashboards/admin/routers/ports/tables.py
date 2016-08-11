@@ -15,7 +15,7 @@
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
-from openstack_dashboard.dashboards.project.routers.ports \
+from openstack_dashboard.dashboards.virtual.routers.ports \
     import tables as routers_tables
 
 

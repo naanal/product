@@ -23,7 +23,7 @@ from horizon import tables
 from horizon.utils import memoized
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.project.networks import views as user_views
+from openstack_dashboard.dashboards.virtual.networks import views as user_views
 from openstack_dashboard.utils import filters
 
 from openstack_dashboard.dashboards.admin.networks.agents \

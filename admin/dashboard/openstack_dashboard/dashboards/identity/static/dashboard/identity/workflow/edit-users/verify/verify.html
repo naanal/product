@@ -1,0 +1,28 @@
+<div ng-controller="EditUserVerifyController as ctrl">
+    <p>Verify your Data</p>
+    <div class="well">
+        <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>User Name</th>
+          <th ng-if="model.newEditSpec.change_password">Password</th>
+          <th>Mail</th>
+          <th ng-if="model.newEditSpec.change_computer">computer Name</th>
+          <th ng-if="model.newEditSpec.change_commonName">Common Name</th>
+        
+          <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="user in model.newEditSpec.users">
+          <td>{$user.name$}</td>
+          <td ng-if="model.newEditSpec.change_password">{$model.newEditSpec.password$}</td>
+          <td>{$user.mail$}</td>
+          <td ng-if="model.newEditSpec.change_computer">{$user.new_computer$}</td>
+          <td ng-if="model.newEditSpec.change_commonName">{$user.new_username$}</td>          
+          <td><md-icon class="material-icon" ng-click="ctrl.onTheAirDelete($index)">delete</md-icon></td>
+      </tr>   
+    </tbody>
+  </table>
+    </div>   
+</div>

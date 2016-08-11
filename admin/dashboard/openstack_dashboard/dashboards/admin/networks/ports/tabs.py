@@ -12,7 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from openstack_dashboard.dashboards.project.networks.ports \
+from openstack_dashboard.dashboards.virtual.networks.ports \
     import tabs as project_tabs
 
 

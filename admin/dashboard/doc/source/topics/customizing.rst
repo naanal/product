@@ -466,7 +466,7 @@ You can also override existing methods with your own versions::
 
     # Disable Floating IPs
     from openstack_dashboard.dashboards.project.access_and_security import tabs
-    from openstack_dashboard.dashboards.project.instances import tables
+    from openstack_dashboard.dashboards.virtual.instances import tables
 
     NO = lambda *x: False
 

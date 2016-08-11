@@ -18,7 +18,7 @@ PANEL_DASHBOARD = 'virtual'
 PANEL_GROUP = 'default'
 
 # If set, it will update the default panel of the PANEL_DASHBOARD.
-DEFAULT_PANEL = 'summary'
+DEFAULT_PANEL = 'instances'
 
 # Python panel class of the PANEL to be added.
 ADD_PANEL = 'openstack_dashboard.dashboards.virtual.summary.panel.Summary'

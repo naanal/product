@@ -36,6 +36,7 @@ urlpatterns = [
     url(r'^$', views.splash, name='splash'),
     url(r'^api/', include(rest.urls)),
     url(r'', include(horizon.urls)),
+    url(r'^seriouserror/', include('notfound.urls')),
 ]
 
 for u in getattr(settings, 'AUTHENTICATION_URLS', ['openstack_auth.urls']):

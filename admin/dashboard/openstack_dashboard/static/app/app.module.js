@@ -27,7 +27,10 @@
     'ngCookies',
     'ngSanitize',
     'smart-table',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'ngMaterial',
+    'ngMessages',
+    'md.data.table'
   ];
 
   /**

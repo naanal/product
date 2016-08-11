@@ -53,6 +53,7 @@ STATIC_URL = None
 
 ROOT_URLCONF = 'openstack_dashboard.urls'
 
+
 HORIZON_CONFIG = {
     'user_home': 'openstack_dashboard.views.get_user_home',
     'ajax_queue_limit': 10,
@@ -109,7 +110,6 @@ MIDDLEWARE_CLASSES = (
     'horizon.middleware.HorizonMiddleware',
     'horizon.themes.ThemeMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -156,6 +156,7 @@ COMPRESS_CSS_HASHING_METHOD = 'hash'
 COMPRESS_PARSER = 'compressor.parser.HtmlParser'
 
 INSTALLED_APPS = [
+
     'openstack_dashboard',
     'django.contrib.contenttypes',
     'django.contrib.auth',
@@ -168,6 +169,7 @@ INSTALLED_APPS = [
     'compressor',
     'horizon',
     'openstack_auth',
+    'notfound',
 ]
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
@@ -352,6 +354,7 @@ STATICFILES_DIRS = get_staticfiles_dirs(STATIC_URL) + \
         THEME_COLLECTION_DIR,
         ROOT_PATH)
 
+
 if CUSTOM_THEME_PATH is not None:
     logging.warning("CUSTOM_THEME_PATH has been deprecated.  Please convert "
                     "your settings to make use of AVAILABLE_THEMES.")
@@ -374,7 +377,7 @@ if not SECRET_KEY:
 
     from horizon.utils import secret_key
     SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join(LOCAL_PATH,
-                                                       '.secret_key_store'))
+                                                                    '.secret_key_store'))
 
 # Load the pluggable dashboard settings
 import openstack_dashboard.enabled
@@ -415,3 +418,25 @@ if DEBUG:
     logging.basicConfig(level=logging.DEBUG)
 
 CSRF_COOKIE_AGE = None
+
+# Belows are LDAP Credentials
+
+LDAP_SERVER = ["windows-server","windows-backup-server"]
+
+LDAP_SERVER_PORT = 636
+
+LDAP_SSL = True
+
+LDAP_ADMIN_USERNAME = "Administrator@naanal.local"
+
+LDAP_ADMIN_PASSWORD = "p@ssw0rd1"
+
+LDAP_SERVER_MACHINE_NAME = 'WIN-46RBIGNC9DF'
+
+LDAP_DNS = "naanal.local"
+
+LDAP_BASE_DIR = "ou=Police, dc=naanal, dc=local"
+
+DEFAULT_USERS_GROUP_DN = "cn=normalusers, ou=groups, ou=police, dc=naanal, dc=local"
+
+ALLOWED_USERS_GROUP_DN = "cn=allow, ou=groups, ou=police, dc=naanal, dc=local"

@@ -20,4 +20,4 @@ PANEL_GROUP = 'default'
 
 # Python panel class of the PANEL to be added.
 ADD_PANEL = ('openstack_dashboard.dashboards.virtual.'
-	     'access_and_security.panel.AccessAndSecurity')
+             'access_and_security.panel.AccessAndSecurity')

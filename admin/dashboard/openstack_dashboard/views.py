@@ -29,7 +29,7 @@ def get_user_home(user):
     dashboard = None
     if user.is_superuser:
         try:
-            dashboard = horizon.get_dashboard('admin')
+            dashboard = horizon.get_dashboard('virtual')
         except base.NotRegistered:
             pass
 
@@ -39,7 +39,7 @@ def get_user_home(user):
     # Domain Admin, Project Admin will default to identity
     if (user.token.project.get('id') is None or
             (user.is_superuser and user.token.project.get('id'))):
-        dashboard = horizon.get_dashboard('identity')
+        dashboard = horizon.get_dashboard('virtual')
 
     return dashboard.get_absolute_url()
 

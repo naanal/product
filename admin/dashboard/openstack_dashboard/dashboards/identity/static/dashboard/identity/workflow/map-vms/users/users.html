@@ -1,0 +1,28 @@
+<div ng-controller="MapVmsUsersController as ctrl">
+    <p><b>Select list of user you want to map : </b></p>
+    <div layout="column" layout-wrap layout-gt-sm="row">
+        <div flex-xs flex="33" ng-repeat="user in ctrl.availableUsers">
+            <md-checkbox md-no-ink
+                         ng-model="data.cb1"
+                         class="md-primary"
+                         ng-click="ctrl.toggleUsersLists(user)"
+                         ng-checked="model.newMappingSpec.map.indexOf(user) > -1"
+                         ng-required="model.newMappingSpec.map.length==0"
+                         value="{$user$}">
+                {$user.username$}
+            </md-checkbox>
+        </div>
+        <div flex-xs flex="33" ng-if="ctrl.availableUsers.length % 3 == 2"></div>
+    </div>
+
+    <div ng-if="model.newMappingSpec.map.length > model.availableComputers.length">
+         <p class="md-subhead" style="color:red">
+             {$model.availableComputers.length$} Computers only available.
+             But you selected {$model.newMappingSpec.map.length$} Users. </p>
+    </div>
+    <md-checkbox ng-model="devpurpose" >
+         For Development Purpose
+    </md-checkbox>
+    <pre ng-show="devpurpose">{$model.newMappingSpec | json $} </pre>
+
+</div>

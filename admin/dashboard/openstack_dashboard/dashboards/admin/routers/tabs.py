@@ -15,11 +15,11 @@
 from openstack_dashboard.dashboards.admin.routers.extensions.extraroutes\
     import tables as ertbl
 from openstack_dashboard.dashboards.admin.routers.ports import tables as ptbl
-from openstack_dashboard.dashboards.project.routers.extensions.extraroutes\
+from openstack_dashboard.dashboards.virtual.routers.extensions.extraroutes\
     import tabs as er_tabs
-from openstack_dashboard.dashboards.project.routers.extensions.routerrules\
+from openstack_dashboard.dashboards.virtual.routers.extensions.routerrules\
     import tabs as rr_tabs
-from openstack_dashboard.dashboards.project.routers import tabs as r_tabs
+from openstack_dashboard.dashboards.virtual.routers import tabs as r_tabs
 
 
 class OverviewTab(r_tabs.OverviewTab):

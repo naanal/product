@@ -23,7 +23,7 @@ from horizon import forms
 from horizon import messages
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.project.networks.ports \
+from openstack_dashboard.dashboards.virtual.networks.ports \
     import forms as project_forms
 
 

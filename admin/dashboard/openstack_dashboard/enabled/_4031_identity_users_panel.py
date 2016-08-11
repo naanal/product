@@ -12,6 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+PANEL = 'ngusers'
+
 # The slug of the dashboard the PANEL associated with. Required.
 PANEL_DASHBOARD = 'identity'
 
@@ -21,10 +23,7 @@ PANEL_DASHBOARD = 'identity'
 PANEL_GROUP = 'default'
 
 # The slug of the panel to be added to HORIZON_CONFIG. Required.
-PANEL = 'ngusers'
 
-# If set to True, this settings file will not be added to the settings.
-DISABLED = True
 
 # Python panel class of the PANEL to be added.
 ADD_PANEL = 'openstack_dashboard.dashboards.identity.ngusers.panel.NGUsers'

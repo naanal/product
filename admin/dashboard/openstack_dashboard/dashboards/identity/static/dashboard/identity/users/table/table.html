@@ -1,118 +1,179 @@
-<table ng-controller="identityUsersTableController as table"
-  hz-table ng-cloak
-  st-table="table.iusers"
-  st-safe-src="table.users"
-  default-sort="name"
-  default-sort-reverse="false"
-  class="table table-striped table-rsp table-detail">
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-  <thead>
-    <!--
-      Table-batch-actions:
-      This is where batch actions like searching, creating, and deleting.
-    -->
-    <tr>
-      <th colspan="100" class="search-header">
-        <hz-search-bar icon-classes="fa-search"></hz-search-bar>
-      </th>
-    </tr>
+<div ng-controller="identityUsersTableController">
+    <md-card>
 
-    <!--
-      Table-column-headers:
-      This is where we declaratively define the table column headers.
-      Include select-col if you want to select all.
-      Include expander if you want to inline details.
-      Include action-col if you want to perform actions.
-    -->
-    <tr>
-      <th class="select-col">
-        <div class="themable-checkbox">
-          <input id="users-select-col" type="checkbox" hz-select-all="table.iusers">
-          <label for="users-select-col"></label>
-        </div>
-      </th>
-      <th class="expander"></th>
-      <th class="rsp-p1" st-sort="name" st-sort-default="name" translate>User Name</th>
-      <th class="rsp-p2" st-sort="email" translate>Email</th>
-      <th class="rsp-p1" st-sort="tenantId||default_project_id" translate>User ID</th>
-      <th class="rsp-p2 text-center" st-sort="enabled" translate>Enabled</th>
-    </tr>
-  </thead>
+        <md-card-content>
+            <section layout="row" layout-sm="column" layout-align="end center" layout-wrap>
 
-  <tbody>
-    <!--
-      Table-rows:
-      This is where we declaratively define the table columns.
-      Include select-col if you want to select all.
-      Include expander if you want to inline details.
-      Include action-col if you want to perform actions.
-      rsp-p1 rsp-p2 are responsive priority as user resizes window.
-    -->
-    <tr ng-repeat-start="user in table.iusers track by user.id"
-        ng-class="{'st-selected': checked[user.id]}">
+            </section>
 
-      <td class="select-col">
-        <div class="themable-checkbox">
-          <input id="user-{$ user.id $}" type="checkbox" ng-model="tCtrl.selections[user.id].checked" hz-select="user">
-          <label for="user-{$ user.id $}"></label>
-        </div>
-      </td>
-      <td class="expander">
-        <span class="fa fa-chevron-right" hz-expand-detail duration="200"></span>
-      </td>
-      <td class="rsp-p1">{$ user.name $}</td>
-      <td class="rsp-p2"><a ng-href="mailto:{$user.email$}">{$ user.email $}</a></td>
-      <td class="rsp-p1">{$ user.id $}</td>
-      <td class="rsp-p2 text-center">
-        <span ng-show="user.enabled" class="fa fa-check text-success"></span>
-        <span ng-hide="user.enabled" class="fa fa-times text-danger"></span>
-      </td>
-    </tr>
+            <md-tabs md-dynamic-height="" md-border-bottom="">
+                <md-tab label="Users">
+                    <md-content class="md-padding">
+                        <section layout="row" layout-xs="column">
+                            <section flex="" layout-align="center center">
+                                <md-input-container ng-show="!selected.length" md-no-float="" class="md-block left">
+                                    <md-icon>
+                                        <i class="material-icons">search</i>
+                                    </md-icon>
+                                    <input type="text" ng-model="searchquery" placeholder="Search By name, computer..."/>
+                                </md-input-container>
+                                <md-content ng-show="selected.length" class="md-padding">
+                                    <p class="md-padding md-title">
+                                        {$selected.length$} {$selected.length &gt; 1 ? 'items' : 'item'$} selected
+                                    </p>
+                                </md-content>
+                            </section>
+                            <span flex=""></span>
+                            <section flex="" layout-align="end center">
+                                <md-button
+                                        class="md-fab md-mini md-primary btn-launch ng-scope" aria-label="view"
+                                        ng-hide="selected.length"
+                                        ng-click="modal.openCreateUsersWizard()"
+                                        ng-controller="CreateUsersModalController as modal">
+                                    <md-icon>group_add</md-icon>
+                                    <md-tooltip>Create New Users</md-tooltip>
+                                </md-button>
+                                <md-button class="md-fab md-mini md-primary btn-launch ng-scope"
+                                           ng-click="modal.openMapVmsWizard()"
+                                           ng-controller="MapVmsModalController as modal">
+                                    <md-icon><i class="material-icons">queue_play_next</i></md-icon>
+                                    <md-tooltip>Map VMs to users</md-tooltip>
+                                </md-button>                              
 
-    <!--
-      Detail-row:
-      Contains detailed information on this item.
-      Can be toggled using the chevron button.
-      Ensure colspan is greater or equal to number of column-headers.
-    -->
-    <tr ng-repeat-end class="detail-row">
-      <td class="detail" colspan="100">
-        <!--
-          The responsive columns that disappear typically should reappear here
-          with the same responsive priority that they disappear.
-          E.g. table header with rsp-p2 should be here with rsp-alt-p2
-          The layout should minimize vertical space to reduce scrolling.
-        -->
-        <div class="row">
-          <dl ng-if="user.domain_id" class="col-sm-2">
-            <dt translate>Domain ID</dt>
-            <dd>{$ user.domain_id $}</dd>
-          </dl>
-          <dl class="col-sm-2">
-            <dt translate>Project ID</dt>
-            <dd>{$ user.tenantId || user.default_project_id | noValue $}</dd>
-          </dl>
+                                <md-button class="md-fab md-mini md-primary" aria-label="edit"
+                                           ng-show="selected.length"
+                                          ng-controller="EditUsersModalController as modal"
+                                          ng-click="modal.openEditUsersWizard({users:selected})">
+                                    <md-icon>edit</md-icon>
+                                    <md-tooltip>Edit</md-tooltip>
+                                </md-button>
+                                 <md-button class="md-fab md-mini md-primary" aria-label="view"
+                                           ng-show="selected.length == 1">
+                                    <md-icon>insert_drive_file</md-icon>
+                                    <md-tooltip>View</md-tooltip>
+                                </md-button>
+                                <md-button class="md-fab md-mini md-primary" aria-label="delete"
+                                           ng-show="selected.length" ng-click="delete_user()" >
+                                    <md-icon>delete</md-icon>
+                                    <md-tooltip>Delete</md-tooltip>
+                                </md-button>
 
-          <span class="rsp-alt-p2">
-            <dl class="col-sm-2">
-              <dt translate>Email</dt>
-              <dd>{$ user.email | noValue $}</dd>
-            </dl>
-            <dl class="col-sm-2">
-              <dt translate>Enabled</dt>
-              <dd>{$ user.enabled | yesno $}</dd>
-            </dl>
-          </span>
-        </div>
-      </td>
-    </tr>
-    <tr hz-no-items items="table.iusers"></tr>
-  </tbody>
+                                 <md-button class="md-fab md-mini md-primary" aria-label="delete"
+                                           ng-show="selected.length" ng-click="enable_user()" >                                           
+                                    <md-icon>accessibility</md-icon>
+                                    <md-tooltip>Enable User</md-tooltip>
+                                </md-button>
 
-  <!--
-    Table-footer:
-    This is where we display number of items and pagination controls.
-  -->
-  <tfoot hz-table-footer items="table.iusers"></tfoot>
+                            </section>
+                        </section>            
+                        <style>
+                                .disabled {
+                                        text-decoration: line-through;
+                                     }
+​                        </style>
+                        
 
-</table>
+                        <md-table-container>
+                            <table md-table md-row-select multiple ng-model="selected" >
+                                <thead md-head md-order="userquery.order">
+                                <tr md-row>
+                                    <th md-column><span class="md-title">User Name</span></th>
+                                    <th md-column><span class="md-title">Email</span></th>
+                                    <th md-column><span class="md-title">Assigned Computer</span></th>
+                                    <th md-column><span class="md-title">Last Logon</span></th>
+                                    <th md-column><span class="md-title">Status</span></th>
+                                </tr>
+                                </thead>
+                                <tbody md-body>
+                                <tr md-row md-select="user" md-select-id="name" md-auto-select
+                                    ng-repeat="user in ldapusers | filter: searchquery | orderBy: userquery.order | limitTo: userquery.limit : (userquery.page -1) * userquery.limit" ng-class="{'disabled' : user.status=='514' || user.status=='66050'} ">
+                                    <td md-cell><span class="md-body-2" >{$user.username$}</span></td>
+                                    <td md-cell><span class="md-body-2">{$user.mail$}</span></td>
+                                    <td md-cell>
+                                        <span class="md-body-2">
+                                            <span ng-if="user.computer != null">{$user.computer$}</span>
+                                            <span ng-if="user.computer == null">----</span>
+                                        </span>
+                                    </td>
+                                    <td md-cell>
+                                         <span class="md-body-2">
+                                            <span ng-if="user.lastLogon == '1601-01-01 00:00:00+00:00'">
+                                                Never
+                                            </span>
+                                             <span ng-if="user.lastLogon != '1601-01-01 00:00:00+00:00'">
+                                                {$user.lastLogon | date $}
+                                            </span>
+                                         </span>
+                                    </td>
+                                    <td md-cell>                                    
+                                    <span ng-if="user.status=='512' || user.status=='66048'"> Enabled</span>
+                                    <span ng-if="user.status=='514' || user.status=='66050'"> Disabled</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </md-table-container>
+                        
+
+                        <md-table-pagination md-limit="userquery.limit" md-limit-options="[5, 10, 15, 30, 50, 100, 200]" md-page="userquery.page"
+                                             md-total="{$ldapuserscount$}" md-page-select="true"
+                                             md-boundary-links="true"></md-table-pagination>
+                    </md-content>
+
+
+                </md-tab>
+                <md-tab label="Computers">
+                    <md-content class="md-padding">
+                        <section layout="row" layout-xs="column">
+        <md-select ng-model="selectedOption" ng-init="selectedOption = 'available'" style="min-width: 200px;">
+                              <md-option ng-value="item.value" ng-repeat="item in sortOptions">{$item.name$}</md-option>
+                            </md-select> 
+                            <md-input-container layout="row" layout-xs="column" style="min-width: 200px;">
+                              <md-icon>
+                                <i class="material-icons">search</i>
+                                 </md-icon>
+                                <input type="text" ng-model="searchquery1" placeholder="Search By Computer Name"/>
+                            </md-input-container>                                    
+                        </section>                          
+                        
+
+                        <md-table-container>
+                            <table md-table multiple ng-model="selected" >
+                                <thead md-head md-order="computerquery.order">
+                                <tr md-row>
+                                    <th md-column><span class="md-title">Computer</span></th>
+                                     <th md-column><span class="md-title">UserName</span></th>
+                                    <th md-column><span class="md-title">Status</span></th>
+                                </tr>
+                                </thead>
+                                <tbody md-body>
+                                <tr md-row ng-repeat="computer in allComputers | filter:customFilter| filter: searchquery1 | orderBy: computerquery.order | limitTo: computerquery.limit : (computerquery.page -1) * computerquery.limit"" >                                  
+                                    <td md-cell>
+                                    {$computer.computername$}                              
+                                    </td>
+                                    <td md-cell>
+                                    {$computer.username$}                              
+                                    </td>
+                                    <td md-cell>
+                                    <span ng-if="computer.status=='available'"> Available</span>
+                                    <span ng-if="computer.status=='not available'"> Assigned</span>
+                                   
+                                    </td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </md-table-container>
+                        
+
+                        <md-table-pagination md-limit="computerquery.limit" md-limit-options="[5, 10, 15, 30, 50, 100, 200]" md-page="computerquery.page"
+                                             md-total="{$ldapuserscount$}" md-page-select="true"
+                                             md-boundary-links="true"></md-table-pagination>
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+        </md-card-content>
+    </md-card>
+</div>

@@ -18,9 +18,9 @@ from horizon import tables
 from openstack_dashboard.api import cinder
 from openstack_dashboard.api import keystone
 
-from openstack_dashboard.dashboards.project.volumes.snapshots \
+from openstack_dashboard.dashboards.virtual.volumes.snapshots \
     import tables as snapshots_tables
-from openstack_dashboard.dashboards.project.volumes.volumes \
+from openstack_dashboard.dashboards.virtual.volumes.volumes \
     import tables as volumes_tables
 
 

@@ -25,4 +25,3 @@ class Flavors(horizon.Panel):
     name = _("Flavors")
     icon = 'fa fa-archive'
     slug = 'flavors'
-    permissions = ('openstack.services.compute',)

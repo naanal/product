@@ -1,0 +1,65 @@
+<div ng-controller="addUsersController as ctrl">
+    <div class="row">
+        <div class="col-md-8">
+
+        <md-input-container class="md-block">
+            <label>User Name</label>
+            <md-icon class="material-icon">person</md-icon>
+            <input required name="userName" ng-model="model.singleUser.username">
+            <div ng-messages="addUsersForm.userName.$error">
+                <div ng-message="required">User Name is required.</div>
+            </div>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label>Email Address</label>
+            <md-icon class="material-icon">email</md-icon>
+            <input type="email" name="userEmail" ng-model="model.singleUser.mail" minlength="10" maxlength="100" ng-pattern="/^.+@.+\..+$/" />
+            <div ng-messages="addUsersForm.userEmail.$error" role="alert">
+                <div ng-message-exp="['required', 'minlength', 'maxlength', 'pattern']">
+                    Your email must be between 10 and 100 characters long and look like an e-mail address.
+                </div>
+            </div>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label>Password</label>
+            <md-icon class="material-icon">lock</md-icon>
+            <input required ng-model="model.singleUser.password" type="password" name="userPassword" minlength="8" ng-pattern="/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]/"/>
+            <div ng-messages="addUsersForm.userPassword.$error" multiple md-auto-hide="false">
+              <div ng-message="required">
+                Password is Required.
+              </div>
+                <div ng-message="minlength">
+                password must at least 8 character long.
+              </div>
+              <div ng-message="pattern">
+                Password must contain at least 1 Special Character and 1 number.
+              </div>
+            </div>
+
+        </md-input-container>
+            <p class="pull-left" ng-if="model.newUserSpec.users.length > 0"><b>{$noOfUsers$} users</b> already added</p>
+        <button class="btn btn-default btn-xs pull-right" ng-click="ctrl.addAnotherUser()">Add Another User</button>
+        </div>
+        <div class="col-md-4">
+            <div class="well">
+                <h4>Having Huge Users ?</h4>
+                <p>You can upload users via .csv file. Download the sample csv template below, once you filled user details upload it here</p>
+                <div class="btn-toolbar">
+                    <button type="button" id="btnDownload" class="btn btn-primary btn-xs"><i class="fa fa-download" aria-hidden="true"></i>  Download</button>
+                    <button type="button" id="btnUpload" class="btn btn-success btn-xs"><i class="fa fa-upload" aria-hidden="true"></i> Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <md-checkbox ng-model="devpurpose" >
+         For Development Purpose
+    </md-checkbox>
+    <pre ng-show="devpurpose">
+        Current: <br/>
+        {$model.singleUser | json $}
+        <br/>
+        Final :
+        {$model.newUserSpec | json $}
+    </pre>
+
+</div>

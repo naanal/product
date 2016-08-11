@@ -32,5 +32,3 @@ AUTO_DISCOVER_STATIC_FILES = True
 
 DISABLED = True
 
-if getattr(settings, 'DEBUG', False):
-    DISABLED = False

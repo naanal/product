@@ -27,7 +27,9 @@
   angular
     .module('horizon.dashboard.identity', [
       'horizon.dashboard.identity.users',
-      'horizon.dashboard.identity.projects'
+      'horizon.dashboard.identity.projects',
+      'horizon.dashboard.identity.workflow',
+      'horizon.dashboard.identity.eventlog'
     ])
     .config(config);
 

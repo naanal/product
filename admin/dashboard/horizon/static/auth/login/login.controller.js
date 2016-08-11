@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 IBM Corp.
+ * Copyright 2016 Naanal Technologies.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -16,18 +16,40 @@
 (function() {
   'use strict';
 
-  angular
-    .module('horizon.auth.login')
-
+  angular.module('horizon.auth.login',[])
+    .run(['$rootScope', function($rootScope){
+      $rootScope.endpoint = false;
+      $rootScope.keystone = false;
+    }])
+    .controller('hzLoginController', hzLoginController);
+    hzLoginController.$inject = [
+    'horizon.auth.login.hzLoginService',
+    '$rootScope'
+    ];
     /**
      * @ngdoc hzLoginController
      * @description
      * controller for determining which
      * authentication method user picked.
      */
-    .controller('hzLoginController', function() {
+    function hzLoginController(hzLoginService,$rootScope) {
       var ctrl = this;
       ctrl.auth_type = 'credentials';
-    });
+      ctrl.init = init;
+        function init(endpoint){
+
+          hzLoginService.getKeystone(endpoint)
+          .then(function(response){
+
+              if(response == 200) {
+                $rootScope.endpoint = true;
+                hzLoginService.validateKeystone(endpoint+'/tokens');
+              }
+
+
+          });
+
+        }
+    }
 
 })();

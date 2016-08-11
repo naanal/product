@@ -19,3 +19,5 @@ PANEL_DASHBOARD = 'developer'
 
 ADD_PANEL = \
     'openstack_dashboard.contrib.developer.theme_preview.panel.Preview'
+
+REMOVE_PANEL = True	
