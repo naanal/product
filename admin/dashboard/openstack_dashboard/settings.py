@@ -437,6 +437,8 @@ LDAP_DNS = "naanal.local"
 
 LDAP_BASE_DIR = "ou=Police, dc=naanal, dc=local"
 
+LDAP_COMPUTER_DIR="CN=Computers,DC=naanal,DC=local"
+
 DEFAULT_USERS_GROUP_DN = "cn=normalusers, ou=groups, ou=police, dc=naanal, dc=local"
 
 ALLOWED_USERS_GROUP_DN = "cn=allow, ou=groups, ou=police, dc=naanal, dc=local"

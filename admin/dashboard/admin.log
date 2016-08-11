@@ -123,3 +123,12 @@
 {"levelname": "INFO", "asctime": "2016-08-09 21:30:38,215", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::thfdthhg success "}
 {"levelname": "INFO", "asctime": "2016-08-09 21:30:45,251", "clientip": "172.30.64.76", "username": "admin", "message": "Enable user::test3"}
 {"levelname": "INFO", "asctime": "2016-08-09 21:30:45,253", "clientip": "172.30.64.76", "username": "admin", "message": " Enable user ::test3 success "}
+{"levelname": "INFO", "asctime": "2016-08-11 05:50:38,311", "clientip": "192.168.1.23", "username": "admin", "message": "Scheduled deletion of Instance: make"}
+{"levelname": "ERROR", "asctime": "2016-08-11 05:51:50,712", "clientip": "192.168.1.23", "username": "admin", "message": "Failed to perform requested operation on instance \"shan\", the instance has an error status: Please try again later [Error: No valid host was found. There are not enough hosts available.]."}
+{"levelname": "INFO", "asctime": "2016-08-11 05:52:00,445", "clientip": "192.168.1.23", "username": "admin", "message": "Scheduled deletion of Instance: shan"}
+{"levelname": "INFO", "asctime": "2016-08-11 05:52:42,555", "clientip": "192.168.1.23", "username": "admin", "message": "Modified instance \"final1\"."}
+{"levelname": "INFO", "asctime": "2016-08-11 05:56:54,609", "clientip": "192.168.1.23", "username": "admin", "message": "Modified instance \"final\"."}
+{"levelname": "ERROR", "asctime": "2016-08-11 06:00:29,410", "clientip": "192.168.1.23", "username": "admin", "message": "Failed to perform requested operation on instance \"final\", the instance has an error status: Please try again later [Error: No valid host was found. There are not enough hosts available.]."}
+{"levelname": "INFO", "asctime": "2016-08-11 06:00:38,862", "clientip": "192.168.1.23", "username": "admin", "message": "Scheduled deletion of Instance: final"}
+{"levelname": "INFO", "asctime": "2016-08-11 06:47:48,628", "clientip": "192.168.1.23", "username": "admin", "message": "Modified instance \"zookeeper_2\"."}
+{"levelname": "INFO", "asctime": "2016-08-11 06:47:59,875", "clientip": "192.168.1.23", "username": "admin", "message": "Modified instance \"zookeeper_2\"."}

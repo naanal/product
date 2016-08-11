@@ -102,8 +102,7 @@ class UpdateInstanceSecurityGroups(workflows.UpdateMembersStep):
 
 
 class UpdateInstanceInfoAction(workflows.Action):
-    name = forms.CharField(label=_("Name"),
-                           max_length=255)
+    
 
     def handle(self, request, data):
         try:
@@ -116,9 +115,8 @@ class UpdateInstanceInfoAction(workflows.Action):
         return True
 
     class Meta(object):
-        name = _("Information")
-        slug = 'instance_info'
-        help_text = _("Edit the instance details.")
+        name = _("Information")        
+        help_text = _("Update Instance Security Groups.")
 
 
 class UpdateInstanceInfo(workflows.Step):

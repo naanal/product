@@ -648,6 +648,7 @@ def server_create(request, name, image, flavor, key_name, user_data,
                   availability_zone=None, instance_count=1, admin_pass=None,
                   disk_config=None, config_drive=None, meta=None,
                   scheduler_hints=None):
+    name=name.lower()
     return Server(novaclient(request).servers.create(
         name, image, flavor, userdata=user_data,
         security_groups=security_groups,
@@ -660,6 +661,12 @@ def server_create(request, name, image, flavor, key_name, user_data,
 
 
 def server_delete(request, instance):
+    name=server_get(request,instance) 
+    status=str(name.status)
+    ins_name=str(name.name)
+    dn=settings.LDAP_COMPUTER_DIR    
+    dn='CN='+ins_name+','+dn 
+    delete_computer=remove_computerAD(dn)   
     novaclient(request).servers.delete(instance)
 
 
@@ -1065,3 +1072,25 @@ def can_set_mount_point():
 def requires_keypair():
     features = getattr(settings, 'OPENSTACK_HYPERVISOR_FEATURES', {})
     return features.get('requires_keypair', False)
+
+
+def remove_computerAD(dn):    
+    from ldap3 import Server, Connection, ALL
+    import ldap3
+    try:
+        s = Server(settings.LDAP_SERVER[0], port=settings.LDAP_SERVER_PORT,
+                   use_ssl=settings.LDAP_SSL, get_info=ALL)
+        conn = Connection(s, user=settings.LDAP_ADMIN_USERNAME,
+                          password=settings.LDAP_ADMIN_PASSWORD, auto_bind=True)
+        conn.start_tls()
+        conn.delete(dn)        
+    except ldap3.LDAPSocketOpenError:
+        try:
+            s = Server(settings.LDAP_SERVER[1], port=settings.LDAP_SERVER_PORT,
+                       use_ssl=settings.LDAP_SSL, get_info=ALL)
+            conn = Connection(s, user=settings.LDAP_ADMIN_USERNAME,
+                              password=settings.LDAP_ADMIN_PASSWORD, auto_bind=True)
+            conn.start_tls()
+            conn.delete(dn)          
+        except ldap3.LDAPSocketOpenError:
+            print "Both Active Directory servers are unavailables..!"
