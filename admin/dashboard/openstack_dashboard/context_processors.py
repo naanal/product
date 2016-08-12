@@ -23,6 +23,7 @@ import re
 
 from django.conf import settings
 from local.local_settings import *
+from settings import *
 
 from horizon import conf
 
@@ -71,5 +72,6 @@ def openstack(request):
     context['JS_CATALOG'] = '+'.join(js_catalog)
 
     context['KEYSTONE_URL'] = OPENSTACK_KEYSTONE_URL
+    context['SAN_STORAGE_URL'] = SAN_STORAGE_URL
 
     return context

@@ -29,6 +29,7 @@ integration_tests_screenshots/
 .tox
 node_modules
 npm-debug.log
+admin.log
 build
 dist
 AUTHORS

@@ -24,3 +24,7 @@ a:not(.md-button) {
 .table-striped.datatable tbody tr.odd.status_unknown:hover td, .table-striped.datatable tbody tr.even.status_unknown:hover td {
     background-color: #faeeb6;
 }
+.wrapper {
+        overflow: visible !important;
+}
+

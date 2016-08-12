@@ -285,7 +285,7 @@ AVAILABLE_THEMES = [
 ]
 
 # The default theme if no cookie is present
-DEFAULT_THEME = 'default'
+DEFAULT_THEME = 'naanal_theme'
 
 # Theme Static Directory
 THEME_COLLECTION_DIR = 'themes'
@@ -418,6 +418,9 @@ if DEBUG:
     logging.basicConfig(level=logging.DEBUG)
 
 CSRF_COOKIE_AGE = None
+
+# Below SAN STORAGE ENDPOINT
+SAN_STORAGE_URL = 'http://172.30.64.63'
 
 # Belows are LDAP Credentials
 
