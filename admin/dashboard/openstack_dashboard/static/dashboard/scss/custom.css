@@ -27,7 +27,7 @@ a:not(.md-button) {
 .wrapper {
         overflow: visible !important;
 }
-..content-wrapper {
+.content-wrapper {
     min-height: 100vh !important;
 }
 
