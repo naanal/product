@@ -26,6 +26,7 @@ doc/source/sourcecode
 /static/
 integration_tests_screenshots/
 .venv
+venv
 .tox
 node_modules
 npm-debug.log

@@ -163,7 +163,7 @@ OPENSTACK_HOST="monitoring-host"
 
 OPENSTACK_API_VERSIONS={"identity":3}
 
-OPENSTACK_KEYSTONE_URL="http://172.30.64.89/identity/v3"
+OPENSTACK_KEYSTONE_URL="http://%s/identity/v3" % OPENSTACK_HOST
 
 
 # Enables keystone web single-sign-on if set to True.

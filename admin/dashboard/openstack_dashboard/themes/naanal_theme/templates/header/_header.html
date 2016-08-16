@@ -37,7 +37,7 @@
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Quick Create <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
           
-                    <li> <a id="instances__action_launch-ng" ng-click="modal.openLaunchInstanceWizard({ successUrl: '/virtual/instances/' })" ng-controller="LaunchInstanceModalController as modal" class="btn-launch ng-scope" href="javascript:void(0);"> Create Vms </a></li>
+                    <li> <a id="instances__action_launch-ng" ng-click="modal.openLaunchInstanceWizard({ successUrl: '/virtual/' })" ng-controller="LaunchInstanceModalController as modal" class="btn-launch ng-scope" href="javascript:void(0);"> Create Vms </a></li>
 
                     <li><a class='ajax-modal' href="{% url 'horizon:virtual:networks:create'%}">Create Networks</a></li>
                     

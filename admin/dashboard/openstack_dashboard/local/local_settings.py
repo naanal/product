@@ -5,12 +5,12 @@ from django.utils.translation import ugettext_lazy as _
 from openstack_dashboard import exceptions
 from pythonjsonlogger import jsonlogger
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 # COMPRESS_OFFLINE = False
 # COMPRESS_ENABLED = False
-SESSION_TIMEOUT = 300000
+#SESSION_TIMEOUT = 300000
 # WEBROOT is the location relative to Webserver root
 # should end with a slash.
 WEBROOT = '/'
@@ -20,7 +20,7 @@ WEBROOT = '/'
 # LOGIN_REDIRECT_URL can be used as an alternative for
 # HORIZON_CONFIG.user_home, if user_home is not set.
 # Do not set it to '/home/', as this will cause circular redirect loop
-# LOGIN_REDIRECT_URL = WEBROOT
+#LOGIN_REDIRECT_URL = WEBROOT
 
 
 # Required for Django 1.5.

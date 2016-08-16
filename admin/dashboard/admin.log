@@ -1,1 +1,9 @@
 
+{"levelname": "ERROR", "asctime": "2016-08-16 06:42:56,475", "clientip": "172.30.64.28", "username": "admin", "message": "Unable to retrieve details for instance \"instances\"."}
+{"levelname": "INFO", "asctime": "2016-08-16 06:44:12,055", "clientip": "172.30.64.28", "username": "admin", "message": "Scheduled deletion of Instance: vm1"}
+{"levelname": "ERROR", "asctime": "2016-08-16 06:45:04,022", "clientip": "172.30.64.28", "username": "admin", "message": "Unable to retrieve details for instance \"instances\"."}
+{"levelname": "ERROR", "asctime": "2016-08-16 06:47:20,881", "clientip": "172.30.64.28", "username": "admin", "message": "Unable to retrieve details for instance \"instances\"."}
+{"levelname": "INFO", "asctime": "2016-08-16 06:48:46,319", "clientip": "172.30.64.28", "username": "admin", "message": "IP address 172.30.63.165 associated."}
+{"levelname": "INFO", "asctime": "2016-08-16 06:51:59,045", "clientip": "172.30.64.28", "username": "admin", "message": "Shut Off Instance: sd"}
+{"levelname": "INFO", "asctime": "2016-08-16 06:54:24,543", "clientip": "", "username": "", "message": " Create New User:ghjf  success"}
+{"levelname": "INFO", "asctime": "2016-08-16 06:54:24,613", "clientip": "", "username": "", "message": " change_password of the user:cn=ghjf,ou=users,ou=Police,dc=naanal,dc=local   success"}

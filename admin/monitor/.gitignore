@@ -25,6 +25,7 @@ doc/build/
 doc/source/sourcecode
 /static/
 integration_tests_screenshots/
+mvenv
 .venv
 .tox
 node_modules
