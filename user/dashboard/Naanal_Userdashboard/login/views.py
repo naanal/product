@@ -11,7 +11,6 @@ from ldap3 import Server, Connection, SUBTREE, ALL, ALL_ATTRIBUTES, \
     ALL_OPERATIONAL_ATTRIBUTES, MODIFY_REPLACE, MODIFY_ADD
 from django.conf import settings
 import logging
-
 userlog = logging.getLogger('userlog')
 
 
@@ -41,6 +40,8 @@ def loginpage(request):
                     state = "Instance not found..! or Problem occuerd to find the instace from the server..!"
                     userlog.info(state)
                     return render_to_response('login.html', {'state': state})
+                elif(status=="Server not Found"):
+                    return render_to_response('Error.html')
                 instance_id = get_instance_id(instance_name)
                 fixed = get_instance_ipaddress(instance_name)
                 floating_ip = get_instance_floatingip(instance_name)
@@ -73,6 +74,8 @@ def loginpage(request):
                         state = "Instance not found..! or Problem occuerd to find the instace from the server..!"
                         userlog.info(state)
                         return render_to_response('login.html', {'state': state})
+                    elif(status=="Server not Found"):
+                        return render_to_response('Error.html')
                     instance_id = get_instance_id(instance_name)
                     fixed = get_instance_ipaddress(instance_name)
                     floating_ip = get_instance_floatingip(instance_name)
@@ -121,6 +124,8 @@ def index_page(request):
             username1 = request.session['username']
             instance_name = get_assigned_computer(username)
             status = instance_status(instance_name)
+            if(status=="Server not Found"):
+                    return render_to_response('Error.html')
             instance_id = get_instance_id(instance_name)
             fixed = get_instance_ipaddress(instance_name)
             floating_ip = get_instance_floatingip(instance_name)
@@ -163,14 +168,14 @@ def change_password(request):
             user_name = '%s@naanal.local' % username
             password = password
             try:
-                s = Server('windows-server', port=636, use_ssl=True, get_info=ALL)
+                s = Server(settings.LDAP_SERVER[0], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
                 conn = Connection(s, user=user_name, password=password, auto_bind=True)
                 print "------------ current username and password authentication-----------"
                 print 'user current password authentication successfull'
                 conn.unbind()
                 conn = bind()
                 print "--------------change password with new_password----------"
-                dn = "cn=%s,ou=Police,dc=naanal,dc=local" % username
+                dn = "cn=%s,ou=users,ou=Police,dc=naanal,dc=local" % username
                 print "dn:::" + dn
                 unicode_pass = unicode('"' + new_password1 + '"', 'iso-8859-1')
                 encoded_pass = unicode_pass.encode('utf-16-le')
@@ -189,10 +194,36 @@ def change_password(request):
                                           {'password': password, 'username': username, 'status': status})
                 print 'Wrong username or password'
             except ldap3.core.exceptions.LDAPSocketOpenError:
-                status = 'windows active directory not available'
-                print 'windows active directory not available'
-                userlog.error("%s change password %s", username, status)
-
+                try:
+                    s = Server(settings.LDAP_SERVER[1], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
+                    conn = Connection(s, user=user_name, password=password, auto_bind=True)
+                    print "------------ current username and password authentication-----------"
+                    print 'user current password authentication successfull'
+                    conn.unbind()
+                    conn = bind()
+                    print "--------------change password with new_password----------"
+                    dn = "cn=%s,ou=users,ou=Police,dc=naanal,dc=local" % username
+                    print "dn:::" + dn
+                    unicode_pass = unicode('"' + new_password1 + '"', 'iso-8859-1')
+                    encoded_pass = unicode_pass.encode('utf-16-le')
+                    conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
+                    conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
+                    status = conn.result['description']
+                    print "change_password status::::" + status
+                    userlog.info("%s change password ", username)
+                    # status='success'
+                    return render_to_response('changepassword.html',
+                                              {'password': password, 'username': username, 'status': status})
+                except ldap3.core.exceptions.LDAPBindError:
+                    status = 'worng current password'
+                    userlog.error("%s change password %s", username, status)
+                    return render_to_response('changepassword.html',
+                                              {'password': password, 'username': username, 'status': status})
+                    print 'Wrong username or password'
+                except ldap3.core.exceptions.LDAPSocketOpenError:
+                    status = 'windows active directory not available'
+                    print 'windows active directory not available'
+                    userlog.error("%s change password %s", username, status)
     return render_to_response('login.html')
 
 
@@ -221,6 +252,8 @@ def instance_stop(request):
             username = str(username)
             rdp_file = username + ".rdp"
             nova = get_nova_keystone_auth()
+            if(nova=="Server not Found"):
+               return render_to_response('Error.html')
             server = nova.servers.find(name=instance_name)
             status = str(server.status)
             print "\n instance_name:::" + instance_name, "\n instance_id::::" + instance_id
@@ -318,14 +351,21 @@ def get_assigned_computer(username):
 
 
 def bind():
-    s = Server(settings.LDAP_SERVER[0], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
-    conn = Connection(s, user=settings.LDAP_ADMIN_USERNAME, password=settings.LDAP_ADMIN_PASSWORD, auto_bind=True)
-    return conn
+    try:
+        s = Server(settings.LDAP_SERVER[0], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
+        conn = Connection(s, user=settings.LDAP_ADMIN_USERNAME, password=settings.LDAP_ADMIN_PASSWORD, auto_bind=True)
+        return conn
+    except:
+        s = Server(settings.LDAP_SERVER[1], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
+        conn = Connection(s, user=settings.LDAP_ADMIN_USERNAME, password=settings.LDAP_ADMIN_PASSWORD, auto_bind=True)
+        return conn
 
 
 def get_instance_id(instance_name):
     instance_id = ''
     nova = get_nova_keystone_auth()
+    if(nova=="Server not Found"):
+        return (nova)
     server = nova.servers.find(name=instance_name)
     instance_id = str(server.id)
     return (instance_id)
@@ -334,6 +374,8 @@ def get_instance_id(instance_name):
 def get_instance_ipaddress(instance_name):
     fixed = ''
     nova = get_nova_keystone_auth()
+    if(nova=="Server not Found"):
+        return (nova)
     server = nova.servers.find(name=instance_name)
     network = server.networks
     for network_name in network:
@@ -347,6 +389,8 @@ def get_instance_ipaddress(instance_name):
 def get_instance_floatingip(instance_name):
     floating_ip = ''
     nova = get_nova_keystone_auth()
+    if(nova=="Server not Found"):
+        return (nova)
     server = nova.servers.find(name=instance_name)
     network = server.networks
     for network_name in network:
@@ -365,6 +409,8 @@ def instance_status(instance_name):
     status = ''
     from novaclient import client
     nova = get_nova_keystone_auth()
+    if(nova=="Server not Found"):
+        return (nova)
     try:
         server = nova.servers.find(name=instance_name)
         status =str(server.status)
@@ -377,21 +423,27 @@ def instance_status(instance_name):
 
 
 def get_nova_keystone_auth():
-    auth_url = 'http://controller:35357/v3'
-    user_domain_name = 'Default'
-    auth = v3.Password(auth_url=auth_url, username=settings.OPENSTACK_USERNAME, password=settings.OPENSTACK_PASSWORD,
-                       project_name=settings.OPENSTACK_PROJECT_NAME,
-                       user_domain_name=user_domain_name, project_domain_name='default')
-    sess = session.Session(auth=auth)
-    keystone = ksclient.Client(session=sess)
-    keystone.projects.list()
-    from novaclient import client
-    nova = client.Client(2, session=keystone.session)
-    return (nova)
+    try:
+        auth_url = 'http://controller:35357/v3'
+        user_domain_name = 'Default'
+        auth = v3.Password(auth_url=auth_url, username=settings.OPENSTACK_USERNAME, password=settings.OPENSTACK_PASSWORD,
+                           project_name=settings.OPENSTACK_PROJECT_NAME,
+                           user_domain_name=user_domain_name, project_domain_name='default')
+        sess = session.Session(auth=auth)
+        keystone = ksclient.Client(session=sess)
+        keystone.projects.list()
+        from novaclient import client
+        nova = client.Client(2, session=keystone.session)
+        return (nova)
+    except:
+        state="Server not Found"
+        return (state)
 
 
 def vnc_console(instance_name):
     nova = get_nova_keystone_auth()
+    if(nova=="Server not Found"):
+        return (nova)
     server = nova.servers.find(name=instance_name)
     console = server.get_vnc_console('novnc')
     console1 = console['console']
