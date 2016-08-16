@@ -15,6 +15,7 @@ TEMPLATE_DEBUG = DEBUG
 
 # WEBROOT is the location relative to Webserver root
 # should end with a slash.
+WEBROOT = '/'
 #LOGIN_URL = WEBROOT + 'auth/login/'
 #LOGOUT_URL = WEBROOT + 'auth/logout/'
 #
@@ -33,7 +34,7 @@ TEMPLATE_DEBUG = DEBUG
 # Pass this header from the proxy after terminating the SSL,
 # and don't forget to strip it from the client's request.
 # For more information see:
-# https://docs.djangoproject.com/en/dev/ref/settings/#secure-proxy-ssl-header
+# https://docs.djangoproject.com/en/1.8/ref/settings/#secure-proxy-ssl-header
 #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # If Horizon is being served through SSL, then uncomment the following two
@@ -52,7 +53,6 @@ TEMPLATE_DEBUG = DEBUG
 # NOTE: The version should be formatted as it appears in the URL for the
 # service API. For example, The identity service APIs have inconsistent
 # use of the decimal point, so valid options would be 2.0 or 3.
-# Minimum compute version to get the instance locked status is 2.9.
 #OPENSTACK_API_VERSIONS = {
 #    "data-processing": 1.1,
 #    "identity": 3,
@@ -60,9 +60,8 @@ TEMPLATE_DEBUG = DEBUG
 #    "compute": 2,
 #}
 
-# Set this to True if running on a multi-domain model. When this is enabled, it
-# will require the user to enter the Domain name in addition to the username
-# for login.
+# Set this to True if running on multi-domain model. When this is enabled, it
+# will require user to enter the Domain name in addition to username for login.
 #OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = False
 
 # Overrides the default domain used when running on single-domain model
@@ -157,6 +156,14 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #    ('http://cluster1.example.com:5000/v2.0', 'cluster1'),
 #    ('http://cluster2.example.com:5000/v2.0', 'cluster2'),
 #]
+
+OPENSTACK_KEYSTONE_DEFAULT_ROLE="Member"
+
+OPENSTACK_HOST="monitoring-host"
+
+OPENSTACK_API_VERSIONS={"identity":3}
+
+OPENSTACK_KEYSTONE_URL="http://172.30.64.89/identity/v3"
 
 
 # Enables keystone web single-sign-on if set to True.
@@ -269,12 +276,17 @@ OPENSTACK_NEUTRON_NETWORK = {
     'enable_vpn': True,
     'enable_fip_topology_check': True,
 
-    # Default dns servers you would like to use when a subnet is
-    # created.  This is only a default, users can still choose a different
-    # list of dns servers when creating a new subnet.
-    # The entries below are examples only, and are not appropriate for
-    # real deployments
-    # 'default_dns_nameservers': ["8.8.8.8", "8.8.4.4", "208.67.222.222"],
+    # Neutron can be configured with a default Subnet Pool to be used for IPv4
+    # subnet-allocation. Specify the label you wish to display in the Address
+    # pool selector on the create subnet step if you want to use this feature.
+    'default_ipv4_subnet_pool_label': None,
+
+    # Neutron can be configured with a default Subnet Pool to be used for IPv6
+    # subnet-allocation. Specify the label you wish to display in the Address
+    # pool selector on the create subnet step if you want to use this feature.
+    # You must set this to enable IPv6 Prefix Delegation in a PD-capable
+    # environment.
+    'default_ipv6_subnet_pool_label': None,
 
     # The profile_support option is used to detect if an external router can be
     # configured via the dashboard. When using specific plugins the
@@ -361,9 +373,9 @@ IMAGE_RESERVED_CUSTOM_PROPERTIES = []
 # SECONDARY_ENDPOINT_TYPE specifies the fallback endpoint type to use in the
 # case that OPENSTACK_ENDPOINT_TYPE is not present in the endpoints
 # in the Keystone service catalog. Use this setting when Horizon is running
-# external to the OpenStack environment. The default is None. This
+# external to the OpenStack environment. The default is None.  This
 # value should differ from OPENSTACK_ENDPOINT_TYPE if used.
-#SECONDARY_ENDPOINT_TYPE = None
+#SECONDARY_ENDPOINT_TYPE = "publicURL"
 
 # The number of objects (Swift containers/objects or images) to display
 # on a single page before providing a paging element (a "more" link)
@@ -459,114 +471,92 @@ LOGGING = {
     # if nothing is specified here and disable_existing_loggers is True,
     # django.db.backends will still log unless it is disabled explicitly.
     'disable_existing_loggers': False,
-    'formatters': {
-        'operation': {
-            # The format of "%(message)s" is defined by
-            # OPERATION_LOG_OPTIONS['format']
-            'format': '%(asctime)s %(message)s'
-        },
-    },
     'handlers': {
         'null': {
             'level': 'DEBUG',
             'class': 'logging.NullHandler',
-        },
-	    'file': {
-            'level':'DEBUG',
-            'class':'logging.FileHandler',
-            'filename': "/home/naanal/horizonlog.log",
         },
         'console': {
             # Set the level to "DEBUG" for verbose output logging.
             'level': 'INFO',
             'class': 'logging.StreamHandler',
         },
-        'operation': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'operation',
-        },
     },
     'loggers': {
         # Logging from django.db.backends is VERY verbose, send to null
         # by default.
         'django.db.backends': {
-            'handlers': ['file'],
-            'propagate': True,
+            'handlers': ['null'],
+            'propagate': False,
         },
         'requests': {
-            'handlers': ['file'],
-            'propagate': True,
+            'handlers': ['null'],
+            'propagate': False,
         },
         'horizon': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
-        },
-        'horizon.operation_log': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'openstack_dashboard': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'novaclient': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'cinderclient': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'keystoneclient': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'glanceclient': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'neutronclient': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'heatclient': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'ceilometerclient': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'swiftclient': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'openstack_auth': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'nose.plugins.manager': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'django': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'iso8601': {
             'handlers': ['null'],
@@ -717,6 +707,12 @@ SECURITY_GROUP_RULES = {
 # algorithms supported by Python's hashlib library.
 #OPENSTACK_TOKEN_HASH_ALGORITHM = 'md5'
 
+# Hashing tokens from Keystone keeps the Horizon session data smaller, but it
+# doesn't work in some cases when using PKI tokens.  Uncomment this value and
+# set it to False if using PKI tokens and there are 401 errors due to token
+# hashing.
+#OPENSTACK_TOKEN_HASH_ENABLED = True
+
 # AngularJS requires some settings to be made available to
 # the client side. Some settings are required by in-tree / built-in horizon
 # features. These settings must be added to REST_API_REQUIRED_SETTINGS in the
@@ -747,46 +743,3 @@ REST_API_REQUIRED_SETTINGS = ['OPENSTACK_HYPERVISOR_FEATURES',
 # For more information see:
 # http://tinyurl.com/anticlickjack
 #DISALLOW_IFRAME_EMBED = True
-
-# Help URL can be made available for the client. To provide a help URL, edit the
-# following attribute to the URL of your choice.
-#HORIZON_CONFIG["help_url"] = "http://openstack.mycompany.org"
-
-# Settings for OperationLogMiddleware
-# OPERATION_LOG_ENABLED is flag to use the function to log an operation on
-# Horizon.
-# mask_targets is arrangement for appointing a target to mask.
-# method_targets is arrangement of HTTP method to output log.
-# format is the log contents.
-#OPERATION_LOG_ENABLED = False
-#OPERATION_LOG_OPTIONS = {
-#    'mask_fields': ['password'],
-#    'target_methods': ['POST'],
-#    'format': ("[%(domain_name)s] [%(domain_id)s] [%(project_name)s]"
-#        " [%(project_id)s] [%(user_name)s] [%(user_id)s] [%(request_scheme)s]"
-#        " [%(referer_url)s] [%(request_url)s] [%(message)s] [%(method)s]"
-#        " [%(http_status)s] [%(param)s]"),
-#}
-
-# The default date range in the Overview panel meters - either <today> minus N
-# days (if the value is integer N), or from the beginning of the current month
-# until today (if set to None). This setting should be used to limit the amount
-# of data fetched by default when rendering the Overview panel.
-#OVERVIEW_DAYS_RANGE = 1
-
-# To allow operators to require admin users provide a search criteria first
-# before loading any data into the admin views, set the following attribute to
-# True
-#ADMIN_FILTER_DATA_FIRST=False
-#WEBROOT="/dashboard/"
-
-#COMPRESS_OFFLINE=False
-#COMPRESS_ENABLED=False
-
-OPENSTACK_KEYSTONE_DEFAULT_ROLE="Member"
-
-OPENSTACK_HOST="monitoring-host"
-
-OPENSTACK_API_VERSIONS={"identity":3}
-
-OPENSTACK_KEYSTONE_URL="http://172.30.64.89/identity/v3"
