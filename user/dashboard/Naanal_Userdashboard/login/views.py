@@ -236,6 +236,41 @@ def help(request):
             return render_to_response('help.html', {'username': username})
     return render_to_response('login.html')
 
+def login_help(request):
+    username = password = ''
+    if request.GET:
+        if request.session.has_key('username'):
+            username1 = request.session['username']
+            username = request.GET.get('username')
+            return render_to_response('login_help.html', {'username': username})
+    return render_to_response('login.html')
+
+def browservm_help(request):
+    username = password = ''
+    if request.GET:
+        if request.session.has_key('username'):
+            username1 = request.session['username']
+            username = request.GET.get('username')
+            return render_to_response('vmbrowser.html', {'username': username})
+    return render_to_response('login.html')
+
+def RDP_help(request):
+    username = password = ''
+    if request.GET:
+        if request.session.has_key('username'):
+            username1 = request.session['username']
+            username = request.GET.get('username')
+            return render_to_response('RDP_help.html', {'username': username})
+    return render_to_response('login.html')
+
+def changepswd_help(request):
+    username = password = ''
+    if request.GET:
+        if request.session.has_key('username'):
+            username1 = request.session['username']
+            username = request.GET.get('username')
+            return render_to_response('changepassword_help.html', {'username': username})
+    return render_to_response('login.html')
 
 @csrf_exempt
 def instance_stop(request):
