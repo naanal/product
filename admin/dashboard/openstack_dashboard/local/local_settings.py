@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from openstack_dashboard import exceptions
 from pythonjsonlogger import jsonlogger
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 # COMPRESS_OFFLINE = False
