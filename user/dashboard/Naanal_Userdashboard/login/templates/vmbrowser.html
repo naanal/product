@@ -1,0 +1,145 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Help | Naanal</title>
+  <link rel="shortcut icon" href="/static/Naanal_icon/favicon.ico"/>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/dist/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="/static/dist/css/skins/_all-skins.min.css">
+  
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <header class="main-header">
+
+    <!-- Logo -->
+    <a href="index2.html" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini">Naanal</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>Naanal</b>Technologies</span>
+    </a>
+
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+      <!-- Navbar Right Menu -->
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+ 
+          <li class="user user-menu">
+            <a href="#" >
+              <img src="dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+              <span class="hidden-xs">{{username}}</span>
+            </a>
+
+          </li>
+         
+        </ul>
+      </div>
+
+    </nav>
+  </header>
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel -->
+      <div class="user-panel">
+        <div class="pull-left image">
+          <img src="/static/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+        </div>
+        <div class="pull-left info">
+          <p>{{username}}</p>
+          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+        </div>
+      </div>
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu">
+      
+       
+        <li><a href="/index/?username={{ username }}" value="{{username}}"><i class="fa fa-laptop text-red"></i> <span>My Machine</span></a></li>
+		<li><a href="/change/?username={{ username }}" value="{{username}}"><i class="fa fa-unlock text-green"></i> <span>Change Password</span></a></li>
+        <li  class="active"><a href="/help/?username={{ username }}" value="{{username}}"><i class="fa fa-question-circle text-yellow"></i> <span>Help</span></a></li>
+        <li><a href="/logout/?username={{ username }}" value="{{username}}"><i class="fa fa-sign-out text-aqua"></i> <span>Logout</span></a></li>
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+ 
+    <section class="content">
+     
+      <div class="row">
+        <div class="col-md-12">
+        
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Use Virtual Machine on Web Browser</h3>
+            </div>
+			<div class="box-body">
+				<h4>1.	Click computer Name (Here computer name : police-01) <h4/>
+                  <div class="text-center">
+                        <img src="/static/help_images/computervm.png" alt="computername" style="width:600px;height:400px;">
+                  </div>
+                   <div class="text-center">
+                        <img src="/static/help_images/computervm1.png" alt="computername" style="width:600px;height:400px;">
+                  </div>
+                  <h4>2.	Select send+ctrl+Del button <h4/>
+                  <div class="text-center">
+                        <img src="/static/help_images/computervm3.png" alt="home_page" style="width:600px;height:400px;">
+                  </div>
+                    <h4>3.	Login with your username and password <h4/>
+                    <div class="text-center">
+                      <img src="/static/help_images/computervm4.png" alt="home_page" style="width:600px;height:400px;">
+                      </div>
+
+              <hr/>
+            </div>
+      </div>
+    </section>
+  
+  </div>
+  <!-- /.content-wrapper -->
+
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 2.3.3
+    </div>
+    <strong>Copyright &copy; 2016 <a href="http://naanal.in">Naanal Technologies</a>.</strong> All rights
+    reserved.
+  </footer>
+
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 2.2.0 -->
+<script src="/static/plugins/jQuery/jQuery-2.2.0.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+
+<script src="/static/dist/js/app.min.js"></script>
+
+
+</body>
+</html>
