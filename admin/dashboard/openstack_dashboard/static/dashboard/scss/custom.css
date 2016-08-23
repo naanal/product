@@ -31,3 +31,6 @@ a:not(.md-button) {
     min-height: 100vh !important;
 }
 
+li {
+    list-style: none !important;
+}
