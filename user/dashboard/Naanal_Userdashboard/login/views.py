@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response
-from keystoneclient.auth.identity import v3
-from keystoneclient import session
-from keystoneclient.v3 import client as ksclient
+from keystoneauth1.identity import v2
+from keystoneauth1 import session
+from keystoneclient import client as ksclient
 import time
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
@@ -459,16 +459,12 @@ def instance_status(instance_name):
 
 def get_nova_keystone_auth():
     try:
-        auth_url = 'http://controller:35357/v3'
-        user_domain_name = 'Default'
-        auth = v3.Password(auth_url=auth_url, username=settings.OPENSTACK_USERNAME, password=settings.OPENSTACK_PASSWORD,
-                           project_name=settings.OPENSTACK_PROJECT_NAME,
-                           user_domain_name=user_domain_name, project_domain_name='default')
+        auth_url = settings.OPENSTACK_HOST
+        auth = v2.Password(auth_url=auth_url, username=settings.OPENSTACK_USERNAME, password=settings.OPENSTACK_PASSWORD, tenant_name=settings.OPENSTACK_PROJECT_NAME)
         sess = session.Session(auth=auth)
         keystone = ksclient.Client(session=sess)
-        keystone.projects.list()
         from novaclient import client
-        nova = client.Client(2, session=keystone.session)
+        nova = client.Client("2.1", session=sess)
         return (nova)
     except:
         state="Server not Found"

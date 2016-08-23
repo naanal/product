@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 urlpatterns = patterns('',
-    url(r'^','login.views.loginpage' ),
+    url(r'^login/','login.views.loginpage' ),
     url(r'^index/','login.views.index_page' ),
     url(r'^change/','login.views.change_password' ),
     url(r'^help/','login.views.help' ),
