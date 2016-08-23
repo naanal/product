@@ -56,18 +56,11 @@ class Volumes(generic.View):
         The listing result is an object with property "items".
         """
 
-        if request.GET.get('all_projects') == 'true':
-            result, has_more, has_prev = api.cinder.volume_list_paged(
-                request,
-                {'all_tenants': 1}
-            )
-        else:
-            search_opts, kwargs = rest_utils.parse_filters_kwargs(
-                request, CLIENT_KEYWORDS)
-            result, has_more, has_prev = api.cinder.volume_list_paged(
-                request,
-                search_opts=search_opts, **kwargs
-            )
+        result, has_more, has_prev = api.cinder.volume_list_paged(
+            request,
+            {'all_tenants': 1}
+        )
+        
         return {
             'items': [u.to_dict() for u in result],
             'has_more_data': has_more,
