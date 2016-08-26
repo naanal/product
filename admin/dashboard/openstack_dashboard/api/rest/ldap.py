@@ -48,8 +48,6 @@ class Users(generic.View):
         ip=get_ip(request)
         user = request.user       
         d={'clientip':ip,'username':user} 
-        print d
-
         conn = bind()
         if conn.bind():
             return retriveUsers(conn)
@@ -193,8 +191,7 @@ class Users(generic.View):
                     computer=user['new_computer']
                     new_username=user['new_username']
                     #password=user['password']
-                    password = str(password)
-                    print username,dn,computer,new_username,password                   
+                    password = str(password)                                    
                     changepasswordStatus= changePassword(dn, password, conn)
                     result.append({"user": username,"action": "change_password","status": changepasswordStatus}) 
                     change_computerstatus=mapUserToVm(dn,computer,conn)
@@ -446,8 +443,7 @@ def bind():
                       password=settings.LDAP_ADMIN_PASSWORD, auto_bind=True)
         conn.start_tls()
         return conn      
-    except ldap3.LDAPSocketOpenError:        
-        print "BACKUP SERVER.....ON!!!!!!"  
+    except ldap3.LDAPSocketOpenError:                
         adminlog.info("Error occured to Connect:: %s the Windows Server",settings.LDAP_SERVER[0],extra=d)             
         try:
             s = Server(settings.LDAP_SERVER[1], port=settings.LDAP_SERVER_PORT,
@@ -464,7 +460,8 @@ def unbind(c):
     c.unbind()
 
 def getdn(username):
-    return 'cn=%s,ou=users,ou=Police,dc=naanal,dc=local' % (username)
+    return ("cn=%s," + settings.WINDOWS_SERVER_USERPATH + "," + settings.WINDOWS_SERVER_DOMAINPATH) % username
+    #return 'cn=%s,ou=users,ou=Police,dc=naanal,dc=local' % (username)
 
 
 def createNewUser(dn, username, mail, conn):    
@@ -544,7 +541,7 @@ def retriveUsers(conn):
 def retriveAvailableUsers(conn):        
     available_users = []
     conn.search(search_base=settings.LDAP_BASE_DIR,
-                search_filter='(&(objectCategory=person)(objectClass=user)(memberof=cn=normalusers,ou=groups,ou=police,dc=naanal,dc=local)(|(userAccountControl=512)(userAccountControl=66048)))',
+                search_filter='(&(objectCategory=person)(objectClass=user)(memberof='+settings.WINDOWS_SERVER_USER_GROUP+')(|(userAccountControl=512)(userAccountControl=66048)))',
                 search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
                                                   ALL_OPERATIONAL_ATTRIBUTES])
     for entry in conn.response:
@@ -559,7 +556,7 @@ def retriveAvailableUsers(conn):
 
 def assignedComputers(conn):       
     assigned_computers = []   
-    conn.search(search_base='dc=naanal,dc=local',
+    conn.search(search_base=settings.WINDOWS_SERVER_DOMAINPATH,
                 search_filter='(&(objectCategory=person)(objectClass=user))',
                 search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
                                                   ALL_OPERATIONAL_ATTRIBUTES])
@@ -577,7 +574,7 @@ def assignedComputers(conn):
 def retriveComputers(conn):    
     computers = []
     assignedCom = assignedComputers(conn)
-    conn.search(search_base='cn=computers,dc=naanal,dc=local',
+    conn.search(search_base='cn=computers,'+settings.WINDOWS_SERVER_DOMAINPATH,
                 search_filter='(&(objectCategory=computer)(objectClass=computer))',
                 search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
                                                   ALL_OPERATIONAL_ATTRIBUTES])
@@ -615,7 +612,7 @@ def findUsername(computername,conn):
 def retriveAvailableComputers(conn):
     available_computers = []
     assignedCom = list(set(assignedComputers(conn)))
-    conn.search(search_base='cn=computers,dc=naanal,dc=local',
+    conn.search(search_base='cn=computers,'+settings.WINDOWS_SERVER_DOMAINPATH,
                 search_filter='(&(objectCategory=computer)(objectClass=computer))',
                 search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
                                                   ALL_OPERATIONAL_ATTRIBUTES])
@@ -660,10 +657,9 @@ def autoAssignUsersWithVms(map_data, conn):
 def change_userPrincipalName(user_dn, new_username, conn):     
     d={'clientip':ip,'username':user} 
     adminlog.info("change_userPrincipalName Process",extra=d)
-    new_username = new_username + '@naanal.local'
+    new_username = new_username +'@'+settings.DOMAIN_NAME
     conn.modify(user_dn,
                 {'userPrincipalName': [(MODIFY_REPLACE, [new_username])]})
-    print "status of userPrincipal name change:::::" + conn.result['description']
     return conn.result['description']
 
 
@@ -673,14 +669,12 @@ def change_sAMAccountName(user_dn, new_username, conn):
     conn.modify(user_dn,
                 {'sAMAccountName': [(MODIFY_REPLACE, [new_username])]
                  })
-    print("status of change_sAMAccountName::::" + conn.result['description'],)
     return conn.result['description']
 
 
 def change_userEmail(user_dn, E_mail, conn):
     conn.modify(user_dn,
                 {'mail': [(MODIFY_REPLACE, [E_mail])]})
-    print("status of change_userEmail::::" + conn.result['description'])
     return conn.result['description']
 
 
@@ -688,7 +682,6 @@ def change_userDN(user_dn, new_username, conn):
     d={'clientip':ip,'username':user}     
     new_username = 'cn=' + new_username
     conn.modify_dn(user_dn, new_username)
-    print("status of change_userDN::::" + conn.result['description'])
     adminlog.info("change CommonName user:%s with new username:  %s   %s",user_dn,new_username,conn.result['description'],extra=d)
     return conn.result['description']
 
@@ -737,7 +730,6 @@ def userCreationWorkflow(users, isAssignVm, isAssignAuto, conn):
                         response = username + " successfully created."
                         if isAssignVm == 'True':
                             if notSufficentVMs == 'False':
-                                print notSufficentVMs
                                 if isAssignAuto == 'True':
                                     computer = available_vms.pop()['computername']
                                 response = mapUserToVm(dn, computer, conn)
@@ -778,7 +770,4 @@ def get_ip(request):
         ip = x_forwarded_for.split(',')[0]
     else:       
         ip = request.META.get('REMOTE_ADDR') 
-    print "ipaddresss"  
-    print ip      
-   
     return ip

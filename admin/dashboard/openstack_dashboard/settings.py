@@ -423,6 +423,12 @@ CSRF_COOKIE_AGE = None
 
 LDAP_SERVER = ["windows-server","windows-backup-server"]
 
+WINDOWS_SERVER_DOMAINPATH="dc=naanal,dc=local"
+
+WINDOWS_SERVER_USERPATH="ou=users,ou=Police"
+
+DOMAIN_NAME="naanal.local"
+
 LDAP_SERVER_PORT = 636
 
 LDAP_SSL = True
