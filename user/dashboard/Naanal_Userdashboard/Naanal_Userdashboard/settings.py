@@ -137,6 +137,12 @@ STATIC_URL = '/static/'
 
 LDAP_SERVER = ["172.30.1.197","172.30.1.198"]
 
+DOMAIN_NAME="naanal.local"
+
+WINDOWS_SERVER_DOMAINPATH="dc=naanal,dc=local"
+
+WINDOWS_SERVER_USERPATH="ou=users,ou=Police"
+
 LDAP_SERVER_PORT = 636
 
 LDAP_SSL = True

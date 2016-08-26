@@ -6,3 +6,30 @@
 [2016-08-23 13:50:09  loginpage]  INFO shan user login 
 [2016-08-23 13:52:34  loginpage]  INFO shan user login 
 [2016-08-23 13:52:47  logout]  INFO shan user logout
+[2016-08-26 05:19:00  loginpage]  INFO shan user login 
+[2016-08-26 05:23:31  logout]  INFO shan user logout
+[2016-08-26 05:23:37  loginpage]  INFO shan user login 
+[2016-08-26 05:23:43  logout]  INFO shan user logout
+[2016-08-26 05:23:51  loginpage]  INFO shan1 user login 
+[2016-08-26 05:23:56  logout]  INFO shan1 user logout
+[2016-08-26 05:41:57  loginpage]  INFO shan user login 
+[2016-08-26 05:42:03  logout]  INFO shan user logout
+[2016-08-26 05:45:21  loginpage]  INFO raja user login 
+[2016-08-26 05:45:27  logout]  INFO raja user logout
+[2016-08-26 05:47:22  loginpage]  INFO raja user login 
+[2016-08-26 05:47:23  loginpage]  INFO No allocated instances..! Please contact your Administrator..!
+[2016-08-26 05:47:34  loginpage]  INFO shan user login 
+[2016-08-26 05:47:34  loginpage]  INFO No allocated instances..! Please contact your Administrator..!
+[2016-08-26 05:47:58  loginpage]  INFO raja user login 
+[2016-08-26 05:48:21  change_password]  INFO raja change password 
+[2016-08-26 05:48:28  logout]  INFO raja user logout
+[2016-08-26 05:48:46  loginpage]  INFO raja user login 
+[2016-08-26 05:52:52  logout]  INFO raja user logout
+[2016-08-26 05:54:13  loginpage]  INFO raja user login 
+[2016-08-26 05:57:46  change_password]  INFO raja change password 
+[2016-08-26 05:58:55  change_password]  INFO raja change password 
+[2016-08-26 06:03:46  logout]  INFO raja user logout
+[2016-08-26 06:04:09  loginpage]  INFO raja user login 
+[2016-08-26 06:07:46  instance_stop]  INFO raja stop instance
+[2016-08-26 06:08:08  instance_stop]  INFO raja statrt instance zookeeper
+[2016-08-26 06:09:11  instance_stop]  INFO raja reboot instance zookeeper
