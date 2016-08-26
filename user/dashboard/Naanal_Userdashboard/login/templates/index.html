@@ -75,7 +75,7 @@
       
        
         <li class="active"><a href="/index/?username={{ username }}" value="{{username}}"><i class="fa fa-laptop text-red"></i> <span>My Machine</span></a></li>
-		<li><a href="/change/?username={{ username }}" value="{{username}}"><i class="fa fa-unlock text-green"></i> <span>Change Password</span></a></li>
+    <li><a href="/change/?username={{ username }}" value="{{username}}"><i class="fa fa-unlock text-green"></i> <span>Change Password</span></a></li>
         <li><a href="/help/?username={{ username }}" value="{{username}}"><i class="fa fa-question-circle text-yellow"></i> <span>Help</span></a></li>
         <li><a href="/logout/?username={{ username }}" value="{{username}}"><i class="fa fa-sign-out text-aqua"></i> <span>Logout</span></a></li>
       </ul>
@@ -107,7 +107,7 @@
                   <thead>
                   <tr>
                     <th>Computer Name</th>
-					<th>IP Address</th>
+          <th>IP Address</th>
                     <th>Status</th>
                     <th>Action</th>
                   </tr>
@@ -116,7 +116,7 @@
                   <tr>
                     
                     <td><a href="{{console}}">{{instancename}}</a></td>
-					<td>{{fixedip}},{{floatingip}} </td>
+          <td>{{fixedip}} {{floatingip}} </td>
                     <td><span class="label label-success">{{status}}</span> </td>
                     <td>
 
@@ -126,7 +126,7 @@
                                           <input type="hidden" name="instance_id" value="{{instanceid}}" />
                                           <input type="hidden" name="user_name" value="{{username}}" />
                                           <input type="hidden" name="instance_name" value="{{instancename}}" />
-					                     <button class="{{button_color}} " data-toggle="tooltip" data-placement="right"  align="right" title="Power On/Off"><i class="fa fa-power-off" aria-hidden="true"></i></button>
+                               <button class="{{button_color}} " data-toggle="tooltip" data-placement="right"  align="right" title="Power On/Off"><i class="fa fa-power-off" aria-hidden="true"></i></button>
                                          <a href="/static/RDP/{{RDP_file}}" class="btn btn-success btn-xs" download data-toggle="tooltip" data-placement="right" title="Download RDP File"><i class="fa fa-download" aria-hidden="true"> </i></a>
                              </form>
                           
