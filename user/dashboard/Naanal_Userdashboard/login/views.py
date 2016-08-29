@@ -24,8 +24,9 @@ def loginpage(request):
         password = request.POST.get('password')
         if username and password:
             request.session['username'] = username
-            user_name = '%s@naanal.local' % username
+            user_name=username+'@'+settings.DOMAIN_NAME
             password = password
+            print user_name,password
             try:
                 s = Server(settings.LDAP_SERVER[0], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
                 conn = Connection(s, user=user_name, password=password, auto_bind=True)
@@ -43,7 +44,7 @@ def loginpage(request):
                 elif(status=="Server not Found"):
                     return render_to_response('Error.html')
                 instance_id = get_instance_id(instance_name)
-                fixed = get_instance_ipaddress(instance_name)
+                #fixed = get_instance_ipaddress(instance_name)
                 floating_ip = get_instance_floatingip(instance_name)
                 console = vnc_console(instance_name)
                 if status == "ACTIVE":
@@ -77,12 +78,11 @@ def loginpage(request):
                     elif(status=="Server not Found"):
                         return render_to_response('Error.html')
                     instance_id = get_instance_id(instance_name)
-                    fixed = get_instance_ipaddress(instance_name)
+                    #fixed = get_instance_ipaddress(instance_name)
                     floating_ip = get_instance_floatingip(instance_name)
                     console = vnc_console(instance_name)
                     if status == "ACTIVE":
                         button_color = "btn btn-danger btn-xs"
-                        print console
                     else:
                         button_color = "btn btn-success btn-xs "
                     rdp_file = download_RDP(username, instance_id, instance_name)
@@ -117,7 +117,7 @@ def logout(request):
 
 @csrf_exempt
 def index_page(request):
-    username = password = instance_id = instance_name = status = console = ''
+    username = password = instance_id = instance_name = status = console =fixed= ''
     if request.GET:
         username = request.GET.get('username')
         if request.session.has_key('username'):
@@ -127,13 +127,12 @@ def index_page(request):
             if(status=="Server not Found"):
                     return render_to_response('Error.html')
             instance_id = get_instance_id(instance_name)
-            fixed = get_instance_ipaddress(instance_name)
+            #fixed = get_instance_ipaddress(instance_name)
             floating_ip = get_instance_floatingip(instance_name)
             rdp_file = username + ".rdp"
             if status == "ACTIVE":
                 console = vnc_console(instance_name)
                 button_color = "btn btn-danger btn-xs"
-                print console
             else:
                 button_color = "btn btn-success btn-xs "
             return render_to_response('index.html',
@@ -162,27 +161,19 @@ def change_password(request):
             password = request.POST.get('currentpassword')
             new_password = request.POST.get('newpassword')
             new_password1 = str(new_password)
-            print new_password
-            print "--------------inside the changepassword method-----------------"
-            print "username:::" + username, "password:::" + password, "new_password:::" + new_password1
-            user_name = '%s@naanal.local' % username
+            user_name=username+'@'+settings.DOMAIN_NAME
             password = password
             try:
                 s = Server(settings.LDAP_SERVER[0], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
                 conn = Connection(s, user=user_name, password=password, auto_bind=True)
-                print "------------ current username and password authentication-----------"
-                print 'user current password authentication successfull'
                 conn.unbind()
                 conn = bind()
-                print "--------------change password with new_password----------"
-                dn = "cn=%s,ou=users,ou=Police,dc=naanal,dc=local" % username
-                print "dn:::" + dn
+                dn = ("cn=%s," + settings.WINDOWS_SERVER_USERPATH + "," + settings.WINDOWS_SERVER_DOMAINPATH) % username
                 unicode_pass = unicode('"' + new_password1 + '"', 'iso-8859-1')
                 encoded_pass = unicode_pass.encode('utf-16-le')
                 conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
                 conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
                 status = conn.result['description']
-                print "change_password status::::" + status
                 userlog.info("%s change password ", username)
                 # status='success'
                 return render_to_response('changepassword.html',
@@ -192,24 +183,18 @@ def change_password(request):
                 userlog.error("%s change password %s", username, status)
                 return render_to_response('changepassword.html',
                                           {'password': password, 'username': username, 'status': status})
-                print 'Wrong username or password'
             except ldap3.core.exceptions.LDAPSocketOpenError:
                 try:
                     s = Server(settings.LDAP_SERVER[1], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
                     conn = Connection(s, user=user_name, password=password, auto_bind=True)
-                    print "------------ current username and password authentication-----------"
-                    print 'user current password authentication successfull'
                     conn.unbind()
                     conn = bind()
-                    print "--------------change password with new_password----------"
-                    dn = "cn=%s,ou=users,ou=Police,dc=naanal,dc=local" % username
-                    print "dn:::" + dn
+                    dn = ("cn=%s,"+settings.WINDOWS_SERVER_USERPATH+","+settings.WINDOWS_SERVER_DOMAINPATH) % username
                     unicode_pass = unicode('"' + new_password1 + '"', 'iso-8859-1')
                     encoded_pass = unicode_pass.encode('utf-16-le')
                     conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
                     conn.modify(dn, {'unicodePwd': [(MODIFY_REPLACE, [encoded_pass])]})
                     status = conn.result['description']
-                    print "change_password status::::" + status
                     userlog.info("%s change password ", username)
                     # status='success'
                     return render_to_response('changepassword.html',
@@ -219,10 +204,8 @@ def change_password(request):
                     userlog.error("%s change password %s", username, status)
                     return render_to_response('changepassword.html',
                                               {'password': password, 'username': username, 'status': status})
-                    print 'Wrong username or password'
                 except ldap3.core.exceptions.LDAPSocketOpenError:
                     status = 'windows active directory not available'
-                    print 'windows active directory not available'
                     userlog.error("%s change password %s", username, status)
     return render_to_response('login.html')
 
@@ -274,16 +257,14 @@ def changepswd_help(request):
 
 @csrf_exempt
 def instance_stop(request):
-    instance_id = console = username = password = ''
+    instance_id = console = username = password = fixed=''
     if request.POST:
         if request.session.has_key('username'):
             username1 = request.session['username']
-            print"-----------------inside instance_stop/start/restart method--------------"
             instance_id = request.POST.get('instance_id')
             username = request.POST.get('user_name')
             instance_name = request.POST.get('instance_name')
             operation = request.POST.get('operation')
-            print operation
             username = str(username)
             rdp_file = username + ".rdp"
             nova = get_nova_keystone_auth()
@@ -291,12 +272,9 @@ def instance_stop(request):
                return render_to_response('Error.html')
             server = nova.servers.find(name=instance_name)
             status = str(server.status)
-            print "\n instance_name:::" + instance_name, "\n instance_id::::" + instance_id
             if status == 'ACTIVE' and operation == 'start':
-                print "------------instance stop-------------------"
                 server.stop()
                 userlog.info("%s stop instance", username)
-                print operation
                 status = instance_status(instance_name)
                 timeout = time.time() + 4 * 5  # 5 minutes from now
                 while status != 'SHUTOFF':
@@ -308,11 +286,9 @@ def instance_stop(request):
                 button_color = "btn btn-success btn-xs "
                 console = vnc_console(instance_name)
             elif status == 'SHUTOFF' and operation == 'start':
-                print "------------instance start-------------------"
                 server.start()
                 userlog.info("%s statrt instance %s", username, instance_name)
                 status = instance_status(instance_name)
-                print operation
                 timeout = time.time() + 4 * 5  # 5 minutes from now
                 while status != 'ACTIVE':
                     status = instance_status(instance_name)
@@ -323,10 +299,8 @@ def instance_stop(request):
                 button_color = "btn btn-danger btn-xs"
                 console = vnc_console(instance_name)
             elif operation == 'reboot' and status == 'ACTIVE':
-                print "------------instance reboot-------------------"
                 server.reboot(reboot_type='SOFT')
                 userlog.info("%s reboot instance %s", username, instance_name)
-
                 status = instance_status(instance_name)
                 timeout = time.time() + 4 * 5  # 5 minutes from now
                 while status != 'ACTIVE':
@@ -349,12 +323,10 @@ def instance_stop(request):
                 else:
                     button_color = "btn btn-success btn-xs "
                     console = vnc_console(instance_name)
-            fixed = get_instance_ipaddress(instance_name)
+            #fixed = get_instance_ipaddress(instance_name)
             floating_ip = get_instance_floatingip(instance_name)
             time.sleep(5)
             status = instance_status(instance_name)
-            print "fixed_ip:::" + fixed, "\n floating_ip::::" + floating_ip, "\n status of instance:::" + status, "\n console_url:::" + console
-
             return render_to_response('index.html',
                                       {'password': password, 'username': username, 'instancename': instance_name,
                                        'instanceid': instance_id, 'status': status, 'console': console,
@@ -366,7 +338,7 @@ def instance_stop(request):
 def get_assigned_computer(username):
     assigned_computer = ''
     conn = bind()
-    conn.search(search_base='dc=naanal,dc=local',
+    conn.search(search_base=settings.WINDOWS_SERVER_DOMAINPATH,
                 search_filter='(&(sAMAccountName=' + username + '))',
                 search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
                                                   ALL_OPERATIONAL_ATTRIBUTES])
