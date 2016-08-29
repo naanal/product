@@ -45,7 +45,8 @@
       getQoSSpecs: getQoSSpecs,
       createVolume: createVolume,
       getAbsoluteLimits: getAbsoluteLimits,
-      getServices: getServices
+      getServices: getServices,
+      getVolumesStatus: getVolumesStatus
     };
 
     return service;
@@ -286,6 +287,21 @@
         .error(function () {
           toastService.add('error',
             gettext('Unable to retrieve the Absolute Limits.'));
+        });
+    }
+    /**
+     * @ngdoc function
+     * @name getVolumesStatus
+     *
+     * @description
+     * Returns count of Active, Error, Downloading number of volumes
+     *
+     * @returns {Object} The result of the API call
+    */
+    function getVolumesStatus() {
+      return apiService.get('/api/cinder/volumes_status/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve Volumes Status.'));
         });
     }
   }

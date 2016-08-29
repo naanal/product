@@ -30,7 +30,8 @@
     'ui.bootstrap',
     'ngMaterial',
     'ngMessages',
-    'md.data.table'
+    'md.data.table',
+    'googlechart'
   ];
 
   /**

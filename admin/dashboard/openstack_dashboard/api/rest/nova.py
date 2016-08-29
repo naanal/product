@@ -509,3 +509,25 @@ class AggregateExtraSpecs(generic.View):
             for name in request.DATA.get('removed'):
                 updated[name] = None
         api.nova.aggregate_set_metadata(request, aggregate_id, updated)
+
+
+# Added By Raja S @ 26.08.16
+
+
+@urls.register
+class Servers_Status(generic.View):
+    """API over all servers.
+    """
+    url_regex = r'nova/servers_status/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a list of servers.
+
+        The listing result is an object with server status.
+
+        Example GET:
+        http://localhost/api/nova/servers
+        """
+        servers_status = api.nova.server_status(request)
+        return servers_status

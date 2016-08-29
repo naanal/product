@@ -1,0 +1,153 @@
+ <style type="text/css">
+a.md-default:hover {
+    color: #1F1F1F !important;
+}
+md-card .md-actions, md-card md-card-actions
+{
+  margin-top: -25px !important;
+}
+ </style>
+ <div ng-controller="virtualSummaryController">
+    <div class="md-padding" layout-xs="column" layout="row">
+
+      <md-button class="md-default" ng-click="modal.openLaunchInstanceWizard({ successUrl: '/virtual/' })" ng-controller="LaunchInstanceModalController as modal">
+                <md-icon><i class="material-icons">add</i></md-icon>
+              Create New VM
+      </md-button>
+
+      <md-button class="md-default ajax-modal" href="/virtual/volumes/create">
+                <md-icon><i class="material-icons">add</i></md-icon>
+              Create New Volume
+      </md-button>
+
+      <md-button class="md-default ajax-modal" href="/virtual/images/create">
+          <md-icon><i class="material-icons">add</i></md-icon>
+              Create New Image
+      </md-button>
+
+      <md-button class="md-default ajax-modal" href="/virtual/networks/create">
+                <md-icon><i class="material-icons">add</i></md-icon>
+              Create New Network
+      </md-button>
+      
+      <md-button class="md-default" ng-click="modal.openCreateUsersWizard({ successUrl: '/identity/' })" ng-controller="CreateUsersModalController as modal">
+                <md-icon><i class="material-icons">add</i></md-icon>
+              Create &amp; Map Users
+      </md-button>
+
+    </div>
+    <div class="md-padding" layout-xs="column" layout="row" layout-wrap="">
+        <div flex-xs flex-gt-xs="50" layout="column">
+          <md-card>
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline">
+                <md-icon><i class="material-icons">laptop</i></md-icon>
+                Instances
+                </span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                 <p class="md-subhead">Total Vms: {$total_instances$}</p>
+                 <div google-chart chart="instances_chart"
+                 style="padding:0;width:450px">
+                </div>
+            </md-card-content>
+          </md-card>
+        </div>
+
+        <div flex-xs flex-gt-xs="50" layout="column">
+          <md-card>
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline">
+                <md-icon style="height: auto !important;"><i class="fa fa-users"></i></md-icon>
+                AD Users &amp; Computers
+                </span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <div layout="row" layout-xs="column" layout-wrap="">
+                  <p class="md-subhead" flex="30">Total Users: {$total_ad_users$}</p>
+                  <p class="md-subhead" flex="35">Total Computers: {$total_ad_computers$}</p>
+                  <p class="md-subhead" flex="30">Mapped: {$mapped$}</p>
+                </div>
+                 <div google-chart chart="free_ad_chart"
+                 style="padding:0;width:450px">
+                </div>
+            </md-card-content>
+          </md-card>
+        </div>
+
+        <div flex-xs flex-gt-xs="50" layout="column">
+          <md-card>
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline">
+                <md-icon style="height: auto !important;"><i class="fa fa-database"></i></md-icon>
+                Volumes
+                </span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <p class="md-subhead">Total Volumes: {$total_volumes$}</p>
+                 <div google-chart chart="volumes_chart"
+                 style="padding:0;width:450px">
+                </div>
+            </md-card-content>
+          </md-card>
+        </div>
+        <div flex-xs flex-gt-xs="50" layout="column">
+          <md-card>
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline">
+                <md-icon style="height: auto !important;"><i class="fa fa-dot-circle-o"></i></md-icon>
+                Images
+                </span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <p class="md-subhead">Total Images: {$total_images$}</p>
+                 <div google-chart chart="images_chart"
+                 style="padding:0;width:450px">
+                </div>
+            </md-card-content>
+          </md-card>
+        </div>
+
+        <div flex-xs flex-gt-xs="100" layout="column">
+          <md-card>
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline">
+                <md-icon style="height: auto !important;"><i class="fa fa-sitemap"></i></md-icon>
+                Networks
+                </span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                 <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Gateway IP</th>
+                        <th>Pool</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="network in networks">
+                        <td>{$network.name$}</td>
+                        <td>{$network.subnets[0].gateway_ip$}</td>
+                        <td>{$network.subnets[0].allocation_pools[0].start$} - {$network.subnets[0].allocation_pools[0].end$}</td>
+                        <td>{$network.status$}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </md-card-content>
+          </md-card>
+        </div>
+        
+    </div>
+</div>

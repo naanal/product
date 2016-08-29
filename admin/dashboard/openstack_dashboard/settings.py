@@ -424,7 +424,7 @@ SAN_STORAGE_URL = 'http://172.30.64.63'
 
 # Belows are LDAP Credentials
 
-LDAP_SERVER = ["windows-server","windows-backup-server"]
+LDAP_SERVER = ["windows-server", "windows-backup-server"]
 
 LDAP_SERVER_PORT = 636
 
@@ -443,3 +443,9 @@ LDAP_BASE_DIR = "ou=Police, dc=naanal, dc=local"
 DEFAULT_USERS_GROUP_DN = "cn=normalusers, ou=groups, ou=police, dc=naanal, dc=local"
 
 ALLOWED_USERS_GROUP_DN = "cn=allow, ou=groups, ou=police, dc=naanal, dc=local"
+
+WINDOWS_SERVER_DOMAINPATH = "dc=naanal,dc=local"
+
+WINDOWS_SERVER_USERPATH = "ou=users,ou=Police"
+
+DOMAIN_NAME = "naanal.local"

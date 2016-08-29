@@ -472,3 +472,34 @@ def metadefs_namespace_remove_resource_type(request,
 
 def get_version():
     return VERSIONS.active
+
+
+# Added By Raja S @ 26.08.16
+
+
+def image_status_count(request, status):
+    c = glanceclient(request)
+    if status is not None:
+        image_count = c.images.list(filters={'status': status})
+    else:
+        image_count = c.images.list()
+        status = "Total"
+    status = [status, len(list(image_count))]
+    return status
+
+
+def images_status(request):
+    images_status = []
+    total = image_status_count(request, None)
+    ac = image_status_count(request, 'Active')
+    er = image_status_count(request, 'Error')
+    sa = image_status_count(request, 'Deleting')
+    others = total[1] - (ac[1] + er[1] + sa[1])
+    images_status.extend((
+        ["Image Status", "Count"], ac, er, sa, ["Others", others]
+    ))
+    all_images_status = {}
+    all_images_status['total_images'] = total[1]
+    all_images_status['images_status'] = images_status
+    print(all_images_status)
+    return all_images_status

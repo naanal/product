@@ -27,7 +27,8 @@
     .module('horizon.dashboard.virtual', [
       'horizon.dashboard.virtual.containers',
       'horizon.dashboard.virtual.images',
-      'horizon.dashboard.virtual.workflow'
+      'horizon.dashboard.virtual.workflow',
+      'horizon.dashboard.virtual.summary'
     ])
     .config(config);
 

@@ -44,7 +44,8 @@
       editImageProps: editImageProps,
       getImages: getImages,
       getNamespaces: getNamespaces,
-      getResourceTypes: getResourceTypes
+      getResourceTypes: getResourceTypes,
+      getImagesStatus: getImagesStatus
     };
 
     return service;
@@ -385,6 +386,22 @@
         .get('/api/glance/metadefs/resourcetypes/', config)
         .error(function() {
           toastService.add('error', gettext('Unable to retrieve the resource types.'));
+        });
+    }
+
+    /**
+     * @ngdoc function
+     * @name getImagesStatus
+     *
+     * @description
+     * Returns count of Active, Saving, Error number of images
+     *
+     * @returns {Object} The result of the API call
+    */
+    function getImagesStatus() {
+      return apiService.get('/api/glance/images_status/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve Images Status.'));
         });
     }
 

@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Evacuate Host" %}{% endblock %}
+
+{% block main %}
+  {% include 'physical/hosts/compute/_evacuate_host.html' %}
+{% endblock %}

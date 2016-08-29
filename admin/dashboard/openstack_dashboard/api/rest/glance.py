@@ -347,3 +347,25 @@ def handle_visibility(visibility, meta):
     except KeyError as e:
         raise rest_utils.AjaxError(400,
                                    'invalid visibility option: %s' % e.args[0])
+
+
+# Added By Raja S @ 26.08.16
+
+
+@urls.register
+class Images_Status(generic.View):
+    """API over all images_status.
+    """
+    url_regex = r'glance/images_status/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a list of images_status.
+
+        The listing result is an object with status.
+
+        Example GET:
+        http://localhost/api/glance/images_status
+        """
+        images_status = api.glance.images_status(request)
+        return images_status

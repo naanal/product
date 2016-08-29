@@ -852,3 +852,33 @@ def is_volume_service_enabled(request):
         base.is_service_enabled(request, 'volume') or
         base.is_service_enabled(request, 'volumev2')
     )
+
+
+# Added By Raja S @ 26.08.16
+
+
+def volume_status_count(request, status):
+    c = cinderclient(request)
+    volume_count = c.volumes.list(
+        search_opts={'status': status, 'project_id': request.user.tenant_id})
+    if status is None:
+        status = "Total"
+    status = [status, len(volume_count)]
+    return status
+
+
+def volumes_status(request):
+    volumes_status = []
+    total = volume_status_count(request, None)
+    av = volume_status_count(request, 'Available')
+    er = volume_status_count(request, 'Error')
+    de = volume_status_count(request, 'Deleting')
+    do = volume_status_count(request, 'Downloading')
+    others = total[1] - (av[1] + er[1] + de[1] + do[1])
+    volumes_status.extend((
+        ["Volume Status", "Count"], av, er, de, do, ["Others", others]
+    ))
+    all_volumes_status = {}
+    all_volumes_status['total_volumes'] = total[1]
+    all_volumes_status['volumes_status'] = volumes_status
+    return all_volumes_status

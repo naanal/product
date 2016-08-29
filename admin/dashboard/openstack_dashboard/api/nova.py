@@ -370,6 +370,7 @@ class SecurityGroupManager(network_base.SecurityGroupManager):
 
 
 class FlavorExtraSpec(object):
+
     def __init__(self, flavor_id, key, val):
         self.flavor_id = flavor_id
         self.id = key
@@ -389,6 +390,7 @@ class FloatingIp(base.APIResourceWrapper):
 
 
 class FloatingIpPool(base.APIDictWrapper):
+
     def __init__(self, pool):
         pool_dict = {'id': pool.name,
                      'name': pool.name}
@@ -396,6 +398,7 @@ class FloatingIpPool(base.APIDictWrapper):
 
 
 class FloatingIpTarget(base.APIDictWrapper):
+
     def __init__(self, server):
         server_dict = {'name': '%s (%s)' % (server.name, server.id),
                        'id': server.id}
@@ -403,6 +406,7 @@ class FloatingIpTarget(base.APIDictWrapper):
 
 
 class FloatingIpManager(network_base.FloatingIpManager):
+
     def __init__(self, request):
         self.request = request
         self.client = novaclient(request)
@@ -859,6 +863,8 @@ def hypervisor_list(request):
 
 
 def hypervisor_stats(request):
+    print("****************")
+    print(novaclient(request).hypervisors.statistics())
     return novaclient(request).hypervisors.statistics()
 
 
@@ -1065,3 +1071,33 @@ def can_set_mount_point():
 def requires_keypair():
     features = getattr(settings, 'OPENSTACK_HYPERVISOR_FEATURES', {})
     return features.get('requires_keypair', False)
+
+# Added By Raja S @ 26.08.16
+
+
+def server_status_count(request, status):
+    c = novaclient(request)
+    server_count = c.servers.list(
+        search_opts={'status': status, 'project_id': request.user.tenant_id})
+    if status is None:
+        status = "Total"
+    status = "Vms in " + status
+    status = [status, len(server_count)]
+    return status
+
+
+def server_status(request):
+    instance_status = []
+    total = server_status_count(request, None)
+    ac = server_status_count(request, 'Active')
+    sh = server_status_count(request, 'Shutoff')
+    bu = server_status_count(request, 'Build')
+    er = server_status_count(request, 'Error')
+    others = total[1] - (ac[1] + er[1] + sh[1] + bu[1])
+    instance_status.extend((
+        ["Instance Status", "Count"], ac, er, bu, sh, ["Others", others]
+    ))
+    all_instance_status = {}
+    all_instance_status['total_instances'] = total[1]
+    all_instance_status['instances_status'] = instance_status
+    return all_instance_status

@@ -1,22 +1,75 @@
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
+# Copyright 2013 B1 Systems GmbH
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
 #
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 
-from horizon import views
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
+
+from horizon import exceptions
+from horizon import tables
+from horizon import tabs
+
+from openstack_dashboard import api
+from openstack_dashboard.dashboards.physical.hosts \
+    import tables as project_tables
+from openstack_dashboard.dashboards.physical.hosts \
+    import tabs as project_tabs
 
 
-class IndexView(views.APIView):
-    # A very simple class-based view...
+class AdminIndexView(tabs.TabbedTableView):
+    tab_group_class = project_tabs.HypervisorHostTabs
     template_name = 'physical/hosts/index.html'
+    page_title = _("All Hypervisors")
 
-    def get_data(self, request, context, *args, **kwargs):
-        # Add data to the context here...
+    def get_context_data(self, **kwargs):
+        context = super(AdminIndexView, self).get_context_data(**kwargs)
+        try:
+            context["stats"] = api.nova.hypervisor_stats(self.request)
+        except Exception:
+            exceptions.handle(self.request,
+                              _('Unable to retrieve hypervisor statistics.'))
+
+        return context
+
+
+class AdminDetailView(tables.DataTableView):
+    table_class = project_tables.AdminHypervisorInstancesTable
+    template_name = 'physical/hosts/detail.html'
+    page_title = _("Servers")
+
+    def get_data(self):
+        instances = []
+        try:
+            id, name = self.kwargs['hypervisor'].split('_', 1)
+            result = api.nova.hypervisor_search(self.request,
+                                                name)
+            for hypervisor in result:
+                if str(hypervisor.id) == id:
+                    try:
+                        instances += hypervisor.servers
+                    except AttributeError:
+                        pass
+        except Exception:
+            exceptions.handle(
+                self.request,
+                _('Unable to retrieve hypervisor instances list.'))
+        return instances
+
+    def get_context_data(self, **kwargs):
+        context = super(AdminDetailView, self).get_context_data(**kwargs)
+        hypervisor_name = self.kwargs['hypervisor'].split('_', 1)[1]
+        breadcrumb = [
+            (_("Hypervisors"), reverse('horizon:physical:hosts:index')),
+            (hypervisor_name,), ]
+        context['custom_breadcrumb'] = breadcrumb
         return context

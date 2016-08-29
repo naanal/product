@@ -43,7 +43,8 @@
       getComputers: getComputers,
       getAvailableComputers: getAvailableComputers,
       mapUserToVm: mapUserToVm,
-      editUsersAttributes: editUsersAttributes
+      editUsersAttributes: editUsersAttributes,
+      getAdStatus: getAdStatus
     };
 
     return service;
@@ -234,6 +235,13 @@
       return apiService.patch('/api/ldap/users/',data)
         .error(function () {
           toastService.add('error', gettext('Unable to Edit user Details..'));
+        });
+    }
+
+    function getAdStatus() {
+      return apiService.get('/api/ldap/ad_status/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve AD Status.'));
         });
     }
 

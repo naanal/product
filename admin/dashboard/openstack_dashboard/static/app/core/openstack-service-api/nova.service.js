@@ -60,7 +60,8 @@
       getRegenerateKeypairUrl: getRegenerateKeypairUrl,
       createFlavor: createFlavor,
       updateFlavor: updateFlavor,
-      deleteFlavor: deleteFlavor
+      deleteFlavor: deleteFlavor,
+      getServersStatus: getServersStatus
     };
 
     return service;
@@ -549,5 +550,20 @@
       return getCreateKeypairUrl(keyPairName) + "?regenerate=true";
     }
 
+  /**
+     * @ngdoc function
+     * @name getServersStatus
+     *
+     * @description
+     * Returns count of Active, Error, Shutoff, Total number of instances
+     *
+     * @returns {Object} The result of the API call
+    */
+    function getServersStatus() {
+      return apiService.get('/api/nova/servers_status/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve VM Status.'));
+        });
+    }
   }
 }());

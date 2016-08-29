@@ -243,3 +243,24 @@ class Services(generic.View):
             } for idx, u in enumerate(result)]}
         else:
             raise rest_utils.AjaxError(501, '')
+
+# Added By Raja S @ 26.08.16
+
+
+@urls.register
+class Volumes_Status(generic.View):
+    """API over all volumes_status.
+    """
+    url_regex = r'cinder/volumes_status/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a list of volumes_status.
+
+        The listing result is an object with status.
+
+        Example GET:
+        http://localhost/api/cinder/volumes_status
+        """
+        volumes_status = api.cinder.volumes_status(request)
+        return volumes_status

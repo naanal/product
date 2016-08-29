@@ -34,3 +34,15 @@ a:not(.md-button) {
 li {
     list-style: none !important;
 }
+.workflow.modal, .modal.loading, .modal {
+    top: 0px !important;
+}
+.content-wrapper, .right-side, .main-footer
+{
+    margin-left: 170px !important;
+}
+
+.main-sidebar, .left-side
+{
+    width: 170px !important;
+}
