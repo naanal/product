@@ -47,7 +47,8 @@
       recoverInstancesModel.recoverInstancesSpec.selectedInstances.length=0;
      angular.forEach(recoverInstancesModel.allErrorInstances, function(itm){ itm.selected = isAllSelected; });
      for(var i=0; i < recoverInstancesModel.allErrorInstances.length; i++){
-        toggleVmsLists(recoverInstancesModel.allErrorInstances[i],'');
+        if(recoverInstancesModel.allErrorInstances[i].instance_volume_id != null)
+          toggleVmsLists(recoverInstancesModel.allErrorInstances[i],'');
      } 
     }
 
