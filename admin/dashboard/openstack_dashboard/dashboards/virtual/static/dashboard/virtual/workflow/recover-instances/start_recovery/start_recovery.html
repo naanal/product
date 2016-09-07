@@ -1,0 +1,56 @@
+<div ng-controller="startRecoveryController as ctrl">
+    <section ng-hide="isStarted">
+
+       <h4>Start Recovery</h4> 
+       <md-divider></md-divider>
+
+       <p class="md-padding"> 
+          
+       <a href="" ng-click="ctrl.startRecovery()">Click Here </a> 
+       to initiate recovery  </p>
+       
+    </section>
+    
+    <section ng-show="isStarted">
+
+        <h4>Recovery Status</h4>
+        <md-divider></md-divider>
+
+        <nav>
+            <ol class="cd-multi-steps text-top">
+                <li ng-class="{'visited': isBackuped, 'active': isBackupInProgress}"><em>Backup</em></li>
+                <li ng-class="{'visited': isDeleted, 'active': isDeletedInProgress}" ><em>Delete</em></li>
+                <li ng-class="{'visited': isRecreated, 'active': isRecreatedInProgress}"><em>ReBuild</em></li>
+            </ol>
+        </nav>
+
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Instance Name</th>
+                <th>IP Address</th>
+                <th>Volume</th>
+                <th>Status</th>
+                <th>Task</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="svm in selected_instances_status">
+                <td>{$svm.instance_name$}</td>
+                <td>{$svm.internal_ip$}, {$svm.floating_ip$}</td>
+                <td>{$svm.instance_volume_id | limitTo: 13$}{$svm.instance_volume_id.length > 13 ? '&hellip;' : ''$}</td>
+                <td>{$svm.instance_status$}</td>
+                <td>{$svm.task_status$}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+    </section>
+
+    <md-checkbox ng-model="devpurpose" >
+         For Development Purpose
+    </md-checkbox>
+    <pre ng-show="devpurpose">{$model.recoverInstancesSpec | json $} </pre>
+</div>

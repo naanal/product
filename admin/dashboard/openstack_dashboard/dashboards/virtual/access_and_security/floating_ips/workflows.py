@@ -157,6 +157,7 @@ class IPAssociationWorkflow(workflows.Workflow):
 
     def handle(self, request, data):
         try:
+            print(data['ip_id'])
             api.network.floating_ip_associate(request,
                                               data['ip_id'],
                                               data['instance_id'])

@@ -58,9 +58,8 @@ class Volumes(generic.View):
 
         result, has_more, has_prev = api.cinder.volume_list_paged(
             request,
-            {'all_tenants': 1}
+            {'status': 'available', 'bootable': 'True'}
         )
-        
         return {
             'items': [u.to_dict() for u in result],
             'has_more_data': has_more,

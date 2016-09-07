@@ -61,7 +61,11 @@
       createFlavor: createFlavor,
       updateFlavor: updateFlavor,
       deleteFlavor: deleteFlavor,
-      getServersStatus: getServersStatus
+      getServersStatus: getServersStatus,
+      getServersListBySearch: getServersListBySearch,
+      deleteServers: deleteServers,
+      backupServers: backupServers,
+      reCreate: reCreate
     };
 
     return service;
@@ -565,5 +569,89 @@
           toastService.add('error', gettext('Unable to retrieve VM Status.'));
         });
     }
+
+    /**
+     * @ngdoc function
+     * @name getRecoverServers
+     *
+     * @description
+     * Returns instances
+     *
+     * @returns {Object} The result of the API call
+    */
+    function getServersListBySearch(status) {
+      return apiService.post('/api/nova/servers_list_by_search/',status)
+        .error(function () {
+          // toastService.add('error', gettext('Unable to retrieve instances.'));
+        });
+    }
+
+    /**
+     * @ngdoc function
+     * @name deleteServers
+     *
+     * @description
+     * 
+     *
+     * @returns {Object} The result of the API call
+    */
+
+    function deleteServers(instances_id) {
+      return apiService.delete('/api/nova/servers/', instances_id)
+        .error(function () {
+          toastService.add('error', gettext('Unable to Delete Instances.'));
+        });
+    }
+
+    /**
+     * @ngdoc function
+     * @name backupServers
+     *
+     * @description
+     * 
+     *
+     * @returns {Object} The result of the API call
+    */
+
+    function backupServers(instances) {
+      return apiService.post('/api/nova/backup_servers/', instances)
+        .error(function () {
+          toastService.add('error', gettext('Unable to Backup Instances.'));
+        });
+    }
+
+    /**
+     * @ngdoc function
+     * @name reCreateServers
+     *
+     * @description
+     * 
+     *
+     * @returns {Object} The result of the API call
+    */
+
+    function reCreate(instances) {
+      return apiService.post('/api/nova/recreate/', instances)
+        .error(function () {
+          toastService.add('error', gettext('Unable to recreate Instances.'));
+        });
+    }
+
+    // /**
+    //  * @ngdoc function
+    //  * @name assosciate floating Ips
+    //  *
+    //  * @description
+    //  * 
+    //  *
+    //  * @returns {Object} The result of the API call
+    // */
+
+    // function assFloatingIP(instances) {
+    //   return apiService.post('/api/nova/assFloatingIP/', instances)
+    //     .error(function () {
+    //       toastService.add('error', gettext('Unable to assosciate floating ip.'));
+    //     });
+    // }
   }
 }());

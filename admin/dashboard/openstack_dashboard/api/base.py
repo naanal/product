@@ -117,6 +117,8 @@ class APIResourceWrapper(object):
         obj = {}
         for key in self._attrs:
             obj[key] = getattr(self._apiresource, key, None)
+        if obj['name'] == '':
+            obj['name'] = obj['id']
         return obj
 
 
@@ -172,6 +174,7 @@ class APIDictWrapper(object):
 
 class Quota(object):
     """Wrapper for individual limits in a quota."""
+
     def __init__(self, name, limit):
         self.name = name
         self.limit = limit
@@ -189,6 +192,7 @@ class QuotaSet(Sequence):
     use the `get` method to retrieve a specific quota, but otherwise it
     behaves much like a list or tuple, particularly in supporting iteration.
     """
+
     def __init__(self, apiresource=None):
         self.items = []
         if apiresource:
@@ -203,9 +207,9 @@ class QuotaSet(Sequence):
                 self[k] = v
 
     def __setitem__(self, k, v):
-            v = int(v) if v is not None else v
-            q = Quota(k, v)
-            self.items.append(q)
+        v = int(v) if v is not None else v
+        q = Quota(k, v)
+        self.items.append(q)
 
     def __getitem__(self, index):
         return self.items[index]

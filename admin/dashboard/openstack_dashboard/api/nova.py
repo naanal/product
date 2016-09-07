@@ -663,10 +663,6 @@ def server_create(request, name, image, flavor, key_name, user_data,
         meta=meta, scheduler_hints=scheduler_hints), request)
 
 
-def server_delete(request, instance):
-    novaclient(request).servers.delete(instance)
-
-
 def server_get(request, instance_id):
     return Server(novaclient(request).servers.get(instance_id), request)
 
@@ -1101,3 +1097,16 @@ def server_status(request):
     all_instance_status['total_instances'] = total[1]
     all_instance_status['instances_status'] = instance_status
     return all_instance_status
+
+
+def reset_state(request, id, stat):
+    novaclient(request).servers.reset_state(id, state=stat)
+
+
+def server_delete(request, instance):
+    novaclient(request).servers.delete(instance)
+
+
+def addExisitingFloatingIp(request, servername, floatingip):
+    server = novaclient(request).servers.find(name=servername)
+    server.add_floating_ip(floatingip)

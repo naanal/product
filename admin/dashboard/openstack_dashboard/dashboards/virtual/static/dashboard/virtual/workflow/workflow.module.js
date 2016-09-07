@@ -25,6 +25,7 @@
    */
   angular
     .module('horizon.dashboard.virtual.workflow', [
-      'horizon.dashboard.virtual.workflow.launch-instance'
+      'horizon.dashboard.virtual.workflow.launch-instance',
+      'horizon.dashboard.virtual.workflow.recover-instances'
     ]);
 })();

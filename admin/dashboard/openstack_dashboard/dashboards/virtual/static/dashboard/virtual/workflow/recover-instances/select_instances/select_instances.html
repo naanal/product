@@ -1,0 +1,33 @@
+<style type="text/css">
+button.btn.btn-primary.finish {
+    display: none !important;
+}
+</style>
+<div ng-controller="selectInstancesController as ctrl">
+    
+    <h4 ng-if="model.allErrorInstances.length == 0">All Vms are in Good State</h4>
+    <section ng-if="model.allErrorInstances.length > 0">
+        <input type="checkbox" ng-model="ctrl.isAllSelected" ng-click="toggleAll(ctrl.isAllSelected)"/>Select all
+        <br/><br/>
+        <div layout="column" layout-wrap layout-gt-sm="row">
+            <div flex-xs flex="33" ng-repeat="vm in model.allErrorInstances">
+                <md-checkbox md-no-ink
+                             ng-model="vm.selected"
+                             class="md-primary"
+                             ng-click="ctrl.toggleVmsLists(vm,'ini')"
+                           	 ng-disabled="vm.instance_volume_id == null"
+                             ng-required="model.recoverInstancesSpec.selectedInstances.length>=1"
+                             value="{$vm$}">
+                    {$vm.instance_name$}
+                </md-checkbox>
+            </div>
+            <div flex-xs flex="33" ng-if="model.allErrorInstances.length % 3 == 2"></div>
+        </div>
+    </section>
+    <md-checkbox ng-model="devpurpose" >
+         For Development Purpose
+    </md-checkbox>
+    <pre ng-show="devpurpose">{$model.recoverInstancesSpec | json $} </pre>
+
+     <pre ng-show="devpurpose">{$model.allErrorInstances | json $} </pre>
+</div>

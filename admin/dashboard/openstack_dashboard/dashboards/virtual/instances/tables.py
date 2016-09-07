@@ -440,6 +440,28 @@ class LaunchLinkNG(LaunchLink):
         return "javascript:void(0);"
 
 
+class RecoverLinkNG(tables.LinkAction):
+    name = "recover-ng"
+    url = "horizon:virtual:instances:index"
+    verbose_name = _("Recover Instance")
+    policy_rules = (("compute", "compute:create"),)
+    ajax = False
+    classes = ("btn-launch", )
+
+    def get_default_attrs(self):
+        url = urlresolvers.reverse(self.url)
+        ngclick = "modal.openRecoverInstancesWizard(" \
+            "{ dismissUrl: '%s' })" % url
+        self.attrs.update({
+            'ng-controller': 'RecoverInstancesModalController as modal',
+            'ng-click': ngclick
+        })
+        return super(RecoverLinkNG, self).get_default_attrs()
+
+    def get_link_url(self, datum=None):
+        return "javascript:void(0);"
+
+
 class EditInstance(policy.PolicyTargetMixin, tables.LinkAction):
     name = "edit"
     verbose_name = _("Edit Instance")
@@ -976,7 +998,7 @@ def get_ips(instance):
 
         for address in addresses:
             if ('OS-EXT-IPS:type' in address and
-               address['OS-EXT-IPS:type'] == "floating"):
+                    address['OS-EXT-IPS:type'] == "floating"):
                 ip_groups[ip_group]["floating"].append(address)
             else:
                 ip_groups[ip_group]["non_floating"].append(address)
@@ -1173,7 +1195,7 @@ class InstancesTable(tables.DataTable):
     name = tables.Column("name",
                          link="horizon:virtual:instances:detail",
                          verbose_name=_("Instance Name"))
-    
+
     host = tables.Column("OS-EXT-SRV-ATTR:host",
                          verbose_name=_("Host"),
                          classes=('nowrap-col',))
@@ -1213,7 +1235,8 @@ class InstancesTable(tables.DataTable):
         verbose_name = _("Instances")
         status_columns = ["status", "task"]
         row_class = UpdateRow
-        table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance)
+        table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance,
+                              RecoverLinkNG)
         launch_actions = ()
         if getattr(settings, 'LAUNCH_INSTANCE_LEGACY_ENABLED', False):
             launch_actions = (LaunchLink,) + launch_actions

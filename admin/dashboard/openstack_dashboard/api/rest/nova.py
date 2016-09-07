@@ -24,6 +24,9 @@ from openstack_dashboard import api
 from openstack_dashboard.api.rest import json_encoder
 from openstack_dashboard.api.rest import urls
 from openstack_dashboard.api.rest import utils as rest_utils
+import simplejson
+import os
+import time
 
 
 @urls.register
@@ -240,15 +243,36 @@ class Servers(generic.View):
             raise rest_utils.AjaxError(400, 'missing required parameter '
                                             "'%s'" % e.args[0])
         kw = {}
+        print(request.DATA)
         for name in self._optional_create:
             if name in request.DATA:
                 kw[name] = request.DATA[name]
-
+        print(kw)
         new = api.nova.server_create(*args, **kw)
         return rest_utils.CreatedResponse(
             '/api/nova/servers/%s' % utils_http.urlquote(new.id),
             new.to_dict()
         )
+
+    @rest_utils.ajax()
+    def delete(self, request):
+        """Delete a list of servers.
+
+
+        Example GET:
+        http://localhost/api/nova/servers
+        """
+        try:
+            args = (
+                request,
+                request.DATA['instances_ids'],
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter '
+                                            "'%s'" % e.args[0])
+        for id in request.DATA['instances_ids']:
+            api.nova.reset_state(request, id, 'active')
+            api.nova.server_delete(request, id)
 
 
 @urls.register
@@ -531,3 +555,156 @@ class Servers_Status(generic.View):
         """
         servers_status = api.nova.server_status(request)
         return servers_status
+
+
+@urls.register
+class ServersListBySearch(generic.View):
+    """API over all servers.
+    """
+    url_regex = r'nova/servers_list_by_search/$'
+
+    @rest_utils.ajax(data_required=True)
+    def post(self, request):
+        """Get a list of servers.
+
+        The listing result is an object with property "items". Each item is
+        a server.
+
+        Example GET:
+        http://localhost/api/nova/recover_servers/
+        """
+        try:
+            args = (
+                request,
+                request.DATA['searchterms'],
+                request.DATA['searchindex'],
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter'
+                                            "'%s'" % e.args[0])
+        # status=["error","active"]
+        vms = []
+
+        for stat in request.DATA['searchterms']:
+            vms_raw = api.nova.server_list(request,
+                                           {request.DATA['searchindex']: stat})[0]
+            vms_raw_json = [s.to_dict() for s in vms_raw]
+            for vm in vms_raw_json:
+                # retrieve Volume
+                vol_raw = api.nova.instance_volumes_list(request, vm['id'])
+                vol = [v.to_dict() for v in vol_raw]
+
+                vm_obj = {}
+                vm_obj['internal_ip'] = vm_obj['floating_ip'] = None
+                vm_obj['instance_id'] = vm['id']
+                vm_obj['instance_status'] = vm['status']
+                vm_obj['task_status'] = vm['OS-EXT-STS:task_state']
+                vm_obj['instance_name'] = vm['name']
+                vm_obj['flavor_id'] = vm['flavor']['id']
+                vm_obj['selected'] = False
+                print(vol)
+
+                if len(vol) > 0:
+                    vm_obj['instance_volume_id'] = vol[0]['id']
+                else:
+                    vm_obj['instance_volume_id'] = None
+
+                # rerieve IPs
+                for net in vm.get('addresses', ''):
+                    for nic in vm.get('addresses')[net]:
+                        net_id = [x['id']
+                                  for x in api.neutron.network_list(request, name=net)]
+                        vm_obj['net_id'] = net_id[0]
+                        if nic['OS-EXT-IPS:type'] == 'fixed':
+                            vm_obj['internal_ip'] = nic['addr']
+                        elif nic['OS-EXT-IPS:type'] == 'floating':
+                            vm_obj['floating_ip'] = nic['addr']
+                vms.append(vm_obj)
+
+        return {'vms': vms}
+
+
+@urls.register
+class BackupServers(generic.View):
+    """API over all servers.
+    """
+    url_regex = r'nova/backup_servers/$'
+
+    @rest_utils.ajax(data_required=True)
+    def post(self, request):
+        """Get a list of servers.
+
+        The listing result is an object with property "items". Each item is
+        a server.
+
+        Example GET:
+        http://localhost/api/nova/recover_servers/
+        """
+        try:
+            args = (
+                request,
+                request.DATA['selectedInstances']
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter'
+                                            "'%s'" % e.args[0])
+
+        isEmpty = os.stat('backupedinstances.json').st_size
+        with open('backupedinstances.json', 'r+') as bk_file:
+            if isEmpty == 0:
+                bk_ins = {}
+                bk_ins['instances'] = request.DATA['selectedInstances']
+                simplejson.dump(bk_ins, bk_file)
+            else:
+                existing_data = simplejson.load(bk_file)
+                existing_data['instances'].extend(
+                    request.DATA['selectedInstances'])
+                bk_file.seek(0)
+                bk_file.truncate()
+                simplejson.dump(existing_data, bk_file)
+
+
+@urls.register
+class ReCreate(generic.View):
+    """API over all servers.
+    """
+    url_regex = r'nova/recreate/$'
+
+    @rest_utils.ajax(data_required=True)
+    def post(self, request):
+        """Get a list of servers.
+
+        The listing result is an object with property "items". Each item is
+        a server.
+
+        Example GET:
+        http://localhost/api/nova/recover_servers/
+        """
+        try:
+            args = (
+                request,
+                request.DATA['selectedInstances']
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter'
+                                            "'%s'" % e.args[0])
+
+        for ins in request.DATA['selectedInstances']:
+            bdm = {'vda': ins['instance_volume_id'] + ':vol::false'}
+            nic = [{'net-id': ins['net_id'],
+                    'v4-fixed-ip': ins['internal_ip']}]
+            api.nova.server_create(request,
+                                   name=ins['instance_name'],
+                                   image='',
+                                   flavor=ins['flavor_id'],
+                                   key_name=None,
+                                   user_data='',
+                                   security_groups=[],
+                                   block_device_mapping=bdm,
+                                   nics=nic,
+                                   disk_config="AUTO",
+                                   config_drive=False)
+            time.sleep(3)
+            if ins['floating_ip'] is not None:
+                api.nova.addExisitingFloatingIp(
+                    request, ins['instance_name'], ins['floating_ip'])
