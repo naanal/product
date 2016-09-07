@@ -601,11 +601,15 @@ class ServersListBySearch(generic.View):
                 vm_obj['task_status'] = vm['OS-EXT-STS:task_state']
                 vm_obj['instance_name'] = vm['name']
                 vm_obj['flavor_id'] = vm['flavor']['id']
+                vm_obj['other_volumes'] = []
                 vm_obj['selected'] = False
-                print(vol)
 
                 if len(vol) > 0:
-                    vm_obj['instance_volume_id'] = vol[0]['id']
+                    for dev in vol:
+                        if dev['device'] == '/dev/vda':
+                            vm_obj['instance_volume_id'] = dev['id']
+                        else:
+                            vm_obj['other_volumes'].append(dev['id'])
                 else:
                     vm_obj['instance_volume_id'] = None
 
@@ -693,6 +697,7 @@ class ReCreate(generic.View):
             bdm = {'vda': ins['instance_volume_id'] + ':vol::false'}
             nic = [{'net-id': ins['net_id'],
                     'v4-fixed-ip': ins['internal_ip']}]
+            time.sleep(3)
             api.nova.server_create(request,
                                    name=ins['instance_name'],
                                    image='',
@@ -704,7 +709,40 @@ class ReCreate(generic.View):
                                    nics=nic,
                                    disk_config="AUTO",
                                    config_drive=False)
-            time.sleep(3)
+            time.sleep(2)
             if ins['floating_ip'] is not None:
                 api.nova.addExisitingFloatingIp(
                     request, ins['instance_name'], ins['floating_ip'])
+
+
+@urls.register
+class AttachExtraVolumes(generic.View):
+    """API over all servers.
+    """
+    url_regex = r'nova/attach_extra_volumes/$'
+
+    @rest_utils.ajax(data_required=True)
+    def post(self, request):
+        """Get a list of servers.
+
+        The listing result is an object with property "items". Each item is
+        a server.
+
+        Example GET:
+        http://localhost/api/nova/recover_servers/
+        """
+        try:
+            args = (
+                request,
+                request.DATA['selectedInstances']
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter'
+                                            "'%s'" % e.args[0])
+
+        for ins in request.DATA['selectedInstances']:
+
+            ins_id = [vm.id for vm in api.nova.server_list(request, search_opts={"name": ins['instance_name'], "status": "active"})[0]]
+            for vol in ins['other_volumes']:
+                api.nova.instance_volume_attach(
+                    request, vol, ins_id[0], None)

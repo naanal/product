@@ -65,7 +65,8 @@
       getServersListBySearch: getServersListBySearch,
       deleteServers: deleteServers,
       backupServers: backupServers,
-      reCreate: reCreate
+      reCreate: reCreate,
+      attachExtraVolumes: attachExtraVolumes
     };
 
     return service;
@@ -634,6 +635,23 @@
       return apiService.post('/api/nova/recreate/', instances)
         .error(function () {
           toastService.add('error', gettext('Unable to recreate Instances.'));
+        });
+    }
+
+    /**
+     * @ngdoc function
+     * @name reCreateServers
+     *
+     * @description
+     * 
+     *
+     * @returns {Object} The result of the API call
+    */
+
+    function attachExtraVolumes(instances) {
+      return apiService.post('/api/nova/attach_extra_volumes/', instances)
+        .error(function () {
+          toastService.add('error', gettext('Unable to attach extra Volumes.'));
         });
     }
 

@@ -16,7 +16,7 @@ button.btn.btn-primary.finish {
                              class="md-primary"
                              ng-click="ctrl.toggleVmsLists(vm,'ini')"
                            	 ng-disabled="vm.instance_volume_id == null"
-                             ng-required="model.recoverInstancesSpec.selectedInstances.length>=1"
+                             ng-required="model.recoverInstancesSpec.selectedInstances.length==0"
                              value="{$vm$}">
                     {$vm.instance_name$}
                 </md-checkbox>

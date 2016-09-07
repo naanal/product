@@ -21,6 +21,7 @@
                 <li ng-class="{'visited': isBackuped, 'active': isBackupInProgress}"><em>Backup</em></li>
                 <li ng-class="{'visited': isDeleted, 'active': isDeletedInProgress}" ><em>Delete</em></li>
                 <li ng-class="{'visited': isRecreated, 'active': isRecreatedInProgress}"><em>ReBuild</em></li>
+                <li ng-class="{'visited': isReattach, 'active': isReattachInProgress}"><em>Reattach</em></li>
             </ol>
         </nav>
 
@@ -47,6 +48,10 @@
           </table>
         </div>
 
+    </section>
+
+    <section ng-show="isReattach">
+          <h4>Recovery Process Completed</h4>
     </section>
 
     <md-checkbox ng-model="devpurpose" >

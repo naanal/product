@@ -46,7 +46,8 @@
       createVolume: createVolume,
       getAbsoluteLimits: getAbsoluteLimits,
       getServices: getServices,
-      getVolumesStatus: getVolumesStatus
+      getVolumesStatus: getVolumesStatus,
+      attachVolumesStatus: attachVolumesStatus
     };
 
     return service;
@@ -302,6 +303,22 @@
       return apiService.get('/api/cinder/volumes_status/')
         .error(function () {
           toastService.add('error', gettext('Unable to retrieve Volumes Status.'));
+        });
+    }
+
+    /**
+     * @ngdoc function
+     * @name getVolumesStatus
+     *
+     * @description
+     * Returns count of Active, Error, Downloading number of volumes
+     *
+     * @returns {Object} The result of the API call
+    */
+    function attachVolumesStatus() {
+      return apiService.get('/api/cinder/attaching_volumes_status/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve Attaching Volumes Status.'));
         });
     }
   }

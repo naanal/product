@@ -874,11 +874,19 @@ def volumes_status(request):
     er = volume_status_count(request, 'Error')
     de = volume_status_count(request, 'Deleting')
     do = volume_status_count(request, 'Downloading')
-    others = total[1] - (av[1] + er[1] + de[1] + do[1])
+    at = volume_status_count(request, 'attaching')
+    iu = volume_status_count(request, 'In-use')
+    others = total[1] - (av[1] + er[1] + de[1] + do[1] + at[1] + iu[1])
     volumes_status.extend((
-        ["Volume Status", "Count"], av, er, de, do, ["Others", others]
+        ["Volume Status", "Count"], av, er, de, do, at, iu, ["Others", others]
     ))
     all_volumes_status = {}
     all_volumes_status['total_volumes'] = total[1]
     all_volumes_status['volumes_status'] = volumes_status
     return all_volumes_status
+
+
+def attaching_volumes_status(request):
+    c = cinderclient(request)
+    volumes = c.volumes.list(search_opts={'status': 'attaching', 'project_id': request.user.tenant_id})
+    return volumes

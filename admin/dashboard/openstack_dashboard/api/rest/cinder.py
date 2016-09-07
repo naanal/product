@@ -263,3 +263,22 @@ class Volumes_Status(generic.View):
         """
         volumes_status = api.cinder.volumes_status(request)
         return volumes_status
+
+
+@urls.register
+class Attaching_Volumes_Status(generic.View):
+    """API over all volumes_status.
+    """
+    url_regex = r'cinder/attaching_volumes_status/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a list of volumes_status.
+
+        The listing result is an object with status.
+
+        Example GET:
+        http://localhost/api/cinder/attaching_volumes_status
+        """
+        attaching_volumes_status = api.cinder.attaching_volumes_status(request)
+        return {'attaching_volumes': [u.to_dict() for u in attaching_volumes_status]}

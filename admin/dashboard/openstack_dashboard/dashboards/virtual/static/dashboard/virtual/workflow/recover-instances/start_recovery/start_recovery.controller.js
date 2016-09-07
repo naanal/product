@@ -27,10 +27,11 @@ var push = Array.prototype.push;
     'horizon.framework.widgets.toast.service',
     'horizon.framework.widgets.modal-wait-spinner.service',
     'horizon.app.core.openstack-service-api.nova',
+    'horizon.app.core.openstack-service-api.cinder',
     '$interval'
   ];
 
-  function startRecoveryController(recoverInstancesModel,$scope,toast,Spinner,novaAPI,$interval) {
+  function startRecoveryController(recoverInstancesModel,$scope,toast,Spinner,novaAPI,cinderAPI,$interval) {
     var ctrl = this;
     
     $scope.isStarted = false;
@@ -38,10 +39,11 @@ var push = Array.prototype.push;
     $scope.isForceActive = false;
     $scope.isDeleted = false;
     $scope.isRecreated = false;
-   
+    $scope.isReattach = false;
+
     $scope.isBackupInProgress = false;
     $scope.isDeletedInProgress = false;
-    $scope.isRecreatedInProgress = false;
+    $scope.isReattachInProgress = false;
     
 
     ctrl.startRecovery = startRecovery;
@@ -104,12 +106,20 @@ var push = Array.prototype.push;
       }
     }
 
-    // function ipAssociate(){
-    //    novaAPI.assFloatingIP({"selectedInstances":recoverInstancesModel.recoverInstancesSpec.selectedInstances}).then(function(res){
-    //     if(res.status == 204)
-    //       $scope.isIpAllocatedInProgress = true;
-    //   },function error(){});
-    // }
+    function attachExtraVolumes(){
+       novaAPI.attachExtraVolumes({"selectedInstances":recoverInstancesModel.recoverInstancesSpec.selectedInstances}).then(function(res){
+        if(res.status == 204)
+          $scope.isReattachInProgress = true;
+      },function error(){});
+    }
+
+    function attachVolumesStatus(){
+      cinderAPI.attachVolumesStatus().then(function(res){
+        $scope.attachingVolumes = res.data.attaching_volumes;
+
+      },function error(){});
+    }
+
     function OnSuccess(){
 
     }
@@ -139,6 +149,16 @@ var push = Array.prototype.push;
             {
               $scope.isRecreatedInProgress = false;
               $scope.isRecreated = true;
+              attachExtraVolumes();
+            }
+          }
+
+          if($scope.isReattachInProgress == true){
+            attachVolumesStatus();
+            if($scope.attachingVolumes.length == 0)
+            {
+              $scope.isReattachInProgress == false;
+              $scope.isReattach = true;
             }
           }
 
@@ -150,7 +170,7 @@ var push = Array.prototype.push;
     var theInterval = $interval(function(){
       if($scope.isStarted == true)
         pullServers();
-     }.bind(this), 1000);    
+     }.bind(this), 1500);    
 
     $scope.$on('$destroy', function () {
           $interval.cancel(theInterval)
