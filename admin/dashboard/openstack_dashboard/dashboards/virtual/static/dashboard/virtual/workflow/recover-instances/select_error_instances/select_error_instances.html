@@ -3,19 +3,21 @@ button.btn.btn-primary.finish {
     display: none !important;
 }
 </style>
-<div ng-controller="selectInstancesController as ctrl">
+<div ng-controller="selectErrorInstancesController">
     
     <h4 ng-if="model.allErrorInstances.length == 0">All Vms are in Good State</h4>
     <section ng-if="model.allErrorInstances.length > 0">
-        <input type="checkbox" ng-model="ctrl.isAllSelected" ng-click="toggleAll(ctrl.isAllSelected)"/>Select all
-        <br/><br/>
+        
+        <md-checkbox aria-label="Select All" class="md-primary" ng-checked="isChecked()" md-indeterminate="isIndeterminate()"  ng-click="toggleAll()">
+              <span ng-if="isChecked()">Un-</span>Select All
+        </md-checkbox>
+
         <div layout="column" layout-wrap layout-gt-sm="row">
             <div flex-xs flex="33" ng-repeat="vm in model.allErrorInstances">
                 <md-checkbox md-no-ink
-                             ng-model="vm.selected"
                              class="md-primary"
-                             ng-click="ctrl.toggleVmsLists(vm,'ini')"
-                           	 ng-disabled="vm.instance_volume_id == null"
+                             ng-click="toggleVmsLists(vm,model.recoverInstancesSpec.selectedInstances)"
+                           	 ng-checked="exists(vm, model.recoverInstancesSpec.selectedInstances)"
                              ng-required="model.recoverInstancesSpec.selectedInstances.length==0"
                              value="{$vm$}">
                     {$vm.instance_name$}

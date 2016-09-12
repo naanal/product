@@ -34,11 +34,11 @@
 
       steps: [
         {
-          id: 'select_instances',
+          id: 'select_error_instances',
           title: gettext('Select Instances'),
-          templateUrl: basePath + 'select_instances/select_instances.html',
-          helpUrl: basePath + 'select_instances/select_instances.help.html',
-          formName: 'selectInstancesForm'
+          templateUrl: basePath + 'select_error_instances/select_error_instances.html',
+          helpUrl: basePath + 'select_error_instances/select_error_instances.help.html',
+          formName: 'selectErrorInstancesForm'
         },
         {
           id: 'start_recovery',

@@ -591,9 +591,6 @@ class ServersListBySearch(generic.View):
                                            {request.DATA['searchindex']: stat})[0]
             vms_raw_json = [s.to_dict() for s in vms_raw]
             for vm in vms_raw_json:
-                # retrieve Volume
-                vol_raw = api.nova.instance_volumes_list(request, vm['id'])
-                vol = [v.to_dict() for v in vol_raw]
 
                 vm_obj = {}
                 vm_obj['internal_ip'] = vm_obj['floating_ip'] = None
@@ -602,17 +599,8 @@ class ServersListBySearch(generic.View):
                 vm_obj['task_status'] = vm['OS-EXT-STS:task_state']
                 vm_obj['instance_name'] = vm['name']
                 vm_obj['flavor_id'] = vm['flavor']['id']
+                vm_obj['instance_volume_id'] = None
                 vm_obj['other_volumes'] = []
-                vm_obj['selected'] = False
-
-                if len(vol) > 0:
-                    for dev in vol:
-                        if dev['device'] == '/dev/vda':
-                            vm_obj['instance_volume_id'] = dev['id']
-                        else:
-                            vm_obj['other_volumes'].append(dev['id'])
-                else:
-                    vm_obj['instance_volume_id'] = None
 
                 # rerieve IPs
                 for net in vm.get('addresses', ''):
@@ -624,7 +612,20 @@ class ServersListBySearch(generic.View):
                             vm_obj['internal_ip'] = nic['addr']
                         elif nic['OS-EXT-IPS:type'] == 'floating':
                             vm_obj['floating_ip'] = nic['addr']
-                vms.append(vm_obj)
+
+                if vm_obj['internal_ip'] is not None:
+                    # retrieve Volume
+                    vol_raw = api.nova.instance_volumes_list(request, vm['id'])
+                    vol = [v.to_dict() for v in vol_raw]
+                    if len(vol) > 0:
+                        for dev in vol:
+                            if dev['device'] == '/dev/vda':
+                                vm_obj['instance_volume_id'] = dev['id']
+                            else:
+                                vm_obj['other_volumes'].append(dev['id'])
+
+                    if vm_obj['instance_volume_id'] is not None:
+                        vms.append(vm_obj)
 
         return {'vms': vms}
 
