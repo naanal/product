@@ -142,8 +142,8 @@ def index_page(request):
                                        'instanceid': instance_id, 'status': status, 'console': console,
                                        'fixedip': fixed, 'floatingip': floating_ip, 'RDP_file': rdp_file,
                                        'button_color': button_color})
+    return redirect('login.views.loginpage')
 
-    return render_to_response('login.html')
 
 
 @csrf_exempt
@@ -156,7 +156,7 @@ def change_password(request):
             password = request.GET.get('password')
             return render_to_response('changepassword.html', {'password': password, 'username': username})
         else:
-            return render_to_response('login.html')
+            return redirect('login.views.loginpage')
 
     if request.POST:
         if request.session.has_key('username'):
@@ -211,7 +211,8 @@ def change_password(request):
                 except ldap3.core.exceptions.LDAPSocketOpenError:
                     status = 'windows active directory not available'
                     userlog.error("%s change password %s", username, status)
-    return render_to_response('login.html')
+    return redirect('login.views.loginpage')
+
 
 
 def help(request):
@@ -221,7 +222,7 @@ def help(request):
             username1 = request.session['username']
             username = request.GET.get('username')
             return render_to_response('help.html', {'username': username})
-    return render_to_response('login.html')
+    return redirect('login.views.loginpage')
 
 def login_help(request):
     username = password = ''
@@ -230,7 +231,8 @@ def login_help(request):
             username1 = request.session['username']
             username = request.GET.get('username')
             return render_to_response('login_help.html', {'username': username})
-    return render_to_response('login.html')
+    return redirect('login.views.loginpage')
+
 
 def browservm_help(request):
     username = password = ''
@@ -239,7 +241,7 @@ def browservm_help(request):
             username1 = request.session['username']
             username = request.GET.get('username')
             return render_to_response('vmbrowser.html', {'username': username})
-    return render_to_response('login.html')
+    return redirect('login.views.loginpage')
 
 def RDP_help(request):
     username = password = ''
@@ -248,6 +250,7 @@ def RDP_help(request):
             username1 = request.session['username']
             username = request.GET.get('username')
             return render_to_response('RDP_help.html', {'username': username})
+    return redirect('login.views.loginpage')
     return render_to_response('login.html')
 
 def changepswd_help(request):
@@ -257,7 +260,8 @@ def changepswd_help(request):
             username1 = request.session['username']
             username = request.GET.get('username')
             return render_to_response('changepassword_help.html', {'username': username})
-    return render_to_response('login.html')
+    return redirect('login.views.loginpage')
+
 
 @csrf_exempt
 def instance_stop(request):
@@ -336,7 +340,7 @@ def instance_stop(request):
                                        'instanceid': instance_id, 'status': status, 'console': console,
                                        'RDP_file': rdp_file, 'fixedip': fixed, 'floatingip': floating_ip,
                                        'button_color': button_color})
-    return render_to_response('login.html')
+    return redirect('login.views.loginpage')
 
 
 def get_assigned_computer(username):
