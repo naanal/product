@@ -1,0 +1,73 @@
+<style>
+    ._md-select-menu-container
+    {
+        z-index : 9000;
+    }
+    md-select {
+        margin: 0;
+    }
+     .md-virtual-repeat-container.md-autocomplete-suggestions-container{
+        z-index:5000 !important;
+    }
+    legend.standard {
+        width: inherit!important;
+        margin-bottom: auto!important;
+        font-size: inherit!important;
+        border-bottom: none!important;
+        border: 0!important;
+        color: #3F51B5 !important;
+    }
+    fieldset.standard {
+      border-style: solid;
+      border-width: 1px;
+      padding: 10px;
+      border: 1px solid #C7C6C6 !important;
+      margin-bottom: 8px;
+    }
+</style>
+
+<div ng-controller="selectInstancesController as ctrl">
+    
+    <h4 ng-if="model.vmHadNoIps.length == 0">All Vms are already Associated</h4>
+
+    <section ng-if="model.vmHadNoIps.length > 0">
+      <fieldset class="standard">
+        <legend class="standard">1. Select Instances to be associate with Floating Ip</legend>
+        <md-checkbox aria-label="Select All" class="md-primary" ng-checked="isChecked()" md-indeterminate="isIndeterminate()"  ng-click="toggleAll()">
+              <span ng-if="isChecked()">Un-</span>Select All
+        </md-checkbox>
+
+        <div layout="column" layout-wrap layout-gt-sm="row">
+            <div flex-xs flex="33" ng-repeat="vm in model.vmHadNoIps">
+                <md-checkbox class="md-primary"
+                             ng-click="toggleVmsLists(vm, model.newspec.selectedInstances)"
+                             ng-checked="exists(vm, model.newspec.selectedInstances)"
+                             ng-required="model.newspec.selectedInstances.length > 0"
+                             value="{$vm$}">
+                    {$vm.instance_name$}
+                </md-checkbox>
+            </div>
+            <div flex-xs flex="33" ng-if="model.vmHadNoIps.length % 3 == 2"></div>
+        </div>
+      </fieldset>
+
+       <fieldset class="standard">
+            <legend class="standard">2. Select Floating Ip Pool</legend>
+            <div layout="row" layout-align="start center" layout-padding="">
+                <span class="md-subhead">Pool :</span>
+                <md-select ng-model="model.newspec.poolId">
+                    <md-option ng-repeat="pool in model.availablePools" ng-value="pool.pool_id" ng-selected="$first">
+                     {$pool.pool_name$}
+                    </md-option>
+                </md-select>
+            </div>
+        </fieldset>
+    
+    </section>
+    <md-checkbox ng-model="devpurpose" >
+         For Development Purpose
+    </md-checkbox>
+    <pre ng-show="devpurpose">{$ model.newspec | json $} </pre>
+
+     
+</div>

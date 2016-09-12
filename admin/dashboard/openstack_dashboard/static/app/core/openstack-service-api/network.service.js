@@ -40,7 +40,9 @@
       getFloatingIpPools: getFloatingIpPools,
       allocateFloatingIp: allocateFloatingIp,
       associateFloatingIp: associateFloatingIp,
-      disassociateFloatingIp: disassociateFloatingIp
+      disassociateFloatingIp: disassociateFloatingIp,
+      getFloatingIpPoolsRange: getFloatingIpPoolsRange,
+      getAvailableIpsInSelectedRange: getAvailableIpsInSelectedRange
     };
 
     return service;
@@ -132,6 +134,29 @@
         });
     }
 
+    /**
+     * @name getFloatingIpPoolsRange
+     * @description
+     * 
+     *
+     * 
+     * 
+     * @returns {Object} The result of the API call
+     */
+
+    function getFloatingIpPoolsRange(){
+        return apiService.get('/api/network/floatingippoolsranges/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to floating IP pools.'));
+        });
+    }
+
+    function getAvailableIpsInSelectedRange(range_detail){
+      return apiService.post('/api/network/availablefloatingips_in_range/',range_detail)
+      .error(function () {
+          toastService.add('error', gettext('Unable to Available Ips in Selected Pools.'));
+        });
+    }
   }
 
 }());

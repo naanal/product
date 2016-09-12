@@ -402,9 +402,14 @@ class FloatingIpManager(network_base.FloatingIpManager):
         self._set_instance_info(fip)
         return FloatingIp(fip)
 
-    def allocate(self, pool):
-        body = {'floatingip': {'floating_network_id': pool,
-                               'tenant_id': self.request.user.project_id}}
+    def allocate(self, pool, floating_ip_address):
+        if floating_ip_address is not None:
+            body = {'floatingip': {'floating_network_id': pool,
+                                   'tenant_id': self.request.user.project_id,
+                                   'floating_ip_address':floating_ip_address}}
+        else:
+            body = {'floatingip': {'floating_network_id': pool,
+                                   'tenant_id': self.request.user.project_id}}
         fip = self.client.create_floatingip(body).get('floatingip')
         self._set_instance_info(fip)
         return FloatingIp(fip)
@@ -439,9 +444,9 @@ class FloatingIpManager(network_base.FloatingIpManager):
                           r.external_gateway_info.get('network_id')
                           in ext_net_ids)]
         reachable_subnets = set([p.fixed_ips[0]['subnet_id'] for p in ports
-                                if ((p.device_owner in
-                                     ROUTER_INTERFACE_OWNERS)
-                                    and (p.device_id in gw_routers))])
+                                 if ((p.device_owner in
+                                      ROUTER_INTERFACE_OWNERS)
+                                     and (p.device_id in gw_routers))])
         # we have to include any shared subnets as well because we may not
         # have permission to see the router interface to infer connectivity
         shared = set([s.id for n in network_list(self.request, shared=True)
@@ -688,6 +693,7 @@ def network_delete(request, network_id):
 
 
 def subnet_list(request, **params):
+    print(params)
     LOG.debug("subnet_list(): params=%s" % (params))
     subnets = neutronclient(request).list_subnets(**params).get('subnets')
     return [Subnet(s) for s in subnets]

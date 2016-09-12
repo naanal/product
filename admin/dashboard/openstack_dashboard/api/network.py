@@ -25,6 +25,7 @@ from openstack_dashboard.api import nova
 
 
 class NetworkClient(object):
+
     def __init__(self, request):
         neutron_enabled = base.is_service_enabled(request, 'network')
 
@@ -51,9 +52,12 @@ def tenant_floating_ip_list(request):
 def tenant_floating_ip_get(request, floating_ip_id):
     return NetworkClient(request).floating_ips.get(floating_ip_id)
 
+# floating_ip_address added by raja s
 
-def tenant_floating_ip_allocate(request, pool=None):
-    return NetworkClient(request).floating_ips.allocate(pool)
+
+def tenant_floating_ip_allocate(request, pool=None, floating_ip_address=None):
+    return NetworkClient(request).floating_ips.allocate(pool,
+                                                        floating_ip_address)
 
 
 def tenant_floating_ip_release(request, floating_ip_id):

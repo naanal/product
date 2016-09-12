@@ -66,7 +66,9 @@
       deleteServers: deleteServers,
       backupServers: backupServers,
       reCreate: reCreate,
-      attachExtraVolumes: attachExtraVolumes
+      attachExtraVolumes: attachExtraVolumes,
+      getInstancesHadNoFloatingIps:getInstancesHadNoFloatingIps,
+      createManyFloatingIps:createManyFloatingIps
     };
 
     return service;
@@ -640,7 +642,7 @@
 
     /**
      * @ngdoc function
-     * @name reCreateServers
+     * @name attachExtraVolumes
      *
      * @description
      * 
@@ -652,6 +654,40 @@
       return apiService.post('/api/nova/attach_extra_volumes/', instances)
         .error(function () {
           toastService.add('error', gettext('Unable to attach extra Volumes.'));
+        });
+    }
+
+    /**
+     * @ngdoc function
+     * @name getInstancesHadNoFloatingIps
+     *
+     * @description
+     * 
+     *
+     * @returns {Object} The result of the API call
+    */
+
+    function getInstancesHadNoFloatingIps(items) {
+      return apiService.get('/api/nova/servers_no_floating_ip/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve instances had not floating ips.'));
+        });
+    }
+
+    /**
+     * @ngdoc function
+     * @name createManyFloatingIps
+     *
+     * @description
+     * 
+     *
+     * @returns {Object} The result of the API call
+    */
+
+    function createManyFloatingIps(items) {
+      return apiService.post('/api/nova/servers_no_floating_ip/', items)
+        .error(function () {
+          toastService.add('error', gettext('Unable to assosciate floating ips.'));
         });
     }
 

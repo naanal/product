@@ -461,6 +461,26 @@ class RecoverLinkNG(tables.LinkAction):
     def get_link_url(self, datum=None):
         return "javascript:void(0);"
 
+class AssociateFloatingIpsLink(tables.LinkAction):
+    name = "assosicate-floatingip"
+    url = "horizon:virtual:instances:index"
+    verbose_name = _("Associate Floating Ips")
+    policy_rules = (("compute", "network:associate_floating_ip"),)
+    ajax = False
+    classes = ("btn-launch", )
+
+    def get_default_attrs(self):
+        url = urlresolvers.reverse(self.url)
+        ngclick = "modal.openAssociateFloatingipsWizard(" \
+            "{ successUrl: '%s' })" % url
+        self.attrs.update({
+            'ng-controller': 'AssociateFloatingipsModalController as modal',
+            'ng-click': ngclick
+        })
+        return super(AssociateFloatingIpsLink, self).get_default_attrs()
+
+    def get_link_url(self, datum=None):
+        return "javascript:void(0);"
 
 class EditInstance(policy.PolicyTargetMixin, tables.LinkAction):
     name = "edit"
@@ -1236,7 +1256,7 @@ class InstancesTable(tables.DataTable):
         status_columns = ["status", "task"]
         row_class = UpdateRow
         table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance,
-                              RecoverLinkNG)
+                              RecoverLinkNG, AssociateFloatingIpsLink)
         launch_actions = ()
         if getattr(settings, 'LAUNCH_INSTANCE_LEGACY_ENABLED', False):
             launch_actions = (LaunchLink,) + launch_actions

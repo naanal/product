@@ -1,0 +1,129 @@
+<style>
+    ._md-select-menu-container
+    {
+        z-index : 9000;
+    }
+    md-select {
+        margin: 0;
+    }
+     .md-virtual-repeat-container.md-autocomplete-suggestions-container{
+        z-index:5000 !important;
+    }
+    legend.standard {
+        width: inherit!important;
+        margin-bottom: auto!important;
+        font-size: inherit!important;
+        border-bottom: none!important;
+        border: 0!important;
+        color: #3F51B5 !important;
+    }
+    fieldset.standard {
+      border-style: solid;
+      border-width: 1px;
+      padding: 10px;
+      border: 1px solid #C7C6C6 !important;
+      margin-bottom: 8px;
+    }
+    .modal-open {
+    overflow: hidden !important;
+}
+</style>
+
+<div ng-controller="selectMethodController as ctrl">
+
+    <section ng-if="model.vmHadNoIps.length > 0">
+      <fieldset class="standard">
+        <legend class="standard">3. Select any of the below method to associate IPs</legend>
+        
+
+        <md-radio-group ng-model="model.newspec.method" ng-change="ctrl.changedMode()" required layout="row" layout-xs="column">
+              <md-radio-button value="auto" class="md-primary">Auto Assign Ips
+              </md-radio-button>
+              <md-radio-button value="semiauto" class="md-primary"> Semi Auto 
+              </md-radio-button>
+              <md-radio-button value="manual" class="md-primary"> Manually Assign Ips
+              </md-radio-button>
+        </md-radio-group>
+        
+        <div ng-if="model.newspec.method == 'auto'" class="md-padding">
+            <p>Ips are automatically assigned to vms from the below pools: </p>
+            <div class="well">
+              <div layout="row" layout-xs="column" layout-wrap="">
+                <md-card ng-repeat="pool in model.availablePools[0].pools" flex-gt-xs="45" flex="">
+                    <md-card-content layout="row" layout-align="space-between">
+                        <p>{$ pool.start $} - {$ pool.end $}</p>
+                    </md-card-content>
+                </md-card>
+              </div>
+            </div>
+        </div>
+       
+        <div ng-if="model.newspec.method == 'semiauto'" class="md-padding">
+            <p>Choose a Specific Pool from which IPs are associated : </p>
+            <div class="well">
+                <md-select ng-model="model.newspec.selectedPoolRange">
+                    <md-option ng-repeat="pool in model.availablePools[0].pools" ng-value="pool" ng-selected="$first">
+                     {$pool.start$} - {$pool.end$}
+                    </md-option>
+                </md-select>
+            </div>
+        </div>
+        
+        <div ng-if="model.newspec.method == 'manual'" class="md-padding">
+            <div layout="row" layout-align="start center" layout-padding="">
+                <span class="md-subhead">Pool :</span>
+                 <md-select ng-model="model.newspec.selectedPoolRange" ng-change="model.getAvailableIpsInRange()">
+                    <md-option ng-repeat="pool in model.availablePools[0].pools" ng-value="pool" ng-selected="$first">
+                     {$pool.start$} - {$pool.end$}
+                    </md-option>
+                </md-select>
+            </div>
+
+            <div class="well">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th class="col-md-5">Instances</th>
+                      <th class="col-md-7">Ip Addresses</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="vm in model.newspec.selectedInstances">
+                      <td>
+                          {$vm.instance_name$}
+                      </td>
+                      <td>
+                            <md-autocomplete
+                               md-no-cache="true"
+                              md-selected-item="ctrl['selectedIp'+$index]"
+                              md-search-text="ctrl['ipSearchText' + $index]"
+                              md-items="item in ctrl.ipSearch(ctrl['ipSearchText' + $index])"
+                              md-item-text="item"
+                              md-search-text-change="ctrl.ipTextChange(ctrl['ipSearchText' + $index])"
+                              md-selected-item-change="ctrl.selectedIpChange(vm,item,$index)"
+                              placeholder="Search Ips"
+                               md-min-length="0">
+                                placeholder="Choose Ip">
+                              <md-item-template>
+                                <span md-highlight-text="ctrl['ipSearchText' + $index]">{$item$}</span>
+                              </md-item-template>
+                              <md-not-found>
+                                "{$ctrl.ipSearchText$}" not found.
+                              </md-not-found>
+                            </md-autocomplete>
+                      </td>
+                    </tr>
+                  </tbody>
+              </table>
+          </div>
+        </div>
+      </fieldset>
+
+    </section>
+    <md-checkbox ng-model="devpurpose" >
+         For Development Purpose
+    </md-checkbox>
+    <pre ng-show="devpurpose">{$ model.newspec | json $} </pre>
+
+     
+</div>

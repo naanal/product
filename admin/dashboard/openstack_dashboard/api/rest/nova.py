@@ -27,6 +27,7 @@ from openstack_dashboard.api.rest import utils as rest_utils
 import simplejson
 import os
 import time
+from netaddr import *
 
 
 @urls.register
@@ -742,7 +743,176 @@ class AttachExtraVolumes(generic.View):
 
         for ins in request.DATA['selectedInstances']:
 
-            ins_id = [vm.id for vm in api.nova.server_list(request, search_opts={"name": ins['instance_name'], "status": "active"})[0]]
+            ins_id = [vm.id for vm in api.nova.server_list(
+                request, search_opts={"name": ins['instance_name'], "status": "active"})[0]]
             for vol in ins['other_volumes']:
                 api.nova.instance_volume_attach(
                     request, vol, ins_id[0], None)
+
+
+@urls.register
+class Servers_Without_Floating_Ip(generic.View):
+    """API over all servers.
+    """
+    url_regex = r'nova/servers_no_floating_ip/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a list of servers.
+
+        The listing result is an object with server status.
+
+        Example GET:
+        http://localhost/api/nova/servers_no_floating_ip
+        """
+        instances_no_floating_ip = []
+        for vm in api.nova.server_list(request)[0]:
+            temp = {}
+            for net in vm.addresses:
+                networks = vm.addresses[net]
+            if len(networks) == 1:
+                temp['instance_id'] = vm.id
+                temp['instance_name'] = vm.name
+                fi_target = api.network.floating_ip_target_get_by_instance(
+                    request, vm.id)
+                # target id is in the format : 6ead8a8f-a2c3-40aa-8313-27de4c4ba2a9_41.20.0.62
+                # so In order to get id, target id is split by underscore(-)
+                temp['port_id'] = fi_target
+                if temp['port_id'] is not None:
+                    instances_no_floating_ip.append(temp)
+        return {"instances_no_fips": instances_no_floating_ip}
+
+    @rest_utils.ajax(data_required=True)
+    def post(self, request):
+        try:
+            args = (
+                request,
+                request.DATA['selectedInstances'],
+                request.DATA['poolId'],
+                request.DATA['method']
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter'
+                                            "'%s'" % e.args[0])
+
+        instances = request.DATA['selectedInstances']
+
+        method = request.DATA['method']
+
+        unassigned_ips_obj = [addr for addr in
+                              api.network.tenant_floating_ip_list(request)
+                              if addr.instance_id is None]
+
+        allocated_ips = [addr.ip for addr in
+                         api.network.tenant_floating_ip_list(request)]
+
+        if method == 'auto':
+            for vm in instances:
+                if(len(unassigned_ips_obj) >= 1):
+                    IpAssociate(
+                        request, unassigned_ips_obj.pop().id, vm['port_id'])
+                else:
+                    newIP = IPCreate(request, request.DATA['poolId'], None)
+                    IpAssociate(request, newIP.id, vm['port_id'])
+
+        if method == 'semiauto':
+
+            selected_range = request.DATA['selectedPoolRange']
+
+            gathered_ips = []
+
+            ips_in_selected_range = IPRange(
+                selected_range['start'], selected_range['end'])
+
+            print("Gathering Ips in Selected Range...%d found" %
+                  len(ips_in_selected_range))
+
+            no_f_assigned_ips = 0
+
+            for ip in allocated_ips:
+                if IPAddress(ip) in ips_in_selected_range:
+                    no_f_assigned_ips = no_f_assigned_ips + 1
+
+            print("In Selected Range, Calculating IPs"
+                  " already in allocated... %d found" %
+                  no_f_assigned_ips)
+
+            for aip in unassigned_ips_obj:
+                if(IPAddress(aip.ip) in IPRange(selected_range['start'],
+                                                selected_range['end'])):
+                    gathered_ips.append(aip)
+
+            print("In Selected Range, Calculating IPs"
+                  "already in allocated but not used... %d found" %
+                  len(gathered_ips))
+
+            available_ips = len(ips_in_selected_range) + len(gathered_ips) - \
+                no_f_assigned_ips
+
+            print("In Selected Range, Calculating available"
+                  "number of ips... %d found" %
+                  available_ips)
+
+            print("Check Instance Count match with available number of ips...")
+
+            print("Instances : %d Available Ips: %d" %
+                  (len(instances), available_ips))
+
+            if len(instances) <= available_ips:
+                print("Eligible for IP allocation")
+                ip_generator = iter_iprange(
+                    selected_range['start'], selected_range['end'], step=1)
+
+                while (len(instances) > len(gathered_ips)):
+                    new_ip = str(ip_generator.next())
+                    if new_ip not in allocated_ips:
+                        gathered_ips.append(new_ip)
+
+                for vm in instances:
+                    if len(gathered_ips) > 0:
+                        current_ip_to_assign = gathered_ips.pop()
+                        if current_ip_to_assign in unassigned_ips_obj:
+                            print("Only Associated")
+                            IpAssociate(
+                                request,
+                                current_ip_to_assign.id, vm['port_id'])
+                        else:
+                            print("Created and Associated")
+                            newIP = IPCreate(request, request.DATA[
+                                             'poolId'], current_ip_to_assign)
+                            IpAssociate(request, newIP.id, vm['port_id'])
+
+                result = {"status": "success",
+                          "msg": "Floating Ips Associated"}
+            else:
+                result = {"status": "danger",
+                          "msg": "Available Ips lesss than selected instances"}
+            return result
+
+        if method == 'manual':
+            for vm in instances:
+                if(len(unassigned_ips_obj) >= 1 and
+                        vm['prefered_ip'] in allocated_ips):
+                    IpAssociate(request,
+                                getFloatingIpId(request, vm['prefered_ip']),
+                                vm['port_id'])
+                else:
+                    newIP = IPCreate(request,
+                                     request.DATA['poolId'], vm['prefered_ip'])
+                    IpAssociate(request, newIP.id, vm['port_id'])
+
+
+def IpAssociate(request, ip_id, port_id):
+    return api.network.floating_ip_associate(request, ip_id, port_id)
+
+
+def IPCreate(request, pool_id, floating_ip):
+    return api.network.tenant_floating_ip_allocate(
+        request, pool_id, floating_ip)
+
+
+def getFloatingIpId(request, floating_ip):
+    all_ips = api.network.tenant_floating_ip_list(request)
+    for f_obj in all_ips:
+        if f_obj.ip == floating_ip:
+            return f_obj.id
