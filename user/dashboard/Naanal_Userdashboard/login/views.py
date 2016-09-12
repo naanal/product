@@ -180,8 +180,12 @@ def change_password(request):
                 status = conn.result['description']
                 userlog.info("%s change password ", username)
                 # status='success'
-                return render_to_response('changepassword.html',
-                                          {'password': password, 'username': username, 'status': status})
+                if status == 'success':
+                    return redirect('login.views.loginpage')
+                else:
+                    return render_to_response('changepassword.html',
+                                              {'password': password, 'username': username, 'status': status})
+
             except ldap3.core.exceptions.LDAPBindError:
                 status = 'worng current password'
                 userlog.error("%s change password %s", username, status)
@@ -201,7 +205,10 @@ def change_password(request):
                     status = conn.result['description']
                     userlog.info("%s change password ", username)
                     # status='success'
-                    return render_to_response('changepassword.html',
+                    if status=='success':
+                        return redirect('login.views.loginpage')
+                    else:
+                        return render_to_response('changepassword.html',
                                               {'password': password, 'username': username, 'status': status})
                 except ldap3.core.exceptions.LDAPBindError:
                     status = 'worng current password'
