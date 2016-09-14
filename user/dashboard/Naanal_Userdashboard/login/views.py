@@ -472,9 +472,11 @@ def vnc_console(instance_name):
 def download_RDP(username, instance_id, instance_name):
     fixed = ''
     floating_ip = get_instance_floatingip(instance_name)
+    Domain_name=settings.DOMAIN
+    AD_username=Domain_name+username
     file_name = os.path.join(settings.BASE_DIR, 'login/static/RDP/' + username + ".rdp")
     Rdpname = username + ".rdp"
-    content = "auto connect:i:1\nfull address:s:%s\nusername:s:%s\n" % (floating_ip, username)
+    content = "auto connect:i:1\nfull address:s:%s\nusername:s:%s\n" % (floating_ip, AD_username)
     fo = open(file_name, "wb")
     fo.write(content);
     return (Rdpname)

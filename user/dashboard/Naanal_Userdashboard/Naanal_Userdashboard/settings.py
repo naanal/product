@@ -139,6 +139,8 @@ LDAP_SERVER = ["172.30.64.30","172.30.1.198"]
 
 DOMAIN_NAME="police.local"
 
+DOMAIN="POLICE\\"
+
 WINDOWS_SERVER_DOMAINPATH="dc=police,dc=local"
 
 WINDOWS_SERVER_USERPATH="OU=users,OU=tech"

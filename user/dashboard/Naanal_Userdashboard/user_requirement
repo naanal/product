@@ -1,0 +1,5 @@
+Django==1.7.6
+ldap3==1.4.0
+python-glanceclient==2.5.0
+python-keystoneclient==3.5.0
+python-novaclient==6.0.0
