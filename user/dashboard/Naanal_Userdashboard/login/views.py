@@ -12,6 +12,8 @@ from ldap3 import Server, Connection, SUBTREE, ALL, ALL_ATTRIBUTES, \
 from django.conf import settings
 import logging
 userlog = logging.getLogger('userlog')
+from django.shortcuts import redirect
+
 
 
 @csrf_exempt
@@ -26,7 +28,6 @@ def loginpage(request):
             request.session['username'] = username
             user_name=username+'@'+settings.DOMAIN_NAME
             password = password
-            print user_name,password
             try:
                 s = Server(settings.LDAP_SERVER[0], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
                 conn = Connection(s, user=user_name, password=password, auto_bind=True)
@@ -112,14 +113,15 @@ def logout(request):
         except:
             return render_to_response('login.html', {'state': state})
         userlog.info("%s user logout", username)
-        return render_to_response('login.html', {'state': state})
+    return redirect('login.views.loginpage')
 
 
 @csrf_exempt
 def index_page(request):
     username = password = instance_id = instance_name = status = console =fixed= ''
     if request.GET:
-        username = request.GET.get('username')
+        username = request.GET.get('username')       
+
         if request.session.has_key('username'):
             username1 = request.session['username']
             instance_name = get_assigned_computer(username)
@@ -140,8 +142,8 @@ def index_page(request):
                                        'instanceid': instance_id, 'status': status, 'console': console,
                                        'fixedip': fixed, 'floatingip': floating_ip, 'RDP_file': rdp_file,
                                        'button_color': button_color})
+    return redirect('login.views.loginpage')
 
-    return render_to_response('login.html')
 
 
 @csrf_exempt
@@ -153,6 +155,8 @@ def change_password(request):
             username = request.GET.get('username')
             password = request.GET.get('password')
             return render_to_response('changepassword.html', {'password': password, 'username': username})
+        else:
+            return redirect('login.views.loginpage')
 
     if request.POST:
         if request.session.has_key('username'):
@@ -176,8 +180,12 @@ def change_password(request):
                 status = conn.result['description']
                 userlog.info("%s change password ", username)
                 # status='success'
-                return render_to_response('changepassword.html',
-                                          {'password': password, 'username': username, 'status': status})
+                if status == 'success':
+                    return redirect('login.views.loginpage')
+                else:
+                    return render_to_response('changepassword.html',
+                                              {'password': password, 'username': username, 'status': status})
+
             except ldap3.core.exceptions.LDAPBindError:
                 status = 'worng current password'
                 userlog.error("%s change password %s", username, status)
@@ -197,7 +205,10 @@ def change_password(request):
                     status = conn.result['description']
                     userlog.info("%s change password ", username)
                     # status='success'
-                    return render_to_response('changepassword.html',
+                    if status=='success':
+                        return redirect('login.views.loginpage')
+                    else:
+                        return render_to_response('changepassword.html',
                                               {'password': password, 'username': username, 'status': status})
                 except ldap3.core.exceptions.LDAPBindError:
                     status = 'worng current password'
@@ -207,7 +218,8 @@ def change_password(request):
                 except ldap3.core.exceptions.LDAPSocketOpenError:
                     status = 'windows active directory not available'
                     userlog.error("%s change password %s", username, status)
-    return render_to_response('login.html')
+    return redirect('login.views.loginpage')
+
 
 
 def help(request):
@@ -217,7 +229,7 @@ def help(request):
             username1 = request.session['username']
             username = request.GET.get('username')
             return render_to_response('help.html', {'username': username})
-    return render_to_response('login.html')
+    return redirect('login.views.loginpage')
 
 def login_help(request):
     username = password = ''
@@ -226,7 +238,8 @@ def login_help(request):
             username1 = request.session['username']
             username = request.GET.get('username')
             return render_to_response('login_help.html', {'username': username})
-    return render_to_response('login.html')
+    return redirect('login.views.loginpage')
+
 
 def browservm_help(request):
     username = password = ''
@@ -235,7 +248,7 @@ def browservm_help(request):
             username1 = request.session['username']
             username = request.GET.get('username')
             return render_to_response('vmbrowser.html', {'username': username})
-    return render_to_response('login.html')
+    return redirect('login.views.loginpage')
 
 def RDP_help(request):
     username = password = ''
@@ -244,6 +257,7 @@ def RDP_help(request):
             username1 = request.session['username']
             username = request.GET.get('username')
             return render_to_response('RDP_help.html', {'username': username})
+    return redirect('login.views.loginpage')
     return render_to_response('login.html')
 
 def changepswd_help(request):
@@ -253,7 +267,8 @@ def changepswd_help(request):
             username1 = request.session['username']
             username = request.GET.get('username')
             return render_to_response('changepassword_help.html', {'username': username})
-    return render_to_response('login.html')
+    return redirect('login.views.loginpage')
+
 
 @csrf_exempt
 def instance_stop(request):
@@ -332,7 +347,7 @@ def instance_stop(request):
                                        'instanceid': instance_id, 'status': status, 'console': console,
                                        'RDP_file': rdp_file, 'fixedip': fixed, 'floatingip': floating_ip,
                                        'button_color': button_color})
-    return render_to_response('login.html')
+    return redirect('login.views.loginpage')
 
 
 def get_assigned_computer(username):
@@ -457,10 +472,11 @@ def vnc_console(instance_name):
 def download_RDP(username, instance_id, instance_name):
     fixed = ''
     floating_ip = get_instance_floatingip(instance_name)
+    Domain_name=settings.DOMAIN
+    AD_username=Domain_name+username
     file_name = os.path.join(settings.BASE_DIR, 'login/static/RDP/' + username + ".rdp")
     Rdpname = username + ".rdp"
-    content = "auto connect:i:1\nfull address:s:%s\nusername:s:%s\n" % (floating_ip, username)
+    content = "auto connect:i:1\nfull address:s:%s\nusername:s:%s\n" % (floating_ip, AD_username)
     fo = open(file_name, "wb")
     fo.write(content);
     return (Rdpname)
-
