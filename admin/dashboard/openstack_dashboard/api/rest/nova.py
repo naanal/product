@@ -769,6 +769,7 @@ class Servers_Without_Floating_Ip(generic.View):
         instances_no_floating_ip = []
         for vm in api.nova.server_list(request)[0]:
             temp = {}
+            networks = []
             for net in vm.addresses:
                 networks = vm.addresses[net]
             if len(networks) == 1:
