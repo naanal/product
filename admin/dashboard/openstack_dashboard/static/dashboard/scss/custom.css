@@ -339,3 +339,20 @@ Add a counter to the multi-steps indicator
     padding-top: 34px;
   }
 }
+
+.right
+{
+    float: right;
+    width: 50%;
+    padding: 2%;
+}
+.left
+{
+   float: left;
+   width: 50%;
+   padding:2%;
+}
+
+body.model-open {
+   overflow-y: hidden !important;
+}
