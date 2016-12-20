@@ -20,3 +20,5 @@ PANEL_GROUP = 'default'
 # Python panel class of the PANEL to be added.
 ADD_PANEL = ('openstack_dashboard.dashboards.overview.'
              'virtual_monitor.panel.Virtual_Monitor')
+
+REMOVE_PANEL = "True"

@@ -93,7 +93,7 @@
         };
         $scope.images_chart = images_chart;
       });
-      ldapAPI.getAdStatus().then(function(res){
+      /**ldapAPI.getAdStatus().then(function(res){
         $scope.free_ad_status = res.data.free;
         $scope.total_ad_users = res.data.total_users;
         $scope.total_ad_computers = res.data.total_computers;
@@ -110,7 +110,7 @@
             legend: {position:'bottom', alignment: 'start'}
         };
         $scope.free_ad_chart = free_ad_chart;
-      });
+      });**/
       neutronAPI.getNetworks().then(function(res){
         $scope.networks = res.data.items;
       });

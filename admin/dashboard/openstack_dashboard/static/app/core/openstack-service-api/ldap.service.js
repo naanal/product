@@ -241,7 +241,7 @@
     function getAdStatus() {
       return apiService.get('/api/ldap/ad_status/')
         .error(function () {
-          toastService.add('error', gettext('Unable to retrieve AD Status.'));
+//          toastService.add('error', gettext('Unable to retrieve AD Status.'));
         });
     }
 
