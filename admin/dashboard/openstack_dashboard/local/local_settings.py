@@ -21,7 +21,9 @@ WEBROOT = '/'
 # HORIZON_CONFIG.user_home, if user_home is not set.
 # Do not set it to '/home/', as this will cause circular redirect loop
 #LOGIN_REDIRECT_URL = WEBROOT
-
+OPENSTACK_API_VERSIONS = {
+    "identity": 3,
+}
 
 # Required for Django 1.5.
 # If horizon is running in production (DEBUG is False), set this
