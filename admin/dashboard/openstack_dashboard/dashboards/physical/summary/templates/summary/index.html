@@ -7,6 +7,46 @@
 {% endblock page_header %}
 
 {% block main %}
+<h3>Live Host Summary</h3>
+<div class="row">
+	<div class="col-md-4">
+		<div class="embed-responsive embed-responsive-16by9">
+     			<iframe class="embed-responsive-item" src="{{C_CPU_TEXT}}"></iframe>
+  		</div>
+	</div>
+	<div class="col-md-4">
+                <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="{{C_RAM_TEXT}}"></iframe>
+                </div>
+        </div>  
+	<div class="col-md-4">
+                <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="{{C_DISK_TEXT}}"></iframe>
+                </div>
+        </div>
+</div>
+<h3>Docker Live Summary</h3>
+<div class="row">
+
+	<div class="col-md-4">
+                <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="{{DOCKER_TOTAL_TEXT}}"></iframe>
+                </div>
+        </div>
+	<div class="col-md-4">
+                <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="{{DOCKER_RUNNING_TEXT}}"></iframe>
+                </div>
+        </div>  
+	<div class="col-md-4">
+                <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="{{DOCKER_STOPPED_TEXT}}"></iframe>
+                </div>
+        </div>  
+
+
+
+</div>
 {% endblock %}
 
 

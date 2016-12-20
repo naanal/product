@@ -449,3 +449,37 @@ WINDOWS_SERVER_DOMAINPATH = "dc=naanal,dc=local"
 WINDOWS_SERVER_USERPATH = "ou=users,ou=Police"
 
 DOMAIN_NAME = "naanal.local"
+
+MONITORING_HOST = "http://192.168.30.130:3000"
+
+NETWORK_HOST= "http://192.168.30.1"
+
+T_CPU_TEXT = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=10"
+
+T_RAM_TEXT = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=12"
+
+T_DISK_TEXT = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=11"
+
+C_CPU_TEXT = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=13"
+
+C_RAM_TEXT = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=14"
+
+C_DISK_TEXT = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=15"
+
+DOCKER_TOTAL_TEXT = MONITORING_HOST + "/dashboard-solo/db/docker-monitoring?panelId=1"
+
+DOCKER_RUNNING_TEXT = MONITORING_HOST + "/dashboard-solo/db/docker-monitoring?panelId=2"
+
+DOCKER_STOPPED_TEXT = MONITORING_HOST + "/dashboard-solo/db/docker-monitoring?panelId=3"
+
+CPU_USAGE = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=4" 
+
+RAM_USAGE = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=5"
+
+DISK_READ = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=6"
+
+DISK_WRITE = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=7"
+
+BYTES_SENT =  MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=9"
+
+BYTES_RECEVIED = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=8"

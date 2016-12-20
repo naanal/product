@@ -903,6 +903,23 @@ class Servers_Without_Floating_Ip(generic.View):
                                      request.DATA['poolId'], vm['prefered_ip'])
                     IpAssociate(request, newIP.id, vm['port_id'])
 
+@urls.register
+class HypervisorStats(generic.View):
+    """API for Hypervisor Stats.
+    """
+    url_regex = r'nova/hypervisor_stats/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a details about hypervisor.
+
+        The listing result is an object with property "items".
+        """
+        result = api.nova.hypervisor_stats(request)
+        #return {'items': [u.to_dict() for u in result]}
+	
+        return result.to_dict()
+
 
 def IpAssociate(request, ip_id, port_id):
     return api.network.floating_ip_associate(request, ip_id, port_id)

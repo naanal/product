@@ -1,4 +1,7 @@
-@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic);
+@font-face{
+	font-family: 'Open Sans';
+	src: url('OpenSans-Regular.ttf') format('truetype');
+}
 /*!
  *   AdminLTE v2.3.0
  *   Author: Almsaeed Studio
@@ -21,7 +24,7 @@ body {
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   overflow: visible !important;
 }
@@ -162,7 +165,7 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 /* General Links */
 a {

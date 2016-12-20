@@ -7,7 +7,30 @@
 {% endblock page_header %}
 
 {% block main %}
-<iframe src="http://172.30.64.106:3000/dashboard-solo/db/new-dashboard?from=1472500746847&to=1472501646848&panelId=1" width="450" height="200" frameborder="0"></iframe>
+<div>
+     <iframe src="{{CPU_USAGE}}" width="1000" height="300" frameborder="0"></iframe>
+</div>
+<br/>
+<div>
+     <iframe src="{{RAM_USAGE}}" width="1000" height="300" frameborder="0"></iframe>
+  </div>
+<br/>
+<div >
+     <iframe src="{{DISK_READ}}" width="1000" height="300" frameborder="0"></iframe>
+  </div>
+
+<div>
+     <iframe src="{{DISK_WRITE}}" width="1000" height="300" frameborder="0"></iframe>
+  </div>
+
+<div>
+     <iframe src="{{BYTES_SENT}}" width="1000" height="300" frameborder="0"></iframe>
+</div>
+
+<div>
+     <iframe src="{{BYTES_RECEVIED}}" width="1000" height="300" frameborder="0"></iframe>
+  </div>
+
 {% endblock %}
 
 

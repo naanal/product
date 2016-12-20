@@ -859,8 +859,6 @@ def hypervisor_list(request):
 
 
 def hypervisor_stats(request):
-    print("****************")
-    print(novaclient(request).hypervisors.statistics())
     return novaclient(request).hypervisors.statistics()
 
 

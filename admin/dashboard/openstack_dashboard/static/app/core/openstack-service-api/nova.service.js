@@ -68,7 +68,8 @@
       reCreate: reCreate,
       attachExtraVolumes: attachExtraVolumes,
       getInstancesHadNoFloatingIps:getInstancesHadNoFloatingIps,
-      createManyFloatingIps:createManyFloatingIps
+      createManyFloatingIps:createManyFloatingIps,
+      hypervisorStats:hypervisorStats
     };
 
     return service;
@@ -707,5 +708,14 @@
     //       toastService.add('error', gettext('Unable to assosciate floating ip.'));
     //     });
     // }
+    
+
+     function hypervisorStats() {
+      return apiService.get('/api/nova/hypervisor_stats/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve Hypervisor Status.'));
+        });
+    }
+
   }
 }());

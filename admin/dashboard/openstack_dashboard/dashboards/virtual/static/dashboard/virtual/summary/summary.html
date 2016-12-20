@@ -8,41 +8,21 @@ md-card .md-actions, md-card md-card-actions
 }
  </style>
  <div ng-controller="virtualSummaryController">
-    <div class="md-padding" layout-xs="column" layout="row">
+	
+	<div class="btn-toolbar" style="margin-left:15%">
+	  	<button ng-click="modal.openLaunchInstanceWizard({ successUrl: '/virtual/' })" ng-controller="LaunchInstanceModalController as modal" class="btn btn-default btn-sm ajax-modal"><i class="fa fa-plus"></i> Create New VM</button>
+	 	<a href="/virtual/volumes/create"  class="btn btn-default btn-sm ajax-modal"><i class="fa fa-plus"></i> Create New Volume</a>
+	 	<a href="/virtual/images/create"  class="btn btn-default btn-sm ajax-modal"><i class="fa fa-plus"></i> Create New Image</a>
+		<a href="/virtual/networks/create"  class="btn btn-default btn-sm ajax-modal"><i class="fa fa-plus"></i> Create New Network</a>
+    	</div>
 
-      <md-button class="md-default" ng-click="modal.openLaunchInstanceWizard({ successUrl: '/virtual/' })" ng-controller="LaunchInstanceModalController as modal">
-                <md-icon><i class="material-icons">add</i></md-icon>
-              Create New VM
-      </md-button>
-
-      <md-button class="md-default ajax-modal" href="/virtual/volumes/create">
-                <md-icon><i class="material-icons">add</i></md-icon>
-              Create New Volume
-      </md-button>
-
-      <md-button class="md-default ajax-modal" href="/virtual/images/create">
-          <md-icon><i class="material-icons">add</i></md-icon>
-              Create New Image
-      </md-button>
-
-      <md-button class="md-default ajax-modal" href="/virtual/networks/create">
-                <md-icon><i class="material-icons">add</i></md-icon>
-              Create New Network
-      </md-button>
-      
-      <md-button class="md-default" ng-click="modal.openCreateUsersWizard({ successUrl: '/identity/' })" ng-controller="CreateUsersModalController as modal">
-                <md-icon><i class="material-icons">add</i></md-icon>
-              Create &amp; Map Users
-      </md-button>
-
-    </div>
     <div class="md-padding" layout-xs="column" layout="row" layout-wrap="">
         <div flex-xs flex-gt-xs="50" layout="column">
           <md-card>
             <md-card-title>
               <md-card-title-text>
                 <span class="md-headline">
-                <md-icon><i class="material-icons">laptop</i></md-icon>
+                <md-icon><i class="fa fa-laptop"></i></md-icon>
                 Instances
                 </span>
               </md-card-title-text>

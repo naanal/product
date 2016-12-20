@@ -14,7 +14,7 @@
 DASHBOARD = 'help'
 
 # If set to True, this dashboard will not be added to the settings.
-DISABLED = False
+DISABLED = True
 
 # A list of applications to be added to INSTALLED_APPS.
 ADD_INSTALLED_APPS = [

@@ -25,6 +25,7 @@
    */
   angular
     .module('horizon.dashboard.overview', [
+      'horizon.dashboard.overview.summary',
       'horizon.dashboard.overview.virtual_monitor',
       'horizon.dashboard.overview.workflow'
     ])

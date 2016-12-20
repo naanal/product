@@ -73,5 +73,20 @@ def openstack(request):
 
     context['KEYSTONE_URL'] = OPENSTACK_KEYSTONE_URL
     context['SAN_STORAGE_URL'] = SAN_STORAGE_URL
-
+    context['T_CPU_TEXT'] = T_CPU_TEXT
+    context['T_RAM_TEXT'] = T_RAM_TEXT
+    context['T_DISK_TEXT'] = T_DISK_TEXT
+    context['C_CPU_TEXT'] = C_CPU_TEXT
+    context['C_RAM_TEXT'] = C_RAM_TEXT
+    context['C_DISK_TEXT'] = C_DISK_TEXT
+    context['CPU_USAGE'] = CPU_USAGE
+    context['RAM_USAGE'] = RAM_USAGE
+    context['DISK_READ'] = DISK_READ
+    context['DISK_WRITE'] = DISK_WRITE
+    context['BYTES_SENT'] = BYTES_SENT
+    context['BYTES_RECEVIED'] = BYTES_RECEVIED
+    context['NETWORK_HOST'] = NETWORK_HOST
+    context['DOCKER_TOTAL_TEXT'] = DOCKER_TOTAL_TEXT
+    context['DOCKER_RUNNING_TEXT'] = DOCKER_RUNNING_TEXT
+    context['DOCKER_STOPPED_TEXT'] = DOCKER_STOPPED_TEXT
     return context

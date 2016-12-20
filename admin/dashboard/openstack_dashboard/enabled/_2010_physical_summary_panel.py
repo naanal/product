@@ -22,3 +22,5 @@ DEFAULT_PANEL = 'summary'
 
 # Python panel class of the PANEL to be added.
 ADD_PANEL = 'openstack_dashboard.dashboards.physical.summary.panel.Summary'
+
+REMOVE_PANEL = True
