@@ -42,7 +42,7 @@ if ROOT_PATH not in sys.path:
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
-SITE_BRANDING = 'OpenStack Dashboard'
+SITE_BRANDING = 'Naanal Stack'
 
 WEBROOT = '/'
 LOGIN_URL = None
@@ -476,6 +476,8 @@ CPU_USAGE = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&pan
 
 RAM_USAGE = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=5"
 
+DISK_USAGE = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=17"
+
 DISK_READ = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=6"
 
 DISK_WRITE = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=7"
@@ -483,3 +485,5 @@ DISK_WRITE = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&pa
 BYTES_SENT =  MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=9"
 
 BYTES_RECEVIED = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=8"
+
+ALERTS = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=16"

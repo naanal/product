@@ -89,4 +89,6 @@ def openstack(request):
     context['DOCKER_TOTAL_TEXT'] = DOCKER_TOTAL_TEXT
     context['DOCKER_RUNNING_TEXT'] = DOCKER_RUNNING_TEXT
     context['DOCKER_STOPPED_TEXT'] = DOCKER_STOPPED_TEXT
+    context['ALERTS'] = ALERTS
+    context['DISK_USAGE'] = DISK_USAGE
     return context

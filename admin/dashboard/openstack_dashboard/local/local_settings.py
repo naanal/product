@@ -668,5 +668,5 @@ REST_API_REQUIRED_SETTINGS = ['OPENSTACK_HYPERVISOR_FEATURES']
 # may be deprecated in the future without notice.
 #REST_API_ADDITIONAL_SETTINGS = []
 
-SITE_BRANDING ="Naanal Technologies"
-SITE_BRANDING_LINK ="http://www.naanal.in"
+SITE_BRANDING ="Naanal Stack"
+SITE_BRANDING_LINK ="http://www.naanalstack.com"
