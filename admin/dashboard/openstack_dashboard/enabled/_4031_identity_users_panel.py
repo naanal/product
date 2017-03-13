@@ -28,4 +28,4 @@ PANEL_GROUP = 'default'
 # Python panel class of the PANEL to be added.
 ADD_PANEL = 'openstack_dashboard.dashboards.identity.ngusers.panel.NGUsers'
 
-REMOVE_PANEL = True
+REMOVE_PANEL = False

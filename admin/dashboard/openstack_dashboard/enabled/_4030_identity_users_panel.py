@@ -8,4 +8,4 @@ PANEL_GROUP = 'default'
 # Python panel class of the PANEL to be added.
 ADD_PANEL = 'openstack_dashboard.dashboards.identity.users.panel.Users'
 
-REMOVE_PANEL = False	
+REMOVE_PANEL = True	

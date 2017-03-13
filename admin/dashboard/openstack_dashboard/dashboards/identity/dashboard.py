@@ -22,7 +22,7 @@ class Identity(horizon.Dashboard):
     name = _("Identity")
     slug = "identity"
     icon = "fa fa-key"
-    default_panel = 'users'
+    default_panel = 'ngusers'
 
 
 horizon.register(Identity)

@@ -27,7 +27,9 @@
     .module('horizon.dashboard.overview', [
       'horizon.dashboard.overview.summary',
       'horizon.dashboard.overview.virtual_monitor',
-      'horizon.dashboard.overview.workflow'
+      'horizon.dashboard.overview.user_monitor',
+      'horizon.dashboard.overview.workflow',
+      'ngResource'
     ])
     .config(config);
 
