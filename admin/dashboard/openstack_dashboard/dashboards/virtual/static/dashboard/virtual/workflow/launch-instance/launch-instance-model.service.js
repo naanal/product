@@ -396,7 +396,7 @@
         finalSpec.nics.push(
           {
             "net-id": network.id,
-            "v4-fixed-ip": ""
+            "v4-fixed-ip": network.ipv4
           });
       });
       delete finalSpec.networks;

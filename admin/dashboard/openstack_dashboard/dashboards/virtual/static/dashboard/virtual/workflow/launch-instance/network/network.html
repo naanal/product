@@ -19,6 +19,7 @@
             <th class="reorder"></th>
             <th class="expander"></th>
             <th class="rsp-p1" translate>Network</th>
+            <th class="rsp-p1" translate>IPv4 Addr</th>
             <th class="rsp-p2" translate>Subnets Associated</th>
             <th class="rsp-p1" translate>Shared</th>
             <th class="rsp-p1" translate>Admin State</th>
@@ -46,6 +47,7 @@
                 title="{$ 'Click to see more details'|translate $}"></span>
             </td>
             <td class="rsp-p1">{$ row.name $}</td>
+            <td class="rsp-p1"><input type="text" ng-model="row.ipv4"/></td>
             <td class="rsp-p2">
               <div ng-repeat="subnet in row.subnets">{$ subnet.name $}</div>
             </td>
