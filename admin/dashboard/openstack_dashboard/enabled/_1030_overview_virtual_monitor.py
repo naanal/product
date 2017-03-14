@@ -21,4 +21,4 @@ PANEL_GROUP = 'default'
 ADD_PANEL = ('openstack_dashboard.dashboards.overview.'
              'virtual_monitor.panel.Virtual_Monitor')
 
-# REMOVE_PANEL = "True"
+REMOVE_PANEL = True
