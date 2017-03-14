@@ -28,6 +28,7 @@ import simplejson
 import os
 import time
 from netaddr import *
+import json
 
 
 @urls.register
@@ -936,3 +937,71 @@ def getFloatingIpId(request, floating_ip):
     for f_obj in all_ips:
         if f_obj.ip == floating_ip:
             return f_obj.id
+
+@urls.register
+class downloadJson(generic.View):
+    """API for Hypervisor Stats.
+    """
+    url_regex = r'nova/download-json/$'
+
+    @rest_utils.ajax()
+    def post(self, request):
+        """Get a details about recreate blue screnn instances
+        
+
+        The listing result is an object with property "items".
+        """
+        print("Download JSON")
+        instances=(request.DATA['selectedInstances'])
+        input=request.DATA
+        json_string = json.dumps(input)
+        with open("static/instances.json", 'w') as outfile:
+                outfile.write(json_string)
+                outfile.close()
+        return ("static/instances.json")
+@urls.register
+class recreates_instances(generic.View):
+    """API for recreate blue screen error instances.
+    """
+    url_regex = r'nova/recreates_instances/$'
+    @rest_utils.ajax(data_required=True)
+    def post(self, request):
+        """Get a list of servers.
+
+        The listing result is an object with property "items". Each item is
+        a server.
+
+        Example GET:
+        http://localhost/api/nova/recover_servers/
+        """
+        try:
+            args = (
+                request,
+                request.DATA['selectedInstances']
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter'
+                                            "'%s'" % e.args[0])
+
+        for ins in request.DATA['selectedInstances']:
+            bdm = {'vda': ins['instance_volume_id'] + ':snap::false'}
+            nic = [{'net-id': ins['net_id'],
+                    'v4-fixed-ip': ins['internal_ip']}]
+            time.sleep(3)
+
+            api.nova.server_create(request,
+                                   name=ins['instance_name'],
+                                   image='',
+                                   flavor=ins['flavor_id'],
+                                   key_name=None,
+                                   user_data='',
+                                   security_groups=[],
+                                   block_device_mapping=bdm,
+                                   nics=nic,
+                                   disk_config="AUTO",
+                                   config_drive=False)
+            time.sleep(2)
+            if ins['floating_ip'] is not None:
+                api.nova.addExisitingFloatingIp(
+                    request, ins['instance_name'], ins['floating_ip'])
+
