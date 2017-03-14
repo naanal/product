@@ -601,6 +601,7 @@ class ServersListBySearch(generic.View):
                 vm_obj['flavor_id'] = vm['flavor']['id']
                 vm_obj['instance_volume_id'] = None
                 vm_obj['other_volumes'] = []
+                vm_obj['image_name']=vm['image_name']
 
                 # rerieve IPs
                 for net in vm.get('addresses', ''):
