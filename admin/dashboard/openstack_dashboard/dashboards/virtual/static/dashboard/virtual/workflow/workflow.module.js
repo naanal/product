@@ -27,6 +27,7 @@
     .module('horizon.dashboard.virtual.workflow', [
       'horizon.dashboard.virtual.workflow.launch-instance',
       'horizon.dashboard.virtual.workflow.recover-instances',
+      'horizon.dashboard.virtual.workflow.recreate-instances',
       'horizon.dashboard.virtual.workflow.associate-floatingips'
     ]);
 })();

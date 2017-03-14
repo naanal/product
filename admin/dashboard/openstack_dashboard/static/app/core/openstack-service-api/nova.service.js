@@ -69,7 +69,9 @@
       attachExtraVolumes: attachExtraVolumes,
       getInstancesHadNoFloatingIps:getInstancesHadNoFloatingIps,
       createManyFloatingIps:createManyFloatingIps,
-      hypervisorStats:hypervisorStats
+      hypervisorStats:hypervisorStats,
+      createJsoninNova:createJsoninNova,
+      reCreates_instances:reCreates_instances
     };
 
     return service;
@@ -716,6 +718,22 @@
           toastService.add('error', gettext('Unable to retrieve Hypervisor Status.'));
         });
     }
+
+    function createJsoninNova(instances) {
+      return apiService.post('/api/nova/download-json/', instances)
+        .error(function () {
+          toastService.add('error', gettext('Unable to create JSON.'));
+        });
+    }
+
+
+    function reCreates_instances(instances) {
+      return apiService.post('/api/nova/recreates_instances/', instances)
+        .error(function () {
+          toastService.add('error', gettext('Unable to recreate Instances.'));
+        });
+    }
+
 
   }
 }());

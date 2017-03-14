@@ -461,6 +461,27 @@ class RecoverLinkNG(tables.LinkAction):
     def get_link_url(self, datum=None):
         return "javascript:void(0);"
 
+class RecreateLinkNG(tables.LinkAction):
+    name = "recreate-ng"
+    url = "horizon:virtual:instances:index"
+    verbose_name = _("Recreate Instance")
+    policy_rules = (("compute", "compute:create"),)
+    ajax = False
+    classes = ("btn-launch", )
+
+    def get_default_attrs(self):
+        url = urlresolvers.reverse(self.url)
+        ngclick = "modal.openRecreateInstancesWizard(" \
+            "{ dismissUrl: '%s' })" % url
+        self.attrs.update({
+            'ng-controller': 'RecreateInstancesModalController as modal',
+            'ng-click': ngclick
+        })
+        return super(RecreateLinkNG, self).get_default_attrs()
+
+    def get_link_url(self, datum=None):
+        return "javascript:void(0);"
+
 class AssociateFloatingIpsLink(tables.LinkAction):
     name = "assosicate-floatingip"
     url = "horizon:virtual:instances:index"
@@ -1256,7 +1277,7 @@ class InstancesTable(tables.DataTable):
         status_columns = ["status", "task"]
         row_class = UpdateRow
         table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance,
-                              RecoverLinkNG, AssociateFloatingIpsLink)
+                              RecoverLinkNG, RecreateLinkNG, AssociateFloatingIpsLink)
         launch_actions = ()
         if getattr(settings, 'LAUNCH_INSTANCE_LEGACY_ENABLED', False):
             launch_actions = (LaunchLink,) + launch_actions

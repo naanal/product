@@ -1,0 +1,56 @@
+<style type="text/css">
+button.btn.btn-primary.finish {
+    display: none !important;
+}
+</style>
+<div ng-controller="selectErrorInstancesController">
+	
+    <h4 ng-if="model.allErrorInstances.length == 0">All Vms are in Good State</h4>
+    <section ng-if="model.allErrorInstances.length > 0">
+        
+        <md-checkbox aria-label="Select All" class="md-primary" ng-checked="isChecked()" md-indeterminate="isIndeterminate()"  ng-click="toggleAll()">
+              <span ng-if="isChecked()">Un-</span>Select All
+        </md-checkbox>
+
+        <div layout="column" layout-wrap layout-gt-sm="row">
+            <div flex-xs flex="33" ng-repeat="vm in model.allErrorInstances">
+                <md-checkbox md-no-ink
+                             class="md-primary"
+                             ng-click="toggleVmsLists(vm,model.recreateInstancesSpec.selectedInstances)"
+                           	 ng-checked="exists(vm, model.recreateInstancesSpec.selectedInstances)"
+                             ng-required="model.recreateInstancesSpec.selectedInstances.length==0"
+                             value="{$vm$}">
+                    {$vm.instance_name$}
+                </md-checkbox>
+            </div>
+            <div flex-xs flex="33" ng-if="model.allErrorInstances.length % 3 == 2"></div>
+        </div>
+		
+		
+		
+		<div class="panel-footer row"><!-- panel-footer -->
+				<div class="col-xs-6 text-left">
+					<div class="previous">
+					  <button type="button" class="btn btn-default btn-lg" ng-click="model.createJson()">
+						      Create Json
+						 
+					  </button>
+					</div>
+				</div>
+				<div class="col-xs-6 text-right">   
+					<div class="next">					 
+						<a type="button"  class="btn btn-default btn-lg"  href="/static/instances.json" download="">Download Json </a>
+					</div>
+				</div>
+		</div><!-- end panel-footer -->	
+		
+	
+	
+
+    <md-checkbox ng-model="devpurpose" >
+         For Development Purpose
+    </md-checkbox>
+    <pre ng-show="devpurpose">{$model.recreateInstancesSpec | json $} </pre>
+
+     <pre ng-show="devpurpose">{$model.allErrorInstances | json $} </pre>
+</div>

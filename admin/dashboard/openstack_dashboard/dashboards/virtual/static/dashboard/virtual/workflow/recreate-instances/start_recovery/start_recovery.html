@@ -1,0 +1,99 @@
+<style>
+    ._md-select-menu-container
+    {
+        z-index : 9000;
+    }
+    md-select {
+        margin: 0;
+    }
+     .md-virtual-repeat-container.md-autocomplete-suggestions-container{
+        z-index:5000 !important;
+    }
+</style>
+<div ng-controller="startRecreateController as ctrl">
+    
+    <section ng-hide="isStarted">
+
+       <h4>Start Recreate</h4> 
+       <md-divider> </md-divider>
+       
+       
+        <input type='file' id='fileinput'> 
+       <input type='button' id='btnLoad' value='Load' ng-click="ctrl.loadFile()">
+      
+      
+      
+       
+       <div layout="row">
+        
+      <md-select name="snapshot" ng-model="ctrl.snapshot_id" ng-change="ctrl.changesnapshot()" placeholder="Select a volume snapshot">
+        <md-option ng-repeat="vol in model.volumesnapshot_list.volume_list" ng-value="vol.id">          
+            {$vol.name$}
+          
+        </md-option>
+      </md-select>
+    </div>
+       
+       
+       
+       
+       <p class="md-padding"> 
+          
+       <a href="" ng-click="ctrl.startRecreate()">Click Here </a> 
+       to initiate recovery  </p>
+       
+    </section>
+    
+    <section ng-show="isStarted">
+
+        <h4>Recovery Status</h4>
+        <md-divider></md-divider>
+
+        <nav>
+            <ol class="cd-multi-steps text-top">
+                <li ng-class="{'visited': isBackuped, 'active': isBackupInProgress}"><em>Backup</em></li>
+                <li ng-class="{'visited': isDeleted, 'active': isDeletedInProgress}" ><em>Delete</em></li>
+                <li ng-class="{'visited': isRecreated, 'active': isRecreatedInProgress}"><em>ReBuild</em></li>
+                <li ng-class="{'visited': isReattach, 'active': isReattachInProgress}"><em>Reattach</em></li>
+            </ol>
+        </nav>
+
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Instance Name</th>
+                <th>IP Address</th>
+                <th>Volume</th>
+                <th>Status</th>
+                <th>Task</th>
+              </tr>
+            </thead>
+            <tbody
+                
+               
+              <tr ng-repeat="svm in selected_instances_status">
+                <td>{$svm.instance_name$}</td>
+                <td>{$svm.internal_ip$}, {$svm.floating_ip$}</td>
+                <td>{$svm.instance_volume_id | limitTo: 13$}{$svm.instance_volume_id.length > 13 ? '&hellip;' : ''$}</td>
+                <td>{$svm.instance_status$}</td>
+                <td>{$svm.task_status$}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+    </section>
+
+    <section ng-show="isReattach">
+          <h4>Recovery Process Completed</h4>
+    </section>
+    
+    
+    
+    <md-checkbox ng-model="devpurpose" >
+         For Development Purpose
+    </md-checkbox>
+    <pre ng-show="devpurpose">{$ new_data | json $} </pre>    
+    <pre ng-show="devpurpose">{$ model.volumesnapshot_list | json $}</pre>
+</div>
