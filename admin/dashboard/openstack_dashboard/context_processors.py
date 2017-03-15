@@ -91,4 +91,10 @@ def openstack(request):
     context['DOCKER_STOPPED_TEXT'] = DOCKER_STOPPED_TEXT
     context['ALERTS'] = ALERTS
     context['DISK_USAGE'] = DISK_USAGE
+    context['C2_CPU_TEXT'] = C2_CPU_TEXT
+    context['C2_RAM_TEXT'] = C2_RAM_TEXT
+    context['C2_DISK_TEXT'] = C2_DISK_TEXT
+    context['C3_CPU_TEXT'] = C3_CPU_TEXT
+    context['C3_RAM_TEXT'] = C3_RAM_TEXT
+    context['C3_DISK_TEXT'] = C3_DISK_TEXT
     return context

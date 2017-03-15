@@ -10,26 +10,46 @@
                 <md-tab label="Live Monitoring">
                     <md-content class="md-padding">
                         <section layout="row" layout-xs="column">
-                            <section flex="" layout-align="center center">
-                                <md-input-container ng-show="!selected.length" md-no-float="" class="md-block left">
-                                    <md-icon>
-                                        <i class="material-icons">search</i>
-                                    </md-icon>
-                                    <input type="text" ng-model="searchquery" placeholder="Search By name, computer..."/>
+                            <section flex="20" ng-show="!selected.length" layout-align="center center">
+                                 <md-input-container class="md-block">
+                                    <label>Computer</label>
+                                    <md-select  ng-model="computer" placeholder="Choose Computer" class="md-no-underline">
+                                      <md-option ng-repeat="com in computers" value="{$com$}">{$com$}</md-option>
+                                    </md-select>
                                 </md-input-container>
-                                <md-content ng-show="selected.length" class="md-padding">
+                            </section>
+                            <span flex="5"></span>
+                            <section flex="20" ng-show="!selected.length" layout-align="center center">
+                                <md-input-container class="md-block">
+                                    <label>User</label>
+                                     <md-select  ng-model="user" placeholder="Choose User" class="md-no-underline">
+                                      <md-option ng-repeat="usr in users" value="{$usr$}">{$usr$}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </section>
+
+                             <!-- <section flex="100" ng-show="selected.length" layout-align="center center">
+                                <md-content  class="md-padding">
                                     <p class="md-padding md-title">
                                         {$selected.length$} {$selected.length &gt; 1 ? 'items' : 'item'$} selected
                                     </p>
                                 </md-content>
-                            </section>
+                            </section> -->
                             <span flex=""></span>
-                            <section flex="" layout-align="end center">
+                            <section flex="" layout-align="end center" ng-show="selected.length">
                                 <md-button class="md-fab md-mini md-primary" aria-label="delete"
                                            ng-show="selected.length" ng-click="delete_user()" >
                                     <md-icon>delete</md-icon>
-                                    <md-tooltip>Delete</md-tooltip>
+                                    <md-tooltip>End Process</md-tooltip>
                                 </md-button>
+                            </section>
+                             <section flex="" layout-align="end center">
+                                <md-select ng-model="timeperiod" placeholder="Choose timeperiod" class="md-no-underline">
+                                  <md-option value="5m">Last 5 mins</md-option>
+                                  <md-option value="15m">Last 15 mins</md-option>
+                                  <md-option value="30m">Last 30 mins</md-option>
+                                  <md-option value="1h">Last 1 hour</md-option>
+                                </md-select>
                             </section>
                         </section>            
                         <style>
@@ -55,7 +75,7 @@
                                 </tr>
                                 </thead>
                                 <tbody md-body>
-                                <tr md-row md-select="user" md-select-id="name" md-auto-select
+                                <tr md-row md-select="process" md-select-id="process" md-auto-select
                                     ng-repeat="process in processes | filter: searchquery | orderBy: processquery.order | limitTo: processquery.limit : (processquery.page -1) * processquery.limit">
                                     <td md-cell><span class="md-body-2">{$process[8]$}</span></td>
                                     <td md-cell><span class="md-body-2">{$process[10]$}</span></td>

@@ -13,13 +13,12 @@
 from django.utils.translation import ugettext_lazy as _
 
 import horizon
-from openstack_dashboard.dashboards.overview import dashboard
 
 
-class Physical_Monitor(horizon.Panel):
-    name = _("Physical Monitor")
-    icon = "fa fa-plug"
-    slug = "physical_monitor"
-
-
-dashboard.Overview.register(Physical_Monitor)
+class Disaster_Recovery(horizon.Panel):
+    name = _("Disaster_Recovery")
+    icon = "fa fa-file-text-o"
+    slug = "disaster_recovery"
+    permissions = (
+        ('openstack.services.volume', 'openstack.services.volumev2'),
+    )

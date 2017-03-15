@@ -27,20 +27,22 @@
    */
   angular
     .module('horizon.dashboard.overview.user_monitor')
-    .factory('Movie',Movie)
+    .factory('influxdb',influxdb)
     .controller('overviewUsersMonitorController', overviewUsersMonitorController);
     
-    Movie.$inject = ['$resource','$http'];
-  overviewUsersMonitorController.$inject = [
-    'horizon.framework.widgets.toast.service',
-    'horizon.framework.util.i18n.gettext',
-    'horizon.framework.widgets.modal-wait-spinner.service',
-    '$scope',
-    '$rootScope',
-    'Movie'
-  ];
+    influxdb.$inject = ['$resource','$http'];
 
-  function Movie($resource,$http){
+    overviewUsersMonitorController.$inject = [
+      'horizon.framework.widgets.toast.service',
+      'horizon.framework.util.i18n.gettext',
+      'horizon.framework.widgets.modal-wait-spinner.service',
+      '$scope',
+      '$rootScope',
+      'influxdb',
+      '$interval'
+    ];
+
+  function influxdb($resource,$http){
      // return $resource('http://192.168.30.51:8086/query?q=select * from windows&db=mydb&u=root&p=root').get();
      delete $http.defaults.headers.common["X-Requested-With"]
           return {
@@ -52,35 +54,22 @@
               return $resource(url).get();
             }
           };
-        
-      
-
     }
 
-  function overviewUsersMonitorController(toast, gettext,Spinner, $scope, $rootScope,Movie) {
+  function overviewUsersMonitorController(toast, gettext,Spinner, $scope, $rootScope,influxdb,$interval) {
 
       $scope.selected = [];
+      $scope.timeperiod = "5m";
         $scope.processquery = {
           order: 'time',
           limit: 15,
           page: 1
         };
        
-        $scope.sortOptions = [
-          {
-            "name": "All Computers",
-            "value": "all"
-          },
-          {
-            "name": "Available Conmputers",
-            "value": "available"
-          },
-          {
-            "name":"Assigned Computers",
-            "value" : "not available"
-          }
-
-        ];
+        $scope.computers = ["All","vm-1","vm-2","vm-3"];
+        $scope.computer = "All";
+        $scope.user = "All";
+        $scope.users = ["All","raja","gopal"];
     
        $scope.customFilter = function (data) {
           if (data.status === $scope.selectedOption) {
@@ -92,9 +81,9 @@
           }
         };  
 
-      $rootScope.$on("callretieveProcessMetrics", function(){
-           $rootScope.retieveProcessMetrics();
-        });
+      // $rootScope.$on("callretieveProcessMetrics", function(){
+      //      $rootScope.retieveProcessMetrics();
+      //   });
 
       $rootScope.retieveProcessMetrics = function(){
 
@@ -113,8 +102,8 @@
         //  });
       //   $scope.processes=[];
       // $scope.processcount = $scope.processes.length;
-        //  $scope.processes=Movie.get();
-               Movie.query('select * from windows where time > now() - 1h', 'mydb')
+        //  $scope.processes=influxdb.get();
+               influxdb.query('select * from windows where time > now() - 1d', 'mydb')
          .$promise.then(function (result) {
             $scope.processes=result.results[0].series[0].values;
              $scope.processcount = $scope.processes.length;
@@ -123,6 +112,15 @@
          
 
       }
+
+      var theInterval = $interval(function(){
+          $rootScope.retieveProcessMetrics();
+       }.bind(this), 5000);    
+
+      $scope.$on('$destroy', function () {
+          $interval.cancel(theInterval)
+      });
+
       $rootScope.retieveProcessMetrics();
   }
 

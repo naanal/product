@@ -10,16 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from django.utils.translation import ugettext_lazy as _
-
-import horizon
-from openstack_dashboard.dashboards.overview import dashboard
+from horizon.test import helpers as test
 
 
-class Physical_Monitor(horizon.Panel):
-    name = _("Physical Monitor")
-    icon = "fa fa-plug"
-    slug = "physical_monitor"
-
-
-dashboard.Overview.register(Physical_Monitor)
+class SummaryTests(test.TestCase):
+    # Unit tests for summary.
+    def test_me(self):
+        self.assertTrue(1 + 1 == 2)

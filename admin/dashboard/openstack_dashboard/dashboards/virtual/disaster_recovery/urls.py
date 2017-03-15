@@ -10,16 +10,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from django.utils.translation import ugettext_lazy as _
+from django.conf.urls import url
 
-import horizon
-from openstack_dashboard.dashboards.overview import dashboard
-
-
-class Physical_Monitor(horizon.Panel):
-    name = _("Physical Monitor")
-    icon = "fa fa-plug"
-    slug = "physical_monitor"
+from openstack_dashboard.dashboards.virtual.disaster_recovery import views
 
 
-dashboard.Overview.register(Physical_Monitor)
+urlpatterns = [
+    url(r'^$', views.IndexView.as_view(), name='index'),
+]

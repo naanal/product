@@ -1,3 +1,5 @@
+# Copyright 2015 IBM Corp.
+#
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -10,16 +12,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from django.utils.translation import ugettext_lazy as _
+from django.conf.urls import url
 
-import horizon
-from openstack_dashboard.dashboards.overview import dashboard
-
-
-class Physical_Monitor(horizon.Panel):
-    name = _("Physical Monitor")
-    icon = "fa fa-plug"
-    slug = "physical_monitor"
+from openstack_dashboard.dashboards.identity.license import views
 
 
-dashboard.Overview.register(Physical_Monitor)
+urlpatterns = [
+    url(r'^$', views.IndexView.as_view(), name='index'),
+]

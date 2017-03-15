@@ -9,14 +9,12 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import views
 
 
-class IndexView(views.APIView):
+class IndexView(views.HorizonTemplateView):
     # A very simple class-based view...
     template_name = 'virtual/backup/index.html'
-
-    def get_data(self, request, context, *args, **kwargs):
-        # Add data to the context here...
-        return context
+    page_title = _("Backups")

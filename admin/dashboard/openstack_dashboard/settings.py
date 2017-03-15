@@ -450,7 +450,7 @@ WINDOWS_SERVER_USERPATH = "ou=users,ou=Police"
 
 DOMAIN_NAME = "naanal.local"
 
-MONITORING_HOST = "http://192.168.30.51:3000"
+MONITORING_HOST = "http://192.168.30.21:3000"
 
 NETWORK_HOST= "http://192.168.30.1"
 
@@ -487,3 +487,15 @@ BYTES_SENT =  MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&p
 BYTES_RECEVIED = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=8"
 
 ALERTS = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=16"
+
+C2_CPU_TEXT = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=18"
+
+C2_RAM_TEXT = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=19"
+
+C2_DISK_TEXT = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=20"
+
+C3_CPU_TEXT = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=21"
+
+C3_RAM_TEXT = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=22"
+
+C3_DISK_TEXT = MONITORING_HOST + "/dashboard-solo/db/host-monitoring?theme=dark&panelId=23"
