@@ -3,7 +3,7 @@ button.btn.btn-primary.finish {
     display: none !important;
 }
 </style>
-<div ng-controller="selectErrorInstancesController">
+<div ng-controller="selectErrorVmsController">
 	
     <h4 ng-if="model.allErrorInstances.length == 0">All Vms are in Good State</h4>
     <section ng-if="model.allErrorInstances.length > 0">
@@ -16,7 +16,7 @@ button.btn.btn-primary.finish {
             <div flex-xs flex="33" ng-repeat="vm in model.allErrorInstances">
                 <md-checkbox md-no-ink
                              class="md-primary"
-                             ng-click="toggleVmsLists(vm,model.recreateInstancesSpec.selectedInstances)"
+                             ng-click="toggleVmsLists(vm,model.recreateInstancesSpec.selectedInstances);"
                            	 ng-checked="exists(vm, model.recreateInstancesSpec.selectedInstances)"
                              ng-required="model.recreateInstancesSpec.selectedInstances.length==0"
                              value="{$vm$}">
@@ -28,18 +28,10 @@ button.btn.btn-primary.finish {
 		
 		
 		
-		<div class="panel-footer row"><!-- panel-footer -->
-				<div class="col-xs-6 text-left">
-					<div class="previous">
-					  <button type="button" class="btn btn-default btn-lg" ng-click="model.createJson()">
-						      Create Json
-						 
-					  </button>
-					</div>
-				</div>
+		<div class="panel-footer row"><!-- panel-footer -->				
 				<div class="col-xs-6 text-right">   
 					<div class="next">					 
-						<a type="button"  class="btn btn-default btn-lg"  href="/static/instances.json" download="">Download Json </a>
+						<a type="button"  class="btn btn-default btn-lg" ng-click="model.createJson()"  href="/static/instances.json" download="">Create & Download Json </a>
 					</div>
 				</div>
 		</div><!-- end panel-footer -->	

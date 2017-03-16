@@ -49,76 +49,32 @@ var push = Array.prototype.push;
     
       
 
-    ctrl.startRecreate = startRecreate;
-    ctrl.uploadFile = uploadFile;
-    ctrl.loadFile = loadFile;
+    ctrl.startRecreate = startRecreate;   
     ctrl.changesnapshot=changesnapshot;
     ctrl.snapshot_id="";
     function startRecreate(){      
-      $scope.isStarted = true;      
-      console.log($scope.new_data);
-      console.log(recreateInstancesModel.volumesnapshot_list.volume_list);     
+      $scope.isStarted = true;           
+      console.log(recreateInstancesModel.volumesnapshot_list.volume_list);  
+      console.log(recreateInstancesModel.recreateInstancesSpec.selectedInstances);
         backupServers();
         deleteServers();
     }
     function changesnapshot(){      
       console.log(ctrl.snapshot_id);
-      console.log(typeof($scope.new_data.selectedInstances));
-      console.log($scope.new_data.selectedInstances);
+      console.log(typeof(recreateInstancesModel.recreateInstancesSpec.selectedInstances));
+      console.log(recreateInstancesModel.recreateInstancesSpec.selectedInstances);
       
-      for (var property in $scope.new_data.selectedInstances) {
+      for (var property in recreateInstancesModel.recreateInstancesSpec.selectedInstances) {
         console.log(property);
-        $scope.new_data.selectedInstances[property].instance_volume_id=ctrl.snapshot_id;
+        recreateInstancesModel.recreateInstancesSpec.selectedInstances[property].instance_volume_id=ctrl.snapshot_id;
         
         }
-        console.log($scope.new_data.selectedInstances);
-        
-               
-      
-    }
-    
-    function loadFile() {      
-      var input, file, fr;
-
-    if (typeof window.FileReader !== 'function') {
-      alert("The file API isn't supported on this browser yet.");
-      return;
-    }
-
-    input = document.getElementById('fileinput');
-    if (!input) {
-      alert("Um, couldn't find the fileinput element.");
-    }
-    else if (!input.files) {
-      alert("This browser doesn't seem to support the `files` property of file inputs.");
-    }
-    else if (!input.files[0]) {
-      alert("Please select a file before clicking 'Load'");
-    }
-    else {
-      file = input.files[0];
-      fr = new FileReader();
-      fr.onload = receivedText;
-      fr.readAsText(file);
-    }
-
-    function receivedText(e) {
-      var lines = e.target.result;
-      var newArr = JSON.parse(lines);
-      $scope.new_data=newArr
-    }
-  }
-    
-      
-       function uploadFile(){
-        console.log("upload JSON....!");
-        console.log($scope.Json);
-    
+        console.log(recreateInstancesModel.recreateInstancesSpec.selectedInstances);
     }
 
     function backupServers(){
       $scope.isBackupInProgress = true;
-      novaAPI.backupServers({"selectedInstances":$scope.new_data.selectedInstances})
+      novaAPI.backupServers({"selectedInstances":recreateInstancesModel.recreateInstancesSpec.selectedInstances})
       .then(function(res){
         if(res.status == 204)
         {
@@ -132,7 +88,7 @@ var push = Array.prototype.push;
 
 
     function deleteServers(){
-      var instances_id = $scope.new_data.selectedInstances.map(function(obj){return obj.instance_id;});
+      var instances_id = recreateInstancesModel.recreateInstancesSpec.selectedInstances.map(function(obj){return obj.instance_id;});
       novaAPI.deleteServers({"instances_ids":instances_id}).then(function(res){
         if(res.status == 204)
           $scope.isDeletedInProgress = true;
@@ -151,7 +107,7 @@ var push = Array.prototype.push;
 
     function reBuild(){
       
-      novaAPI.reCreates_instances({"selectedInstances":$scope.new_data.selectedInstances}).then(function(res){
+      novaAPI.reCreates_instances({"selectedInstances":recreateInstancesModel.recreateInstancesSpec.selectedInstances}).then(function(res){
         if(res.status == 204)
           $scope.isRecreatedInProgress = true;
       },function error(){});
@@ -161,6 +117,8 @@ var push = Array.prototype.push;
     function recreatingStatus(){
       $scope.recreatingStatus = {"inProgress":[], "inError":[]}
       for(var i=0;i<$scope.selected_instances_status.length;i++){
+          if($scope.selected_instances_status[i].instance_status == 'ACTIVE')
+            console.log("instance_status is ACTIVE");
           if($scope.selected_instances_status[i].instance_status == 'BUILD')
             $scope.recreatingStatus.inProgress.push($scope.selected_instances_status[i].instance_id)
           else if($scope.selected_instances_status[i].instance_status == 'ERROR')
@@ -169,7 +127,7 @@ var push = Array.prototype.push;
     }
 
     function attachExtraVolumes(){
-       novaAPI.attachExtraVolumes({"selectedInstances":$scope.new_data.selectedInstances}).then(function(res){
+       novaAPI.attachExtraVolumes({"selectedInstances":recreateInstancesModel.recreateInstancesSpec.selectedInstances}).then(function(res){
         if(res.status == 204)
           $scope.isReattachInProgress = true;
       },function error(){});
@@ -191,7 +149,7 @@ var push = Array.prototype.push;
 
 
     function pullServers(){
-      var instances_names = $scope.new_data.selectedInstances.map(function(obj){return obj.instance_name;});
+      var instances_names = recreateInstancesModel.recreateInstancesSpec.selectedInstances.map(function(obj){return obj.instance_name;});
       novaAPI.getServersListBySearch({"searchterms":instances_names,"searchindex":"name"})
       .then(function(response){
           $scope.selected_instances_status = response.data.vms;

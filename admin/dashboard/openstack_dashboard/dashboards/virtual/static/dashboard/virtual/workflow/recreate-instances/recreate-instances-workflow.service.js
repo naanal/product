@@ -34,18 +34,11 @@
 
       steps: [
         {
-          id: 'select_error_instances',
+          id: 'select_error_vms',
           title: gettext('Select Instances'),
-          templateUrl: basePath + 'select_error_instances/select_error_instances.html',
-          helpUrl: basePath + 'select_error_instances/select_error_instances.help.html',
-          formName: 'selectErrorInstancesForm'
-        },
-        {
-          id: 'Download_json',
-          title: gettext('Delete Instances'),
-          templateUrl: basePath + 'download_json/download_json.html',
-          helpUrl: basePath + 'download_json/download_json.help.html',
-          formName: 'DeleteForm'
+          templateUrl: basePath + 'select_error_vms/select_error_vms.html',
+          helpUrl: basePath + 'select_error_vms/select_error_vms.help.html',
+          formName: 'selectErrorVmsForm'
         },
         {
           id: 'start_recreate',

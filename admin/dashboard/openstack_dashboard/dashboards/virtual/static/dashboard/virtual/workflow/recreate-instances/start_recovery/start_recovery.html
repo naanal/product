@@ -18,9 +18,7 @@
        <md-divider> </md-divider>
        
        
-        <input type='file' id='fileinput'> 
-       <input type='button' id='btnLoad' value='Load' ng-click="ctrl.loadFile()">
-      
+       
       
       
        
@@ -94,6 +92,6 @@
     <md-checkbox ng-model="devpurpose" >
          For Development Purpose
     </md-checkbox>
-    <pre ng-show="devpurpose">{$ new_data | json $} </pre>    
+    <pre ng-show="devpurpose">{$ recreateInstancesModel.recreateInstancesSpec| json $} </pre>    
     <pre ng-show="devpurpose">{$ model.volumesnapshot_list | json $}</pre>
 </div>

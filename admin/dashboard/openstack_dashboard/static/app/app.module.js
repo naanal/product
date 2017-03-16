@@ -31,7 +31,8 @@
     'ngMaterial',
     'ngMessages',
     'md.data.table',
-    'googlechart'
+    'googlechart',
+    'toggle-switch'
   ];
 
   /**

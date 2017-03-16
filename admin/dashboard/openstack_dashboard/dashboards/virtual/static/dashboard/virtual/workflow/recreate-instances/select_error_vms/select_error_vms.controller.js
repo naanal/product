@@ -18,13 +18,13 @@
 
   angular
     .module('horizon.dashboard.virtual.workflow.recreate-instances')
-    .controller('selectErrorInstancesController', selectErrorInstancesController);
+    .controller('selectErrorVmsController', selectErrorVmsController);
 
-  selectErrorInstancesController.$inject = [
+  selectErrorVmsController.$inject = [
     'recreateInstancesModel', '$scope', '$timeout'
   ];
 
-  function selectErrorInstancesController(recreateInstancesModel,$scope,$timeout) {
+  function selectErrorVmsController(recreateInstancesModel,$scope,$timeout) {
     var ctrl = this;
    console.log("hiiiiiiiiiii");
    console.log(recreateInstancesModel.recreateInstancesSpec.selectedInstances.length);
