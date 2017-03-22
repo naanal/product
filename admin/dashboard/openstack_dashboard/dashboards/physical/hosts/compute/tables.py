@@ -20,7 +20,7 @@ from horizon.utils import filters as utils_filters
 
 from openstack_dashboard import api
 from openstack_dashboard import policy
-
+from django.core import urlresolvers
 
 class EvacuateHost(tables.LinkAction):
     name = "evacuate"
@@ -38,6 +38,32 @@ class EvacuateHost(tables.LinkAction):
             return False
 
         return self.datum.state == "down"
+
+
+
+class ForcemigrateHost(tables.LinkAction):
+    name = "migratehost"
+    verbose_name = _("ForceMigrate Host")
+    url = "horizon:physical:hosts:index"   
+    #policy_rules = (("compute", "compute_extension:evacuate"),)
+
+    
+    def allowed(self, request, instance):
+        if not api.nova.extension_supported('AdminActions', request):
+            return False
+        return self.datum.state == "down"
+
+    def get_default_attrs(self):
+        ngclick = "get_nodeDetails()"
+        self.attrs.update({
+            'ng-controller': 'forceMigrateController',
+            'ng-click': ngclick
+        })
+        return super(ForcemigrateHost, self).get_default_attrs()
+
+    def get_link_url(self, datum=None):
+        return "javascript:void(0);"
+
 
 
 class DisableService(policy.PolicyTargetMixin, tables.LinkAction):
@@ -170,6 +196,7 @@ class ComputeHostTable(tables.DataTable):
         multi_select = False
         row_actions = (
             EvacuateHost,
+            ForcemigrateHost,
             DisableService,
             EnableService,
             MigrateMaintenanceHost

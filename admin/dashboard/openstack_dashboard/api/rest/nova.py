@@ -1000,7 +1000,7 @@ class recreates_instances(generic.View):
                                    nics=nic,
                                    disk_config="AUTO",
                                    config_drive=False)
-            time.sleep(2)
+            time.sleep(15)
             if ins['floating_ip'] is not None:
                 api.nova.addExisitingFloatingIp(
                     request, ins['instance_name'], ins['floating_ip'])
