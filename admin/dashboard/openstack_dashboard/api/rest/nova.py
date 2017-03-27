@@ -29,6 +29,7 @@ import os
 import time
 from netaddr import *
 import json
+import socket
 
 
 @urls.register
@@ -959,6 +960,7 @@ class downloadJson(generic.View):
                 outfile.write(json_string)
                 outfile.close()
         return ("static/instances.json")
+
 @urls.register
 class recreates_instances(generic.View):
     """API for recreate blue screen error instances.
@@ -1004,4 +1006,88 @@ class recreates_instances(generic.View):
             if ins['floating_ip'] is not None:
                 api.nova.addExisitingFloatingIp(
                     request, ins['instance_name'], ins['floating_ip'])
+
+
+def check_rdp(ip=None):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    result = s.connect_ex((ip, 3389))
+    if result == 0:
+        return True
+    else:
+        return False
+    s.close()
+
+def ping_check(hostname=None):
+    response=os.system("/bin/ping -c 1" + hostname)
+    if response == 0:
+       return True
+    else:
+       return False
+
+@urls.register
+class instances_check(generic.View):
+    """API over all servers.
+    """
+    url_regex = r'nova/instances_rdpcheck/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a list of servers in active state .
+        """        
+        vms = []
+        vms_raw = api.nova.server_list(request,search_opts={"status": "active"})[0]    
+        vms_raw_json = [s.to_dict() for s in vms_raw]
+        for vm in vms_raw_json:
+
+            vm_obj = {}
+            vm_obj['internal_ip'] = vm_obj['floating_ip'] = None
+            vm_obj['instance_id'] = vm['id']
+            vm_obj['instance_status'] = vm['status']
+            vm_obj['task_status'] = vm['OS-EXT-STS:task_state']
+            vm_obj['instance_name'] = vm['name']
+            vm_obj['flavor_id'] = vm['flavor']['id']
+            vm_obj['instance_volume_id'] = None
+            vm_obj['other_volumes'] = []
+            vm_obj['image_name']=vm['image_name']
+
+            # rerieve IPs
+            for net in vm.get('addresses', ''):
+                for nic in vm.get('addresses')[net]:
+                    net_id = [x['id']
+                              for x in api.neutron.network_list(request, name=net)]
+                    vm_obj['net_id'] = net_id[0]
+                    if nic['OS-EXT-IPS:type'] == 'fixed':
+                        vm_obj['internal_ip'] = nic['addr']
+                    elif nic['OS-EXT-IPS:type'] == 'floating':
+                        vm_obj['floating_ip'] = nic['addr']
+
+            if vm_obj['internal_ip'] is not None:
+                # retrieve Volume
+                vol_raw = api.nova.instance_volumes_list(request, vm['id'])
+                vol = [v.to_dict() for v in vol_raw]
+                if len(vol) > 0:
+                    for dev in vol:
+                        if dev['device'] == '/dev/vda':
+                            vm_obj['instance_volume_id'] = dev['id']
+                        else:
+                            vm_obj['other_volumes'].append(dev['id'])
+
+                if vm_obj['instance_volume_id'] is not None:
+                    vms.append(vm_obj)
+
+            if vm_obj['floating_ip']:               
+                rdp_status=check_rdp(ip=vm_obj['floating_ip'])
+                vm_obj['rdp_status']=rdp_status
+                if not rdp_status :                    
+                    vm_state=ping_check(hostname=vm_obj['floating_ip'])
+                    print(vm_state)
+                    vm_obj['vm_state']=vm_state
+                else:
+                    vm_obj['vm_state']=True
+
+            else:
+                vm_obj['rdp_status']=None
+                vm_obj['vm_state']=None
+
+        return {'vms': vms}
 

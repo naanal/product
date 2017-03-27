@@ -71,7 +71,8 @@
       createManyFloatingIps:createManyFloatingIps,
       hypervisorStats:hypervisorStats,
       createJsoninNova:createJsoninNova,
-      reCreates_instances:reCreates_instances
+      reCreates_instances:reCreates_instances,
+      instances_rdpcheck:instances_rdpcheck
     };
 
     return service;
@@ -731,6 +732,13 @@
       return apiService.post('/api/nova/recreates_instances/', instances)
         .error(function () {
           toastService.add('error', gettext('Unable to recreate Instances.'));
+        });
+    }
+
+    function instances_rdpcheck() {
+      return apiService.get('/api/nova/instances_rdpcheck/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve Instances  Status.'));
         });
     }
 

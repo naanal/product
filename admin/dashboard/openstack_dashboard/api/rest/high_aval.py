@@ -24,7 +24,7 @@ class Users(generic.View):
 
     @rest_utils.ajax()
     def get(self, request):
-        """ Get a list of AD Users
+        """ Create a znode(down node name) in zookeepr for triggering migration
         """
         result = api.nova.service_list(request,binary="nova-compute")
         hosts=down_hosts(result)
