@@ -72,7 +72,8 @@
       hypervisorStats:hypervisorStats,
       createJsoninNova:createJsoninNova,
       reCreates_instances:reCreates_instances,
-      instances_rdpcheck:instances_rdpcheck
+      instances_rdpcheck:instances_rdpcheck,
+      instance_hardreboot:instance_hardreboot
     };
 
     return service;
@@ -739,6 +740,15 @@
       return apiService.get('/api/nova/instances_rdpcheck/')
         .error(function () {
           toastService.add('error', gettext('Unable to retrieve Instances  Status.'));
+        });
+    }
+
+    function instance_hardreboot(instance_id) {
+      console.log("inside the Nova api servicev");
+      console.log(instance_id)
+      return apiService.post('/api/nova/instances_rdpcheck/',instance_id)
+        .error(function () {
+          toastService.add('error', gettext('Unable to restart Instances  Status.'));
         });
     }
 
