@@ -1,0 +1,33 @@
+sudo apt-get install supervisor
+
+sudo service supervisor restart
+
+vim /etc/supervisor/conf.d/rdp_status.conf
+
+[program:rdp_status]
+command=/home/naanal/Documents/testing_dash/product/admin/dashboard/check_unable_rdp_instances.py
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/rdpstatus.err.log
+stdout_logfile=/var/log/rdpstatus.out.log
+
+
+
+supervisorctl reread
+
+supervisorctl update
+
+supervisorctl status
+
+supervisorctl stop
+
+supervisorctl statrt rdp_status
+
+supervisorctl status all
+
+
+IN check_unable_rdp_instances.py 
+
+MUST BE
+
+ dumb_directory= "..../..../../product/admin/dashboard/check_unable_rdp_instances.py"
