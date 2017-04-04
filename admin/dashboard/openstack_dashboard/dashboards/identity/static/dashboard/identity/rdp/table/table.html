@@ -1,0 +1,69 @@
+<!-- 
+<div ng-controller="identityevirtualmachineTableController">
+    <md-card>
+     <section flex="" layout-align="center center">
+                                <md-input-container ng-show="!selected.length" md-no-float="" class="md-block left">
+                                    <md-icon>
+                                        <i class="material-icons">search</i>
+                                    </md-icon>
+                                    <input type="text" ng-model="searchquery" placeholder="Search By Instance Name,Floating IP..."/>
+                                </md-input-container>
+                                
+                            </section>
+
+        <md-card-content>
+        <md-table-container>
+                            <table md-table md-row-select multiple ng-model="selected" >
+                                <thead md-head md-order="query.order">
+                                <tr md-row>
+                                    <th md-column><span class="md-title">Name</span></th>
+                                    <th md-column><span class="md-title">Floating_ip</span></th>
+                                    <th md-column><span class="md-title">Instance Status</span></th>
+                                    <th md-column><span class="md-title">RDP Status</span></th>
+                                    <th md-column><span class="md-title">Ping status</span></th>
+                                    <th md-column><span class="md-title">Action</span></th>
+                                    
+                                </tr>
+                                </thead>
+                                <tbody md-body>
+                                <tr md-row md-select="user" md-select-id="name" md-auto-select
+                                    ng-repeat="vm in vms | filter: searchquery | orderBy: query.order | orderBy:'rdp_status':false | limitTo: query.limit : (query.page -1) * query.limit" >
+                                    <td md-cell><span class="md-body-2 text-primary"  >{$vm.instance_name$}</span></td>
+                                    <td md-cell><span class="md-body-2">{$vm.floating_ip$}</span></td>
+                                    <td md-cell>
+                                        <span class="md-body-2" >
+                                            {$vm.instance_status$}</span>    
+                                        </span>
+                                    </td>
+                                    <td md-cell>
+                                         <span class="md-body-2">
+                                            <span ng-if="vm.rdp_status" class="text-success"  >SUCCESS</span>
+                                            <span ng-if="vm.rdp_status == false" class="text-danger" >FAILED..!</span>
+                                            <span ng-if="vm.rdp_status == null">None</span>
+                                        </span>
+                                    </td>
+                                    </td>
+                                    <td md-cell>                                    
+                                    <span class="md-body-2">
+                                    <span ng-if="vm.vm_state" class="text-success" >SUCCESS</span>
+                                    <span ng-if="vm.vm_state == false" class="text-danger" >FAILED..!</span>
+                                    </span>
+                                    <span ng-if="vm.vm_state == null">None</span>
+                                    </span>
+                                    </td>
+                                    <td md-cell>
+                                    <span >
+                                          <md-button ng-disabled="vm.rdp_status" class="md-raised md-primary" data="{{vm.instance_id}}" ng-click="restart(vm.instance_id)">Restart</md-button>
+                                    </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </md-table-container> 
+                        <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page"
+                                             md-total="{$vmcount$}" md-page-select="true"
+                                             md-boundary-links="true"></md-table-pagination>      
+           
+        </md-card-content>
+    </md-card>
+</div> -->
