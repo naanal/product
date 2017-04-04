@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response
-from keystoneauth1.identity import v2
-from keystoneauth1 import session
-from keystoneclient import client as ksclient
+# from keystoneauth1.identity import v2
+# from keystoneauth1 import session
+# from keystoneclient import client as ksclient
 import time
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
@@ -14,7 +14,13 @@ import logging
 userlog = logging.getLogger('userlog')
 from django.shortcuts import redirect
 
-
+from keystoneauth1 import loading
+from keystoneauth1 import session
+from keystoneclient.v3 import client as keystone_client
+from novaclient import client as nova_client
+from cinderclient import client as cinder_client
+from neutronclient.v2_0 import client as neutron_client
+auth_url="http://192.168.30.200:35357/v2.0"
 
 @csrf_exempt
 # @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -28,9 +34,12 @@ def loginpage(request):
             request.session['username'] = username
             user_name=username+'@'+settings.DOMAIN_NAME
             password = password
+            # print(user_name)
+            # print(password)
             try:
                 s = Server(settings.LDAP_SERVER[0], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
                 conn = Connection(s, user=user_name, password=password, auto_bind=True)
+                #conn = Connection(s, user=user_name, password=password)
                 userlog.info("%s user login ", username)
                 instance_name = get_assigned_computer(username)
                 if instance_name == '':
@@ -61,6 +70,7 @@ def loginpage(request):
                                            'button_color': button_color})
             except ldap3.core.exceptions.LDAPBindError:
                 state = 'Wrong username or password'
+                print(state)
             except ldap3.core.exceptions.LDAPSocketOpenError:
                 try:
                     s = Server(settings.LDAP_SERVER[1], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
@@ -165,11 +175,13 @@ def change_password(request):
             password = request.POST.get('currentpassword')
             new_password = request.POST.get('newpassword')
             new_password1 = str(new_password)
+
             user_name=username+'@'+settings.DOMAIN_NAME
             password = password
             try:
                 s = Server(settings.LDAP_SERVER[0], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
                 conn = Connection(s, user=user_name, password=password, auto_bind=True)
+                #conn = Connection(s, user=user_name, password=password)
                 conn.unbind()
                 conn = bind()
                 dn = ("cn=%s," + settings.WINDOWS_SERVER_USERPATH + "," + settings.WINDOWS_SERVER_DOMAINPATH) % username
@@ -194,7 +206,8 @@ def change_password(request):
             except ldap3.core.exceptions.LDAPSocketOpenError:
                 try:
                     s = Server(settings.LDAP_SERVER[1], port=settings.LDAP_SERVER_PORT, use_ssl=settings.LDAP_SSL, get_info=ALL)
-                    conn = Connection(s, user=user_name, password=password, auto_bind=True)
+                    #conn = Connection(s, user=user_name, password=password, auto_bind=True)
+                    conn = Connection(s, user=user_name, password=password)
                     conn.unbind()
                     conn = bind()
                     dn = ("cn=%s,"+settings.WINDOWS_SERVER_USERPATH+","+settings.WINDOWS_SERVER_DOMAINPATH) % username
@@ -314,7 +327,7 @@ def instance_stop(request):
                 button_color = "btn btn-danger btn-xs"
                 console = vnc_console(instance_name)
             elif operation == 'reboot' and status == 'ACTIVE':
-                server.reboot(reboot_type='SOFT')
+                server.reboot()
                 userlog.info("%s reboot instance %s", username, instance_name)
                 status = instance_status(instance_name)
                 timeout = time.time() + 4 * 5  # 5 minutes from now
@@ -369,6 +382,8 @@ def get_assigned_computer(username):
                     assigned_computer = ''
             else:
                 assigned_computer = ''
+    # print("-----------Assigned Computers-------------")
+    # print(assigned_computer)
     return assigned_computer
 
 
@@ -429,15 +444,18 @@ def get_instance_floatingip(instance_name):
 
 def instance_status(instance_name):
     status = ''
-    from novaclient import client
     nova = get_nova_keystone_auth()
+    print(nova)
     if(nova=="Server not Found"):
         return (nova)
     try:
+        ins_list=nova.servers.list()
+        print(ins_list)
         server = nova.servers.find(name=instance_name)
         status =str(server.status)
-    except client.exceptions.NotFound:
+    except nova_client.exceptions.NotFound:
         status = "vm not found....!"
+        print(status)
         userlog.exception(status)
     except Exception:
         userlog.exception("Error:To find the server from the controller...!")
@@ -446,14 +464,25 @@ def instance_status(instance_name):
 
 def get_nova_keystone_auth():
     try:
-        auth_url = settings.OPENSTACK_HOST
-        auth = v2.Password(auth_url=auth_url, username=settings.OPENSTACK_USERNAME, password=settings.OPENSTACK_PASSWORD, tenant_name=settings.OPENSTACK_PROJECT_NAME)
+        loader = loading.get_plugin_loader('password')
+        auth = loader.load_from_options(auth_url=auth_url,
+                                username=settings.OPENSTACK_USERNAME,
+                                password=settings.OPENSTACK_PASSWORD,
+                                 project_name=settings.OPENSTACK_PROJECT_NAME)
         sess = session.Session(auth=auth)
-        keystone = ksclient.Client(session=sess)
-        from novaclient import client
-        nova = client.Client("2.1", session=sess)
+        nova = nova_client.Client(2, session=sess)
+        # cinder = cinder_client.Client(2, session=sess)
+        # neutron = neutron_client.Client(session=sess)
+        # return  neutron,cinder,nova
+        # auth_url = settings.OPENSTACK_HOST
+        # auth = v2.Password(auth_url=auth_url, username=settings.OPENSTACK_USERNAME, password=settings.OPENSTACK_PASSWORD, tenant_name=settings.OPENSTACK_PROJECT_NAME)
+        # sess = session.Session(auth=auth)
+        # keystone = ksclient.Client(session=sess)
+        # from novaclient import client
+        # nova = client.Client("2.1", session=sess)
         return (nova)
-    except:
+    except Exception as e:
+        print(e)
         state="Server not Found"
         return (state)
 
@@ -476,7 +505,7 @@ def download_RDP(username, instance_id, instance_name):
     AD_username=Domain_name+username
     file_name = os.path.join(settings.BASE_DIR, 'login/static/RDP/' + username + ".rdp")
     Rdpname = username + ".rdp"
-    content = "auto connect:i:1\nfull address:s:%s\nusername:s:%s\n" % (floating_ip, AD_username)
+    content = "auto connect:i:1\nfull address:s:%s\nusername:s:%s\nenablecredsspsupport:i:0\n" % (floating_ip, AD_username)
     fo = open(file_name, "wb")
     fo.write(content);
     return (Rdpname)
