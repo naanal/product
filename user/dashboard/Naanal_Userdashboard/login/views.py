@@ -234,6 +234,17 @@ def change_password(request):
     return redirect('login.views.loginpage')
 
 
+def remote_desktops(request):
+    username = password = ''
+    if request.GET:
+        if request.session.has_key('username'):
+            print("---------Inside the Remote Desktop------------")
+            username1 = request.session['username']
+            username = request.GET.get('username')
+            server_ip="https://"+settings.LDAP_SERVER[0]+"/rdweb/"
+            return render_to_response('Remote_Desktop.html', {'username': username , 'server_ip': server_ip})
+    return redirect('login.views.loginpage')
+
 
 def help(request):
     username = password = ''

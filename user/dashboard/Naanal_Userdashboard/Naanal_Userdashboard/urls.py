@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url(r'^RDP_help/','login.views.RDP_help' ),
     url(r'^changepswd_help/','login.views.changepswd_help' ),
     url(r'^stop/','login.views.instance_stop' ),
+    url(r'^remote_desktops/','login.views.remote_desktops' ),
     url(r'^logout/','login.views.logout' ),
     
 )
