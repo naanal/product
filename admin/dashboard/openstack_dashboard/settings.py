@@ -424,7 +424,7 @@ SAN_STORAGE_URL = 'http://172.30.64.63'
 
 # Belows are LDAP Credentials
 
-LDAP_SERVER = ["192.168.30.197", "windows-backup-server"]
+LDAP_SERVER = ["192.168.30.208", "windows-backup-server"]
 
 LDAP_SERVER_PORT = 636
 
@@ -432,9 +432,9 @@ LDAP_SSL = True
 
 LDAP_ADMIN_USERNAME = "Administrator@naanal.local"
 
-LDAP_ADMIN_PASSWORD = "p@ssw0rd3"
+LDAP_ADMIN_PASSWORD = "p@ssw0rd"
 
-LDAP_SERVER_MACHINE_NAME = 'WIN-46RBIGNC9DF'
+LDAP_SERVER_MACHINE_NAME = 'windows-2012'
 
 LDAP_DNS = "naanal.local"
 

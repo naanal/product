@@ -135,33 +135,33 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 STATIC_URL = '/static/'
 
-LDAP_SERVER = ["172.30.64.30","172.30.1.198"]
+LDAP_SERVER = ["192.168.30.208","172.30.1.198"]
 
-DOMAIN_NAME="police.local"
+DOMAIN_NAME="naanal.local"
 
-DOMAIN="POLICE\\"
+DOMAIN="NAANAL\\"
 
-WINDOWS_SERVER_DOMAINPATH="dc=police,dc=local"
+WINDOWS_SERVER_DOMAINPATH="dc=naanal,dc=local"
 
-WINDOWS_SERVER_USERPATH="OU=users,OU=tech"
+WINDOWS_SERVER_USERPATH="OU=users,OU=police"
 
 LDAP_SERVER_PORT = 636
 
 LDAP_SSL = True
 
-LDAP_ADMIN_USERNAME = "Administrator@police.local"
+LDAP_ADMIN_USERNAME = "Administrator@naanal.local"
 
-LDAP_ADMIN_PASSWORD = "p@ssw0rd1"
+LDAP_ADMIN_PASSWORD = "p@ssw0rd"
 
-LDAP_DNS = "police.local"
-LDAP_DNS = "police.local"
+LDAP_DNS = "naanal.local"
+LDAP_DNS = "naanal.local"
 
-LDAP_BASE_DIR = "OU=users,OU=tech,DC=police,DC=local"
+LDAP_BASE_DIR = "OU=users,OU=police,DC=naanal,DC=local"
 
 OPENSTACK_USERNAME="admin"
 
-OPENSTACK_PASSWORD="p@ssw0rd"
+OPENSTACK_PASSWORD="admin"
 
 OPENSTACK_PROJECT_NAME="admin"
 
-OPENSTACK_HOST="http://172.30.64.11:5000/v2.0"
+OPENSTACK_HOST="http://192.168.30.200:5000/v2.0"

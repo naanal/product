@@ -25,7 +25,7 @@ from openstack_dashboard.api.rest import json_encoder
 from openstack_dashboard.api.rest import urls
 from openstack_dashboard.api.rest import utils as rest_utils
 import simplejson
-import os
+import os,platform
 import time
 from netaddr import *
 import json
@@ -1017,12 +1017,17 @@ def check_rdp(ip=None):
         return False
     s.close()
 
+# def ping_check(hostname=None):
+#     response=os.system("/bin/ping -c 1" + hostname)
+#     if response == 0:
+#        return True
+#     else:
+#        return False
+
 def ping_check(hostname=None):
-    response=os.system("/bin/ping -c 1" + hostname)
-    if response == 0:
-       return True
-    else:
-       return False
+    ping_str = "-n 1" if  platform.system().lower()=="windows" else "-c 1"
+    status=os.system("ping " + ping_str + " " + hostname) == 0
+    return status
 
 @urls.register
 class instances_check(generic.View):
@@ -1033,61 +1038,89 @@ class instances_check(generic.View):
     @rest_utils.ajax()
     def get(self, request):
         """Get a list of servers in active state .
-        """        
-        vms = []
-        vms_raw = api.nova.server_list(request,search_opts={"status": "active"})[0]    
-        vms_raw_json = [s.to_dict() for s in vms_raw]
-        for vm in vms_raw_json:
+        """  
+        with open('instance_rdpstatus.json') as data_file:
+            data = json.loads(data_file.read())
+            return(data)      
+        # vms = []
+        # vms_raw = api.nova.server_list(request,search_opts={"status": "active"})[0]    
+        # vms_raw_json = [s.to_dict() for s in vms_raw]
+        # for vm in vms_raw_json:
 
-            vm_obj = {}
-            vm_obj['internal_ip'] = vm_obj['floating_ip'] = None
-            vm_obj['instance_id'] = vm['id']
-            vm_obj['instance_status'] = vm['status']
-            vm_obj['task_status'] = vm['OS-EXT-STS:task_state']
-            vm_obj['instance_name'] = vm['name']
-            vm_obj['flavor_id'] = vm['flavor']['id']
-            vm_obj['instance_volume_id'] = None
-            vm_obj['other_volumes'] = []
-            vm_obj['image_name']=vm['image_name']
+        #     vm_obj = {}
+        #     vm_obj['internal_ip'] = vm_obj['floating_ip'] = None
+        #     vm_obj['instance_id'] = vm['id']
+        #     vm_obj['instance_status'] = vm['status']
+        #     vm_obj['task_status'] = vm['OS-EXT-STS:task_state']
+        #     vm_obj['instance_name'] = vm['name']
+        #     vm_obj['flavor_id'] = vm['flavor']['id']
+        #     vm_obj['instance_volume_id'] = None
+        #     vm_obj['other_volumes'] = []
+        #     vm_obj['image_name']=vm['image_name']
 
-            # rerieve IPs
-            for net in vm.get('addresses', ''):
-                for nic in vm.get('addresses')[net]:
-                    net_id = [x['id']
-                              for x in api.neutron.network_list(request, name=net)]
-                    vm_obj['net_id'] = net_id[0]
-                    if nic['OS-EXT-IPS:type'] == 'fixed':
-                        vm_obj['internal_ip'] = nic['addr']
-                    elif nic['OS-EXT-IPS:type'] == 'floating':
-                        vm_obj['floating_ip'] = nic['addr']
+        #     # rerieve IPs
+        #     for net in vm.get('addresses', ''):
+        #         for nic in vm.get('addresses')[net]:
+        #             net_id = [x['id']
+        #                       for x in api.neutron.network_list(request, name=net)]
+        #             vm_obj['net_id'] = net_id[0]
+        #             if nic['OS-EXT-IPS:type'] == 'fixed':
+        #                 vm_obj['internal_ip'] = nic['addr']
+        #             elif nic['OS-EXT-IPS:type'] == 'floating':
+        #                 vm_obj['floating_ip'] = nic['addr']
 
-            if vm_obj['internal_ip'] is not None:
-                # retrieve Volume
-                vol_raw = api.nova.instance_volumes_list(request, vm['id'])
-                vol = [v.to_dict() for v in vol_raw]
-                if len(vol) > 0:
-                    for dev in vol:
-                        if dev['device'] == '/dev/vda':
-                            vm_obj['instance_volume_id'] = dev['id']
-                        else:
-                            vm_obj['other_volumes'].append(dev['id'])
+        #     if vm_obj['internal_ip'] is not None:
+        #         # retrieve Volume
+        #         vol_raw = api.nova.instance_volumes_list(request, vm['id'])
+        #         vol = [v.to_dict() for v in vol_raw]
+        #         if len(vol) > 0:
+        #             for dev in vol:
+        #                 if dev['device'] == '/dev/vda':
+        #                     vm_obj['instance_volume_id'] = dev['id']
+        #                 else:
+        #                     vm_obj['other_volumes'].append(dev['id'])
 
-                if vm_obj['instance_volume_id'] is not None:
-                    vms.append(vm_obj)
+        #         if vm_obj['instance_volume_id'] is not None:
+        #             vms.append(vm_obj)
 
-            if vm_obj['floating_ip']:               
-                rdp_status=check_rdp(ip=vm_obj['floating_ip'])
-                vm_obj['rdp_status']=rdp_status
-                if not rdp_status :                    
-                    vm_state=ping_check(hostname=vm_obj['floating_ip'])
-                    print(vm_state)
-                    vm_obj['vm_state']=vm_state
-                else:
-                    vm_obj['vm_state']=True
+        #     if vm_obj['floating_ip']:               
+        #         rdp_status=check_rdp(ip=vm_obj['floating_ip'])
+        #         vm_obj['rdp_status']=rdp_status
+        #         if not rdp_status :                    
+        #             vm_state=ping_check(hostname=vm_obj['floating_ip'])
+        #             print(vm_state)
+        #             vm_obj['vm_state']=vm_state
+        #         else:
+        #             vm_obj['vm_state']=True
 
-            else:
-                vm_obj['rdp_status']=None
-                vm_obj['vm_state']=None
+        #     else:
+        #         vm_obj['rdp_status']=None
+        #         vm_obj['vm_state']=None
 
-        return {'vms': vms}
+        # return {'vms': vms}
 
+    @rest_utils.ajax(data_required=True)
+    def post(self, request):
+        """Get a list of servers.
+
+        The listing result is an object with property "items". Each item is
+        a server.
+
+        Example GET:
+        http://localhost/api/nova/recover_servers/
+        """
+        print("inside post method...!")
+        try:
+            args = (
+                request,
+                request.DATA['instance_id']
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter'
+                                            "'%s'" % e.args[0])
+        
+        instance_id=request.DATA['instance_id']
+
+        restart_status=api.nova.server_reboot(request,instance_id)
+        return restart_status        
+        

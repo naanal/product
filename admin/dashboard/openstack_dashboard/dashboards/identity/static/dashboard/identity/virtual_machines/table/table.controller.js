@@ -55,6 +55,26 @@
           });
       }
       $rootScope.retieveAdminEvents();
+
+       $scope.restart = function (instance_id) {
+      console.log("download json");
+      console.log(instance_id);
+      var obj = new Object();
+      obj.instance_id = instance_id;       
+      var jsonString= JSON.stringify(obj);
+      console.log(jsonString);
+      // var instances_restart = [];
+      // instances_restart.push({
+      //             key:   "instance_id",
+      //             value: instance_id
+      //         });
+      // console.log(instances_restart);
+
+       novaAPI.instance_hardreboot(obj).then(function(res){       
+      },function error(){});
+    }
+
+      
   }
 
 })();
