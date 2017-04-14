@@ -32,7 +32,8 @@
     'ngMessages',
     'md.data.table',
     'googlechart',
-    'toggle-switch'
+    'toggle-switch',
+    'ui.router'
   ];
 
   /**
