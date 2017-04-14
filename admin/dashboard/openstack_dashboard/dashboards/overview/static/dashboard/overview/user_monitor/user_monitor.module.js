@@ -26,7 +26,41 @@
    * to support and display the overview users panel.
    */
   angular
-    .module('horizon.dashboard.overview.user_monitor', []);
+    .module('horizon.dashboard.overview.user_monitor', ['ui.router'])
+    .run(run)
+    .config(config);
+
+    run.$inject = [
+      '$rootScope'
+    ];
+
+    config.$inject = [
+      '$provide',
+      '$windowProvider',
+      '$stateProvider',
+      '$urlRouterProvider'
+    ];
+
+      function run($rootScope) {
+                $rootScope.host = "";
+      }
+
+      function config($provide, $windowProvider,$stateProvider, $urlRouterProvider) {
+        var path = $windowProvider.$get().STATIC_URL + 'dashboard/overview/user_monitor/';
+        $provide.constant('horizon.dashboard.overview.basePath', path);
+        $urlRouterProvider.otherwise("/user_usage");
+        $stateProvider
+            .state('users', {
+                url: "/user_usage",
+                templateUrl: path + "views/user_usage_list.html"
+            })
+            .state('users_detail', {
+                url: "/:computer/:username",
+                templateUrl: path + "views/user_usage_detail.html"
+            })
+
+      }
+
 })();
 
 

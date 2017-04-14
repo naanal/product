@@ -1,0 +1,50 @@
+<style type="text/css">
+/*.wrapper, .content-wrapper, .content, .height100 {
+    height: 100%;
+}*/
+</style>
+<div ng-controller="UserMonitorDetailedController" class="height100">
+<p class="md-padding">You are monitoring {$current_user$} of {$current_computer$}  <a ui-sref="users"> Go Back</a></p>
+<md-table-container>
+    <table md-table md-row-select multiple ng-model="selected">
+        <thead md-head md-order="list_query.order">
+            <tr md-row>
+                <th md-column md-order-by="tags.title" ng-if="process_group_by == 'title'">App</th>
+                 <th md-column md-order-by="tags.process" ng-if="process_group_by == 'process'">Process</th>
+                <th md-column>CPU <br/>(User % / Proc %)</th>
+                <th md-column md-order-by="values[0][3]">RAM <br/>(in MB)</th>
+                <th md-column md-order-by="values[0][4]">Disk Read <br/>(in MB)</th>
+                <th md-column md-order-by="values[0][5]">Disk Write <br/>(in MB)</th>
+                <th md-column md-order-by="values[0][6]">Read Iops</th>
+                <th md-column md-order-by="values[0][7]">Write Iops</th>
+            </tr>
+        </thead>
+        <tbody md-body>
+            <tr md-row md-select="metric" md-select-id="metric" ng-repeat="metric in user_detailed_metrics | filter: searchquery | orderBy: list_query.order | limitTo: list_query.limit : (list_query.page -1) * list_query.limit">
+                <td md-cell>
+                <span class="md-body-2" ng-if="tags.title != ''"> {$metric.tags.title$}  </span>
+                <span class="md-body-2" ng-if="tags.process != ''"> {$metric.tags.process$}  </span> </td>
+                <td md-cell><span class="md-body-2">{$metric.values[0][1] | number : 2$} % - {$metric.values[0][2] | number : 2$} %</span></td>
+                <td md-cell><span class="md-body-2">{$metric.values[0][3] | number : 2 $}</span></td>
+                <td md-cell><span class="md-body-2">{$metric.values[0][4] | number : 2$}</span></td>
+                <td md-cell><span class="md-body-2">{$metric.values[0][5] | number : 2$}</span></td>
+                <td md-cell><span class="md-body-2">{$metric.values[0][6]$}</span></td>
+                <td md-cell><span class="md-body-2">{$metric.values[0][7]$}</span></td>
+            </tr>
+        </tbody>
+    </table>
+</md-table-container>
+
+
+<md-table-pagination md-limit="list_query.limit" md-limit-options="[5, 10, 15, 30, 50, 100, 200]" md-page="list_query.page" md-total="{$user_metrics_count$}" md-page-select="true" md-boundary-links="true"></md-table-pagination>
+
+
+<!-- <div class="embed-responsive embed-responsive-16by9"> -->
+  <!--   <iframe width="100%" height="100%%" src="http://192.168.30.200:3000/dashboard/db/user-monitoring?refresh=5s&orgId=1&from=now-5m&to=now&var-vm=All&var-user=All"></iframe> -->
+<!--   </div> -->
+
+<div class="embed-responsive embed-responsive-4by3">
+    <iframe class="embed-responsive-item" src="{$url | trusted $}"></iframe>
+  </div>
+
+</div>

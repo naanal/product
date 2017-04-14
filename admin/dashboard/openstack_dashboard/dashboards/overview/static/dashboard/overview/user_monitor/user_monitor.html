@@ -1,0 +1,116 @@
+<style type="text/css">
+    .row > .col-lg-6 {
+    display: inline-block;
+    float: none;
+  }
+  .content-header {
+    display: none;
+  }
+  .myStyle {
+        display: inline-block;
+        width:250px;
+        height: 250px;
+      }
+  .success
+  {
+    color: green;
+  }
+  .fa-user-times
+  {
+    color: grey;
+  }
+  .danger
+  {
+    color: red !important;
+  }
+</style>
+<div ng-controller="overviewUsersMonitorController" style="min-height: 300vh" class="height100">
+<div ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="Overview">
+            <md-content class="md-padding">
+                <div class="container text-center">
+                    <div ng-repeat="session in user_session_status" class="myStyle text-center">
+                        <i class="fa fa-5x" ng-class="{ 
+                          'fa-user': session.values[0][6] == 1,
+                          'fa-user-times': session.values[0][6] == 0,
+                          'success' : session.isHigh == 0,
+                          'danger': session.isHigh == 1 }" aria-hidden="true"></i>
+                        <br />
+                        {$session.tags.user$} <br/>
+                    <div class="">
+                        <i class="fa fa-desktop fa-lg" aria-hidden="true"></i> {$session.tags.computer$} <br/>
+
+                        <i class="fa fa-sign-in" aria-hidden="true"></i> {$session.values[0][3] $}
+                        <p ng-repeat="msg in session.msg">
+                            {$msg$}
+                        </p>
+                    </div>
+                    </div>
+                </div>
+
+            </md-content>
+        </md-tab>
+        <md-tab label="Utilization">
+            <md-content class="md-padding">
+   
+                <md-toolbar class="md-table-toolbar md-default">
+                    <div class="md-toolbar-tools">
+                        <span>User Monitoring</span>
+                        <div flex="10"></div>
+                        <div ng-show="selected.length">
+                            <md-button class="md-fab md-mini md-primary" aria-label="delete" ng-show="selected.length" ng-click="delete_user()">
+                                <md-icon>delete</md-icon>
+                                <md-tooltip>End Process</md-tooltip>
+                            </md-button>
+                        </div>
+                        <div flex></div>
+                        <md-select ng-model="$root.process_group_by" placeholder="Group By" class="md-no-underline md-padding" ng-show="$state.includes('users_detail')">
+                            <md-option value="title">Group By App Name</md-option>
+                            <md-option value="process">Group By Process</md-option>
+                        </md-select>
+                        <md-select ng-model="$root.timeperiod" placeholder="Choose timeperiod" class="md-no-underline">
+                            <md-option value="1m">Last 1 min</md-option>
+                            <md-option value="5m">Last 5 mins</md-option>
+                            <md-option value="15m">Last 15 mins</md-option>
+                            <md-option value="30m">Last 30 mins</md-option>
+                            <md-option value="1h">Last 1 hour</md-option>
+                            <md-option value="6h">Last 6 hours</md-option>
+                            <md-option value="1d">Last 1 day</md-option>
+                        </md-select>
+                    </div>
+                </md-toolbar>
+                <!-- <section flex="20" ng-show="!selected.length" layout-align="center center">
+                                 <md-input-container class="md-block">
+                                    <label>Computer</label>
+                                    <md-select  ng-model="computer" placeholder="Choose Computer" class="md-no-underline">
+                                      <md-option ng-repeat="com in computers" value="{$com$}">{$com$}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </section> -->
+                <!-- <span flex="5"></span> -->
+
+                <!-- <section flex="100" ng-show="selected.length" layout-align="center center">
+                                <md-content  class="md-padding">
+                                    <p class="md-padding md-title">
+                                        {$selected.length$} {$selected.length &gt; 1 ? 'items' : 'item'$} selected
+                                    </p>
+                                </md-content>
+                            </section> -->
+                <div class="height100" ui-view>
+
+                </div>
+
+
+
+
+     
+            </md-content>
+        </md-tab>
+    </md-tabs>
+
+</md-content>
+</div>
+
+</div>

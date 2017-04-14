@@ -1,0 +1,87 @@
+<div ng-controller="UserMonitorController">
+<md-table-container>
+    <table md-table md-row-select multiple ng-model="selected">
+        <thead md-head md-order="list_query.order">
+            <tr md-row>
+                <th md-column md-order-by="tags.user">User</th>
+                <th md-column>Computer</th>
+                <th md-column>CPU <br/> (User % / Proc %)</th>
+                <th md-column md-order-by="values[0][3]">RAM <br/>(in MB)</th>
+                <th md-column md-order-by="values[0][4]">Disk Read <br/>(in MB)</th>
+                <th md-column md-order-by="values[0][5]">Disk Write <br/>(in MB)</th>
+                <th md-column md-order-by="values[0][6]">Read Iops <br/>(in num)</th>
+                <th md-column md-order-by="values[0][7]">Write Iops <br/>(in num)</th>
+            </tr>
+        </thead>
+        <tbody md-body>
+            <tr md-row md-select="metric" md-select-id="metric" ng-repeat="metric in user_metrics | filter: searchquery | orderBy: list_query.order | limitTo: list_query.limit : (list_query.page -1) * list_query.limit">
+                <td md-cell><span class="md-body-2"><a ui-sref="users_detail({computer: metric.tags.computer, username: metric.tags.user})"> {$metric.tags.user$} </a> </span></td>
+                <td md-cell><span class="md-body-2">{$metric.tags.computer$}</span></td>
+                <td md-cell><span class="md-body-2">{$metric.values[0][1] | number : 2$}% - {$metric.values[0][2] | number : 2$}%</span></td>
+                <td md-cell><span class="md-body-2">{$metric.values[0][3] | number : 2 $}</span></td>
+                <td md-cell><span class="md-body-2">{$metric.values[0][4] | number : 2$}</span></td>
+                <td md-cell><span class="md-body-2">{$metric.values[0][5] | number : 2$}</span></td>
+                <td md-cell><span class="md-body-2">{$metric.values[0][6]$}</span></td>
+                <td md-cell><span class="md-body-2">{$metric.values[0][7]$}</span></td>
+            </tr>
+        </tbody>
+    </table>
+</md-table-container>
+
+
+<md-table-pagination md-limit="list_query.limit" md-limit-options="[5, 10, 15, 30, 50, 100, 200]" md-page="list_query.page" md-total="{$user_metrics_count$}" md-page-select="true" md-boundary-links="true"></md-table-pagination>
+
+    <div class="row well">
+            <h4>Top Utilization By Users</h4>
+            <md-card class="col-xs-12 col-lg-12" ng-repeat="tmetric in top_metrics">
+                 <md-card-header>
+                  <md-card-header-text>
+                  <span class="md-title" ng-if="tmetric.series[0].columns[1] == 'cpu_user_per'">Top 5 CPU User %</span>
+                  <span class="md-title" ng-if="tmetric.series[0].columns[1] == 'cpu_proc_per'">Top 5 Processor %</span>
+                    <span class="md-title" ng-if="tmetric.series[0].columns[1] == 'ram'">Top 5 RAM Usage by users</span>
+                    <span class="md-title" ng-if="tmetric.series[0].columns[1] == 'diskread'">Top 5 Disk Read MB/sec by users</span>
+                    <span class="md-title" ng-if="tmetric.series[0].columns[1] == 'diskwrite'">Top 5 Disk Write MB/sec by users</span>
+                    <span class="md-title" ng-if="tmetric.series[0].columns[1] == 'readops'">Top 5 Read Operation/sec by users</span>
+                    <span class="md-title" ng-if="tmetric.series[0].columns[1] == 'writeops'">Top 5 Write Operation/sec by users</span>
+                  </md-card-header-text>
+                </md-card-header>
+                <md-card-content>
+                    <div class="table-responsive">          
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>{$tmetric.series[0].columns[0]$}</th>
+                            <th>{$tmetric.series[0].columns[3]$}</th>
+                            <th>{$tmetric.series[0].columns[2]$}</th>
+                            <th>{$tmetric.series[0].columns[1]$}</th>
+                            <th>{$tmetric.series[0].columns[4]$}</th>
+                            <th>{$tmetric.series[0].columns[5]$}</th>
+                            <th>{$tmetric.series[0].columns[6]$}</th>
+                            <th>{$tmetric.series[0].columns[7]$}</th>
+                            <th>{$tmetric.series[0].columns[8]$}</th>
+                            <th>{$tmetric.series[0].columns[9]$}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-repeat="value in tmetric.series[0].values">
+                            <td>{$value[0] | date : "medium" $}</td>
+                            <td>{$value[3]$}</td>
+                            <td>{$value[2]$}</td>
+                            <td>{$value[1] | number : 2$}</td>
+                            <td>{$value[4] | number : 2$}</td>
+                            <td>{$value[5] | number : 2$}</td>
+                            <td>{$value[6] | number : 2$}</td>
+                            <td>{$value[7] | number : 2$}</td>
+                            <td>{$value[8] | number : 2$}</td>
+                            <td>{$value[9] | number : 2$}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      </div>
+                </md-card-content>
+            </md-card>
+            
+           
+        </div>
+        
+</div>
