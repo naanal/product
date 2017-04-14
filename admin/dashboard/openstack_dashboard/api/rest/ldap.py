@@ -20,7 +20,7 @@ from openstack_dashboard.api.rest import urls
 from openstack_dashboard.api.rest import utils as rest_utils
 from django.conf import settings
 from ldap3 import Server, Connection, SUBTREE, ALL, ALL_ATTRIBUTES, \
-    ALL_OPERATIONAL_ATTRIBUTES, MODIFY_REPLACE, MODIFY_ADD, MODIFY_INCREMENT
+    ALL_OPERATIONAL_ATTRIBUTES, MODIFY_REPLACE, MODIFY_ADD, MODIFY_INCREMENT,MODIFY_DELETE
 import ldap3
 import logging
 adminlog = logging.getLogger('adminlog')
@@ -473,6 +473,201 @@ class AD_STATUS(generic.View):
         else:
             return "Authendication Failed"
 
+@urls.register
+class Policys(generic.View):
+    """API for AD User Lists, Creation, Disable.
+    """
+    url_regex = r'ldap/policys/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        conn = bind()
+        if conn.bind():
+            conn.search(search_base=settings.GROUP_POLICY_DIR,
+                search_filter='(&(objectCategory=group))',
+                search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
+                                                  ALL_OPERATIONAL_ATTRIBUTES])
+            groups=[]
+            
+            for entry in conn.response:
+                #print(entry)                
+                cn=entry["attributes"]["cn"]
+                dn=entry['dn']
+                try:
+                    username=[]
+                    members=entry["attributes"]["member"]
+                    for member in members:
+                        username.append( member.split(",")[0].split("=")[1]);
+                except KeyError:
+                    # Key is not present
+                    members=[]  
+                group={"cn":cn , "dn":dn , "members":members,"usernames":username} 
+                groups.append(dict(group))
+            output={"users_groups": groups}           
+            return (output)
+        else:
+            return "Authendication Failed"
+
+
+    @rest_utils.ajax(data_required=True)
+    def post(self, request):           
+        try:
+            args = (
+                request,
+                request.DATA['add_to_group']                
+                
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter'
+                                            "'%s'" % e.args[0])
+        result = []
+        conn = bind()
+        if conn.bind():
+            print("inside the apply policys")
+            if request.DATA['add_to_group']:
+                output=[]
+                group_dn=request.DATA['user_dn']
+                policy_dn=request.DATA['policy_dn'] 
+                print("inside the add policy")
+                print(group_dn)              
+                print(policy_dn)
+                message={"user_name":group_dn ,"status":addToGroup(policy_dn, group_dn, conn)} 
+                
+                return message
+            else:
+                output=[]
+                group_dn=request.DATA['user_dn']
+                policy_dn=request.DATA['policy_dn'] 
+                print("inside the Remove policy")
+                print(group_dn)              
+                print(policy_dn)
+                message={"user_name":group_dn ,"status":removeuserFromGroup(policy_dn, group_dn, conn)}
+                return message
+                
+
+
+
+
+@urls.register
+class Apply_policy(generic.View):
+    """API for AD User Lists, Creation, Disable.
+    """
+    url_regex = r'ldap/security/$'
+
+    @rest_utils.ajax()
+    def get(self, request):        
+        conn = bind()
+        if conn.bind():
+            conn.search(search_base=settings.GROUP_BASE_DIR,
+                search_filter='(&(objectCategory=group))',
+                search_scope=SUBTREE, attributes=[ALL_ATTRIBUTES,
+                                                  ALL_OPERATIONAL_ATTRIBUTES])
+            groups=[]
+            
+            for entry in conn.response:
+                cn=entry["attributes"]["cn"]
+                dn=entry['dn']
+                try:
+                    username=[]
+                    policys=[]
+                    members=entry["attributes"]["member"]
+                    for member in members:
+                        name=( member.split(",")[0].split("=")[1])
+                        if name in settings.GROUP_SECURITY:
+                            policys.append(name)
+                        else:
+                            username.append(name)
+                        
+                except KeyError:
+                    # Key is not present
+                    members=[]  
+                group={"cn":cn , "dn":dn , "members":members,"usernames":username,"policys":policys} 
+                groups.append(dict(group))
+            output={"users_groups": groups}           
+            return (output)
+        else:
+            return "Authendication Failed"
+
+
+    @rest_utils.ajax(data_required=True)
+    def post(self, request):           
+        try:
+            args = (
+                request,
+                request.DATA['create_group'],
+                request.DATA['delete_group']
+                
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter'
+                                            "'%s'" % e.args[0])
+        result = []
+        conn = bind()
+        if conn.bind():
+            if request.DATA['create_group']:
+                output=[]
+                group_names=request.DATA['group_name']                
+                print(group_names)
+                for group_name in group_names:                    
+                    group_dn="cn="+group_name+","+settings.GROUP_BASE_DIR                    
+                    #createGroup(group_dn,conn)
+                    message={"group_name":group_name ,"action":"Add Group","status":createGroup(group_dn,conn)} 
+                    output.append(dict(message))
+                return output
+            
+            
+            if request.DATA['delete_group']:
+                output=[]
+                group_names=request.DATA['group_name']
+                #print(group_names)
+                for group_name in group_names:
+                    group_dn="cn="+group_name+","+settings.GROUP_BASE_DIR
+                    message={"group_name":group_name ,"action":"Delete Group","status":deleteGroup(group_dn,conn)} 
+                    output.append(dict(message))
+                return output
+            
+
+            if request.DATA['add_to_group']=="true":
+                output=[]
+                user_dns=request.DATA['user_dn']
+                group_dn=request.DATA['group_dn'] 
+                # print("inside the add group")
+                # print(group_dn)              
+                # print(user_dns)
+                for user_dn in user_dns:                    
+                    user_dn1="cn="+user_dn+","+settings.WINDOWS_SERVER_USERPATH+","+settings.WINDOWS_SERVER_DOMAINPATH
+                    message={"user_name":user_dn ,"status":addToGroup(group_dn, user_dn1, conn)} 
+                    output.append(dict(message))
+                return output
+                    #return addToGroup(group_dn, user_dn, conn):
+            else:
+                output=[]
+                user_dns=request.DATA['user_dn']
+                group_dn=request.DATA['group_dn']
+                # print("inside the Delete group")
+                # print(group_dn)              
+                # print(user_dns)             
+                for user_dn in user_dns:                    
+                    user_dn1="cn="+user_dn+","+settings.WINDOWS_SERVER_USERPATH+","+settings.WINDOWS_SERVER_DOMAINPATH
+                    # print(user_dn)
+                    message={"user_name":user_dn ,"status":removeuserFromGroup(group_dn, user_dn1, conn)} 
+                    output.append(dict(message))
+                return output
+
+
+
+            # if request.DATA['delete_from_group']:
+            #     output=[]
+            #     user_dns=request.DATA['user_dn']
+            #     group_dn=request.DATA['group_dn']             
+            #     for user_dn in user_dns:
+            #         print(user_dn)
+            #         message={"user_name":user_dn ,"message":removeuserFromGroup(group_dn, user_dn, conn)} 
+            #         output.append(dict(message))
+            #     return output
+                    #return removeuserFromGroup(group_dn, user_dn, conn)
+        else:
+            return "Authentication Failed"
 
 def bind():
     d = {'clientip': ip, 'username': user}
@@ -547,6 +742,20 @@ def addToGroup(group_dn, user_dn, conn):
     conn.modify(group_dn, {'member': [(MODIFY_ADD, user_dn)]})
     return conn.result['description']
 
+
+def removeuserFromGroup(group_dn, user_dn, conn):   
+    conn.modify(group_dn, {'member': [(MODIFY_DELETE, user_dn)]})
+    return conn.result['description']
+
+
+def createGroup(group_dn,conn):
+    conn.add(group_dn, ['Top', 'group'])
+    return conn.result['description']
+
+def deleteGroup(group_dn,conn):
+    """ Delete Group """
+    conn.delete(group_dn)
+    return conn.result['description']
 
 def retriveUsers(conn):
     users = []

@@ -1,0 +1,47 @@
+<div ng-controller="UserCreationVerifyController as ctrl">
+    <p>Verify your Data</p>
+    <div class="well">
+        <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>User Name</th>
+          <th>Password</th>
+          <th>Mail</th>
+        <th ng-if="model.newUserSpec.isAssignVm == 'True'">Computer</th>
+          <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="user in model.newUserSpec.users">
+          <td>{$user.username$}</td>
+          <td>{$user.password$}</td>
+          <td>{$user.mail$}</td>
+          <td ng-if="model.newUserSpec.isAssignVm == 'True'">
+             <span ng-if="model.newUserSpec.isAutoMap == 'False'">
+                 {$user.computer$}
+             </span>
+              <span ng-if="model.newUserSpec.isAutoMap == 'True'">
+                 auto Map
+             </span>
+          </td>
+          <td><md-icon class="material-icon" ng-click="ctrl.onTheAirDelete($index)">delete</md-icon></td>
+      </tr>
+    <tr ng-if="model.isCurrentModelPushed==false">
+        <td>{$model.singleUser.username$}</td>
+        <td>{$model.singleUser.password$}</td>
+        <td>{$model.singleUser.mail$}</td>
+        <td ng-if="model.newUserSpec.isAssignVm == 'True'">
+              <span ng-if="model.newUserSpec.isAutoMap == 'False'">
+                 {$model.singleUser.computer$}
+             </span>
+              <span ng-if="model.newUserSpec.isAutoMap == 'True'">
+                 auto Map
+             </span>
+        </td>
+        <td ng-if="model.singleUser.username"><md-icon class="material-icon" ng-click="ctrl.currentDelete()">delete</md-icon></td>
+    </tr>
+    </tbody>
+  </table>
+
+    </div>
+</div>

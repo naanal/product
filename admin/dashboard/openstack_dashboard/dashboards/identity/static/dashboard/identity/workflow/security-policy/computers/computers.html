@@ -1,0 +1,51 @@
+<style>
+    ._md-select-menu-container
+    {
+        z-index : 9000;
+    }
+    md-select {
+        margin: 0;
+    }
+    .md-virtual-repeat-container.md-autocomplete-suggestions-container{
+        z-index:5000 !important;
+    }
+</style>
+<div ng-controller="selectComputersController as ctrl">
+
+
+<p><b>Select list of user you want to map : </b></p>
+    <div layout="column" layout-wrap layout-gt-sm="row">
+        <div flex-xs flex="33" ng-repeat="user in model.usernames">
+            <md-checkbox md-no-ink
+                         ng-model="data.cb1"
+                         class="md-primary"
+                         ng-click="ctrl.addUser(user)"
+                         ng-checked="model.newUserSpec.user_dn.indexOf(user) > -1"
+                         ng-required="model.newUserSpec.user_dn.length==0"
+                         value="{$user$}">
+                {$user$}
+            </md-checkbox>
+        </div>
+        <div flex-xs flex="33" ng-if="ctrl.availableUsers.length % 3 == 2"></div>
+    </div>
+
+    <div ng-if="model.newMappingSpec.map.length > model.availableComputers.length">
+         <p class="md-subhead" style="color:red">
+             {$model.availableComputers.length$} Computers only available.
+             But you selected {$model.newMappingSpec.map.length$} Users. </p>
+    </div>
+    <md-checkbox ng-model="devpurpose" >
+         For Development Purpose
+    </md-checkbox>
+    <pre ng-show="devpurpose">{$model.newMappingSpec | json $} </pre>
+
+
+
+
+
+
+
+
+
+
+   

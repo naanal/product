@@ -1,0 +1,27 @@
+<div ng-controller="addUsersController as ctrl">
+    <div class="col-md-8">
+          <md-radio-group ng-model="model.newUserSpec.add_to_group" ng-change="ctrl.getUsers()" required layout-padding="" layout="row" layout-xs="column" layout-align="center center">
+              <md-radio-button value="true" class="md-primary" >Add user</md-radio-button>
+         
+                      <md-radio-button value="false" class="md-primary"
+                                       ng-disabled="isShortage">
+                          Delete User
+                      </md-radio-button>
+              </md-radio-group>
+            
+    </div>
+    <div class="col-md-4">
+
+    <md-checkbox ng-model="devpurpose" >
+         For Development Purpose
+    </md-checkbox>
+    <pre ng-show="devpurpose">
+        Current: <br/>
+        {$model.singleUser | json $}
+        <br/>
+        Final :
+        {$model.newUserSpec | json $}
+    </pre>
+    </div>
+
+</div>

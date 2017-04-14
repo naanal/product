@@ -1,0 +1,32 @@
+<div ng-controller="addUsersController as ctrl">
+    <div class="row">
+        <div class="col-md-8">
+
+        <md-input-container class="md-block">
+            <label>Group Name</label>
+            <md-icon class="material-icon">person</md-icon>
+            <input required name="group_name" ng-model="model.singleUser.group_name">
+            <div ng-messages="addGroupsForm.group_name.$error">
+                <div ng-message="required">Group Name is required.</div>
+            </div>
+        </md-input-container>
+       
+       
+            <!-- <p class="pull-left" ng-if="model.newUserSpec.users.length > 0"><b>{$noOfUsers$} users</b> already added</p>
+        <button class="btn btn-default btn-xs pull-right" ng-click="ctrl.addAnotherUser()">Add Another User</button>
+        </div> -->
+       
+    </div>
+    
+    <!-- <md-checkbox ng-model="devpurpose" >
+         For Development Purpose
+    </md-checkbox>
+    <pre ng-show="devpurpose">
+        Current: <br/>
+        {$model.singleUser | json $}
+        <br/>
+        Final :
+        {$model.newUserSpec | json $}
+    </pre> -->
+
+</div>

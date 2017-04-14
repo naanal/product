@@ -41,6 +41,7 @@
   function identityUsersTableController(toast, gettext, ldapAPI,Spinner, $scope, $rootScope) {
 
       $scope.selected = [];
+       $scope.group_dn = "";
         $scope.userquery = {
           order: 'username',
           limit: 15,
@@ -152,6 +153,69 @@
            $rootScope.retieveLdapUsers();
         });
 
+      $scope.delete_Group=function(){       
+          
+           var groups=[];
+           var selected=[];
+           selected=$scope.selected          
+           for(var i=0;i<selected.length;i++)
+           {
+            groups.push(selected[i].cn);
+           }
+           var delete_group={"group_name":groups,"create_group":false,"delete_group":true,"add_to_group":false,"delete_from_group":false}
+          ldapAPI.deleteGroup(delete_group)
+          .then(function(res){
+            $scope.selected = [];
+            $rootScope.retriveUserDefineGroups();
+            var res = res.data;
+            for(var i=0;i<res.length;i++) {
+              if (res[i].status.includes("success"))   
+                
+                toast.add('success', res[i].group_name+" "+res[i].action+" "+res[i].status);
+              else                
+                toast.add('danger',res[i].group_name+" "+res[i].action+" "+res[i].status);
+            }           
+          })
+        }
+
+         $rootScope.$on("callretieveuserDefineGroups", function(){
+           $rootScope.retriveUserDefineGroups();
+        });
+
+
+
+
+    $scope.delete_Group1=function(value){   
+        console.log("delete_Group1")    
+        var groups=[value];
+        console.log(groups);
+        var delete_group={"group_name":groups,"create_group":false,"delete_group":true,"add_to_group":false,"delete_from_group":false}
+        console.log(delete_group);
+          ldapAPI.deleteGroup(delete_group)
+          .then(function(res){
+            $scope.selected = [];
+            $rootScope.retriveUserDefineGroups();
+            var res = res.data;
+            for(var i=0;i<res.length;i++) {
+              if (res[i].status.includes("success"))   
+                
+                toast.add('success', res[i].group_name+" "+res[i].action+" "+res[i].status);
+              else                
+                toast.add('danger',res[i].group_name+" "+res[i].action+" "+res[i].status);
+            }           
+          })
+        }
+
+         $rootScope.$on("callretieveuserDefineGroups", function(){
+           $rootScope.retriveUserDefineGroups();
+        });
+
+
+
+
+
+
+
       $rootScope.retieveLdapUsers = function(){
            Spinner.showModalSpinner(gettext("Retrieving Users...."));
         ldapAPI.getUsers()
@@ -164,8 +228,39 @@
               Spinner.hideModalSpinner();
           });
       }
+
+      $rootScope.retriveUserDefineGroups = function(){           
+        ldapAPI.getUsersDefineGroups()
+          .then(function(res){
+              Spinner.hideModalSpinner();
+              $scope.usergroups = res.data['users_groups']; 
+              $scope.usergroupcount = $scope.usergroups.length;             
+              // console.log($scope.usergroups);
+              // console.log($scope.usergroupcount);
+          },function(error){              
+          });
+      }
+
+      $rootScope.retriveSecurityPolicy = function(){           
+        ldapAPI.getsecurityPolicy()
+          .then(function(res){
+              Spinner.hideModalSpinner();
+              $scope.securitypolicy = res.data['users_groups']; 
+              $scope.securitypolicycount = $scope.securitypolicy.length;             
+              console.log("securitypolicy");
+              console.log($scope.securitypolicy);
+              console.log($scope.securitypolicycount);
+          },function(error){              
+          });
+      }
+
+
+
+
       $rootScope.retieveLdapUsers();
       $scope.get_Computers();
+      $scope.retriveUserDefineGroups();
+      $rootScope.retriveSecurityPolicy();
   }
 
 })();

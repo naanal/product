@@ -44,7 +44,12 @@
       getAvailableComputers: getAvailableComputers,
       mapUserToVm: mapUserToVm,
       editUsersAttributes: editUsersAttributes,
-      getAdStatus: getAdStatus
+      getAdStatus: getAdStatus,
+      getUsersDefineGroups:getUsersDefineGroups,
+      deleteGroup:deleteGroup,
+      addGroup:addGroup,
+      getsecurityPolicy:getsecurityPolicy,
+      applysecurityPolicy:applysecurityPolicy
     };
 
     return service;
@@ -244,6 +249,46 @@
 //          toastService.add('error', gettext('Unable to retrieve AD Status.'));
         });
     }
+
+
+
+    function getUsersDefineGroups() {
+      return apiService.get('/api/ldap/security/')
+        .error(function () {
+        });
+    }
+
+    function deleteGroup(data) {      
+     return apiService.post('/api/ldap/security/',data)
+      .error(function () {
+        toastService.add('error', gettext('Unable Delete Group...!'));
+      });
+    }
+
+   function addGroup(data) {      
+   return apiService.post('/api/ldap/security/',data)
+    .error(function () {
+      toastService.add('error', gettext('Unable Add Group...!'));
+    });
+  }
+
+  function getsecurityPolicy() {
+      // console.log("inside the get security policys...!");
+      return apiService.get('/api/ldap/policys/')
+        .error(function () {
+        });
+    }
+
+
+    function applysecurityPolicy(data) {     
+    // console.log("inside applysecurityPolicy");
+    // console.log(data);
+   return apiService.post('/api/ldap/policys/',data)
+    .error(function () {
+      toastService.add('error', gettext('Unable Apply Policy...!'));
+    });
+  }
+
 
   }
 }());
