@@ -1,4 +1,317 @@
 <div id="virtual_monitor_wrapper" ng-controller="horizon.dashboard.overview.virtual_monitor.VirtualMonitorController as vmc" class = "loading">
 
-<button id = "spin" class="btn btn-primary btn-lg" ng-click="modal.openRallyTestWizard({ successUrl: '/overview/virtual_monitor/' })" ng-controller="RallyTestModalController as modal" class="btn-launch ng-scope">Run Tests</button>
+<!-- <button id = "spin" class="btn btn-primary btn-lg" ng-click="modal.openRallyTestWizard({ successUrl: '/overview/virtual_monitor/' })" ng-controller="RallyTestModalController as modal" class="btn-launch ng-scope">Run Tests</button> -->
+
+<style>
+.fa-check, .normal
+{
+	color: green;
+}
+.fa-times, .danger
+{
+	color:red;
+}
+.warning
+{
+	color: orange;
+}
+
+</style>
+<md-content class="md-padding" layout-xs="column" layout="row" layout-align="center center" layout-wrap="" style="background-color: rgb(236, 240, 245);">
+    <div flex-xs="" flex-gt-xs="50" flex-gt-md="40" flex-lg="25"  layout="row" layout-align="center center">
+      <md-card>
+        <div layout="column" layout-align="center center">
+        <i class="fa fa-laptop fa-5x md-card-image normal" aria-hidden="true"></i>
+        <span class="md-headline normal">Windows-2012</span>
+        </div>
+        
+        <md-card-content>
+           <md-subheader class="md-no-sticky">Everything is normal. No Issues.Everything is normal</md-subheader>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Ping / RDP </p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">
+                  <i class="fa fa-check"></i> /
+                  <i class="fa fa-times"></i>
+                </p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">CPU Usage</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">88%</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Available RAM</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">1.4 GB</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Disk Rate</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">2 MB / 4MB</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Network Rate</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">0.1 MB / 0.2 MB</p>
+              </div>
+          </md-list-item>
+          
+        </md-card-content>
+        <md-card-actions layout="row" layout-align="end center">
+          <md-button class="md-icon-button" aria-label="Favorite">
+            <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Settings">
+            <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Share">
+            <md-icon md-svg-icon="img/icons/share-arrow.svg"></md-icon>
+          </md-button>
+        </md-card-actions>
+      </md-card>
+  
+    </div>
+  
+  	<div flex-xs="" flex-gt-xs="50" flex-gt-md="40" flex-lg="25"  layout="row" layout-align="center center">
+      <md-card>
+        <div layout="column" layout-align="center center">
+        <i class="fa fa-laptop fa-5x md-card-image normal" aria-hidden="true"></i>
+        <span class="md-headline normal">Windows-2012</span>
+        </div>
+        
+        <md-card-content>
+           <md-subheader class="md-no-sticky">Everything is normal. No Issues.Everything is normal</md-subheader>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Ping / RDP </p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">
+                  <i class="fa fa-check"></i> /
+                  <i class="fa fa-times"></i>
+                </p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">CPU Usage</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">88%</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Available RAM</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">1.4 GB</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Disk Rate</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">2 MB / 4MB</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Network Rate</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">0.1 MB / 0.2 MB</p>
+              </div>
+          </md-list-item>
+          
+        </md-card-content>
+        <md-card-actions layout="row" layout-align="end center">
+          <md-button class="md-icon-button" aria-label="Favorite">
+            <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Settings">
+            <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Share">
+            <md-icon md-svg-icon="img/icons/share-arrow.svg"></md-icon>
+          </md-button>
+        </md-card-actions>
+      </md-card>
+  
+    </div>
+
+    <div flex-xs="" flex-gt-xs="50" flex-gt-md="40" flex-lg="25"  layout="row" layout-align="center center">
+      <md-card>
+        <div layout="column" layout-align="center center">
+        <i class="fa fa-laptop fa-5x md-card-image warning" aria-hidden="true"></i>
+        <span class="md-headline warning">Windows-2012</span>
+        </div>
+        
+        <md-card-content>
+           <md-subheader class="md-no-sticky">Everything is normal. No Issues.Everything is normal</md-subheader>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Ping / RDP </p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">
+                  <i class="fa fa-check"></i> /
+                  <i class="fa fa-times"></i>
+                </p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">CPU Usage</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">88%</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Available RAM</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">1.4 GB</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Disk Rate</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">2 MB / 4MB</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Network Rate</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">0.1 MB / 0.2 MB</p>
+              </div>
+          </md-list-item>
+          
+        </md-card-content>
+        <md-card-actions layout="row" layout-align="end center">
+          <md-button class="md-icon-button" aria-label="Favorite">
+            <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Settings">
+            <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Share">
+            <md-icon md-svg-icon="img/icons/share-arrow.svg"></md-icon>
+          </md-button>
+        </md-card-actions>
+      </md-card>
+  
+    </div>
+
+    <div flex-xs="" flex-gt-xs="50" flex-gt-md="40" flex-lg="25"  layout="row" layout-align="center center">
+      <md-card>
+        <div layout="column" layout-align="center center">
+        <i class="fa fa-laptop fa-5x md-card-image normal" aria-hidden="true"></i>
+        <span class="md-headline normal">Windows-2012</span>
+        </div>
+        
+        <md-card-content>
+           <md-subheader class="md-no-sticky">Everything is normal. No Issues.Everything is normal</md-subheader>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Ping / RDP </p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">
+                  <i class="fa fa-check"></i> /
+                  <i class="fa fa-times"></i>
+                </p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">CPU Usage</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">88%</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Available RAM</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">1.4 GB</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Disk Rate</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">2 MB / 4MB</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Network Rate</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">0.1 MB / 0.2 MB</p>
+              </div>
+          </md-list-item>
+          
+        </md-card-content>
+        <md-card-actions layout="row" layout-align="end center">
+          <md-button class="md-icon-button" aria-label="Favorite">
+            <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Settings">
+            <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Share">
+            <md-icon md-svg-icon="img/icons/share-arrow.svg"></md-icon>
+          </md-button>
+        </md-card-actions>
+      </md-card>
+  
+    </div>
+
+    <div flex-xs="" flex-gt-xs="50" flex-gt-md="40" flex-lg="25"  layout="row" layout-align="center center">
+      <md-card>
+        <div layout="column" layout-align="center center">
+        <i class="fa fa-laptop fa-5x md-card-image danger" aria-hidden="true"></i>
+        <span class="md-headline danger">Windows-2012</span>
+        </div>
+        
+        <md-card-content>
+           <md-subheader class="md-no-sticky">Everything is normal. No Issues.Everything is normal</md-subheader>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Ping / RDP </p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">
+                  <i class="fa fa-check"></i> /
+                  <i class="fa fa-times"></i>
+                </p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">CPU Usage</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">88%</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Available RAM</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">1.4 GB</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Disk Rate</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">2 MB / 4MB</p>
+              </div>
+          </md-list-item>
+          <md-list-item class="md-1-line" ng-click="null">
+             <p class="md-subhead">Network Rate</p>
+              <div class="md-list-item-text" layout="row">
+                <p class="md-subhead">0.1 MB / 0.2 MB</p>
+              </div>
+          </md-list-item>
+          
+        </md-card-content>
+        <md-card-actions layout="row" layout-align="end center">
+          <md-button class="md-icon-button" aria-label="Favorite">
+            <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Settings">
+            <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Share">
+            <md-icon md-svg-icon="img/icons/share-arrow.svg"></md-icon>
+          </md-button>
+        </md-card-actions>
+      </md-card>
+  
+    </div>
+  </md-content>
+
 </div>
