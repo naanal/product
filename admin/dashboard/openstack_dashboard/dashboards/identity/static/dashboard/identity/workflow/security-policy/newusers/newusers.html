@@ -1,0 +1,43 @@
+<style type="text/css">
+  .modal-footer {
+    display: none  !important;
+}
+</style>
+<div ng-controller="addPolicyController as ctrl">
+    <div class="col-md-8">
+         <md-table-container>
+                            <table md-table multiple ng-model="selected" >
+                                <thead md-head md-order="computerquery.order">
+                                <tr md-row>
+                                    <th md-column><span class="md-title">Policy</span></th>
+                                     <th md-column><span class="md-title">Status</span></th>
+                                    
+                                </tr>
+                                
+                                </thead>
+                                <tbody md-body>
+                                <tr md-row ng-repeat="policy in model.policys">                                  
+                                    <td md-cell>
+                                    {$policy.name$}                        
+                                    </td>
+                                    <td md-cell ng-click="ctrl.applyPolicy({policy})" >
+                                       <toggle-switch
+                                          ng-model="policy.add_to_group"
+                                          on-label="Enable"
+                                          off-label="Disable"
+                                          >
+                                        </toggle-switch>                                        
+                                    </td>
+                                    
+
+                                    
+
+                                </tr>
+                                </tbody>
+                            </table>
+                              
+                        </md-table-container>
+                 
+    </div>
+
+</div>

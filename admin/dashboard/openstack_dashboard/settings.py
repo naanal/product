@@ -440,6 +440,12 @@ LDAP_DNS = "naanal.local"
 
 LDAP_BASE_DIR = "ou=Police, dc=naanal, dc=local"
 
+GROUP_POLICY_DIR = "ou=security_groups, ou=police, dc=naanal, dc=local"
+
+GROUP_SECURITY=['Clipboard_redirection']
+
+GROUP_BASE_DIR = "ou=user_define, ou=police, dc=naanal, dc=local"
+
 DEFAULT_USERS_GROUP_DN = "cn=normalusers, ou=groups, ou=police, dc=naanal, dc=local"
 
 ALLOWED_USERS_GROUP_DN = "cn=allow, ou=groups, ou=police, dc=naanal, dc=local"

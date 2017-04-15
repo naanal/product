@@ -171,6 +171,222 @@
                                              md-boundary-links="true"></md-table-pagination>
                     </md-content>
                 </md-tab>
+
+
+
+
+
+        
+                <md-tab label="Security Groups">
+                    <md-content class="md-padding">
+                        <section layout="row" layout-xs="column">
+                            <section flex="" layout-align="center center">
+                                <md-input-container ng-show="!selected.length" md-no-float="" class="md-block left">
+                                    <md-icon>
+                                        <i class="material-icons">search</i>
+                                    </md-icon>
+                                    <input type="text" ng-model="searchquery" placeholder="Search By name"/>
+                                </md-input-container>
+                                <md-content ng-show="selected.length" class="md-padding">
+                                    <p class="md-padding md-title">
+                                        {$selected.length$} {$selected.length &gt; 1 ? 'items' : 'item'$} selected
+                                    </p>
+                                </md-content>
+                            </section>
+                            <span flex=""></span>
+                            <section flex="" layout-align="end center">
+                                <md-button
+                                        class="md-fab md-mini md-primary btn-launch ng-scope" aria-label="view"
+                                        ng-hide="selected.length"
+                                        ng-click="modal.openCreateGroupsWizard()"
+                                        ng-controller="CreateGroupsModalController as modal">
+                                    <md-icon>group_add</md-icon>
+                                    <md-tooltip>Create New Group</md-tooltip>
+                                </md-button>
+
+                                
+
+
+
+                                <!--  <md-button class="md-fab md-mini md-primary" aria-label="delete"
+                                           ng-show="selected.length" ng-click="delete_Group()" >
+                                    <md-icon>delete</md-icon>
+                                    <md-tooltip>Delete Groups</md-tooltip>
+                                </md-button>
+
+
+                                <md-button class="md-fab md-mini md-primary btn-launch ng-scope"
+                                           ng-click="modal.openMapVmsWizard()"
+                                           ng-controller="MapVmsModalController as modal">
+                                    <md-icon><i class="material-icons">queue_play_next</i></md-icon>
+                                    <md-tooltip>Add users to Group</md-tooltip>
+                                </md-button>                              
+
+                          
+                               
+                                 <md-button class="md-fab md-mini md-primary" aria-label="view"
+                                           ng-show="selected.length == 1">
+                                    <md-icon>insert_drive_file</md-icon>
+                                    <md-tooltip>Delete users from Group<</md-tooltip>
+                                </md-button>                                -->
+                                
+
+                            </section>
+                        </section>            
+                        <style>
+                                .disabled {
+                                        text-decoration: line-through;
+                                     }
+​                        </style>
+                        
+
+                        <md-table-container>
+                            <table md-table  multiple ng-model="selected" >
+                                <thead md-head md-order="userquery.order">
+                                <tr md-row>
+                                    <th md-column><span class="md-title">Group Name</span></th>
+                                    <th md-column><span class="md-title">Add/Delete</span></th>
+                                    <!-- <th md-column><span class="md-title">Policys applied</span></th> -->
+                                    <th md-column><span class="md-title">Delete</span></th>
+                                    
+                                </tr>
+                                </thead>
+                                <tbody md-body>
+                                <tr md-row md-select="group" md-select-id="name" md-auto-select
+                                    ng-repeat="group in usergroups | filter: searchquery | orderBy: userquery.order | limitTo: userquery.limit : (userquery.page -1) * userquery.limit" >
+                                    <td md-cell><span class="md-body-2" >{$group.cn$}</span></td>
+                                    <td md-cell>
+                                    <md-button
+                                        aria-label="view"                                        
+                                        ng-click="modal.openSecurityUsersWizard({group})"
+                                        ng-controller="SecurityUsersModalController as modal">
+                                    <md-icon>group_add</md-icon>
+                                    <md-tooltip>ADD/DELETE Users</md-tooltip>
+                                    </md-button>
+
+
+
+                                   <!--  <span class="md-body-2" ng-repeat ="username in group.usernames">{$username$}</span>
+ -->
+                                    </td>
+                                    <!-- <td md-cell><span class="md-body-2" >{$group.policys$}</span></td> -->
+                                    <td>
+                                        <md-button class="md-fab md-mini md-primary" aria-label="delete"    ng-model="group_dn" ng-init="group_dn=group.cn" ng-click="delete_Group1(group_dn)" >
+
+                                    <md-icon>delete</md-icon>
+                                    <md-tooltip>Delete Groups</md-tooltip>
+                                    
+                                </md-button>
+                                    </td>
+
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </md-table-container>
+
+                        
+
+                        <md-table-pagination md-limit="userquery.limit" md-limit-options="[5, 10, 15, 30, 50, 100, 200]" md-page="userquery.page"
+                                             md-total="{$ldapuserscount$}" md-page-select="true"
+                                             md-boundary-links="true"></md-table-pagination>
+                    </md-content>
+
+
+                </md-tab>
+
+
+<md-tab label="Security Policy">
+                    <md-content class="md-padding">
+                        <section layout="row" layout-xs="column">
+                            <section flex="" layout-align="center center">
+                                <md-input-container ng-show="!selected.length" md-no-float="" class="md-block left">
+                                    <md-icon>
+                                        <i class="material-icons">search</i>
+                                    </md-icon>
+                                    <input type="text" ng-model="searchquery" placeholder="Search By name"/>
+                                </md-input-container>
+                                <md-content ng-show="selected.length" class="md-padding">
+                                    <p class="md-padding md-title">
+                                        {$selected.length$} {$selected.length &gt; 1 ? 'items' : 'item'$} selected
+                                    </p>
+                                </md-content>
+                            </section>
+                            <span flex=""></span>
+                            
+                        </section>            
+                        <style>
+                                .disabled {
+                                        text-decoration: line-through;
+                                     }
+​                        </style>
+                        
+
+                        <md-table-container>
+                            <table md-table  multiple ng-model="selected" >
+                                <thead md-head md-order="userquery.order">
+                                <tr md-row>
+                                    <th md-column><span class="md-title">Group Name</span></th>
+                                    
+                                    <th md-column><span class="md-title">Apply Policy </span></th>
+                                    
+                                    
+                                </tr>
+                                </thead>
+                                <tbody md-body>
+                                <tr md-row md-select="group" md-select-id="name" md-auto-select
+                                    ng-repeat="group in usergroups | filter: searchquery | orderBy: userquery.order | limitTo: userquery.limit : (userquery.page -1) * userquery.limit" >
+                                    <td md-cell><span class="text-info" class="md-body-2" >
+                                    <p class="text-primary">{$group.cn$}</p>
+
+                                    </span></td>
+                                   
+                                    <td md-cell><span class="md-body-2" >
+                                        
+                                         <md-button
+                                         class="md-fab md-mini md-primary" 
+                                         aria-label="view"                                        
+                                        ng-click="modal.openSecurityPolicyWizard({group})"
+                                        ng-controller="SecurityPolicyModalController as modal">
+                                    <md-icon>security</md-icon>
+                                    <md-tooltip>Apply Policy</md-tooltip>
+                                    </md-button>
+
+
+                                    </span></td>
+                                   
+                                </tr>
+                                </tbody>
+
+                            </table>
+                        </md-table-container>
+
+                        
+
+                        <md-table-pagination md-limit="userquery.limit" md-limit-options="[5, 10, 15, 30, 50, 100, 200]" md-page="userquery.page"
+                                             md-total="{$ldapuserscount$}" md-page-select="true"
+                                             md-boundary-links="true"></md-table-pagination>
+                    </md-content>
+
+
+                </md-tab>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </md-tabs>
         </md-card-content>
     </md-card>

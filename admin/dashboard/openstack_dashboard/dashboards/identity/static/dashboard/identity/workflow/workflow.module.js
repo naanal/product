@@ -27,6 +27,9 @@
     .module('horizon.dashboard.identity.workflow', [
       'horizon.dashboard.identity.workflow.map-vms',
         'horizon.dashboard.identity.workflow.create-users',
-        'horizon.dashboard.identity.workflow.edit-users'
+        'horizon.dashboard.identity.workflow.edit-users',
+        'horizon.dashboard.identity.workflow.create-groups',
+        'horizon.dashboard.identity.workflow.security-users',
+        'horizon.dashboard.identity.workflow.security-policy'
     ]);
 })();

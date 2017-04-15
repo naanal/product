@@ -24,6 +24,18 @@ auth_url="http://192.168.30.200:35357/v2.0"
 
 @csrf_exempt
 # @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def myapps(request):
+    username = password = ''
+    if request.GET:
+        if request.session.has_key('username'):
+            print(request.GET.get('username'))
+            username1 = request.session['username']
+            username = request.GET.get('username')
+            return render_to_response('myapps.html', {'username': username})
+    return redirect('login.views.myapps')
+
+@csrf_exempt
+
 def loginpage(request):
     state = "Please log in below..."
     username = password = instance_id = instance_name = status = console = fixed = conn = ''
