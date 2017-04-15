@@ -1109,7 +1109,6 @@ class instances_check(generic.View):
         Example GET:
         http://localhost/api/nova/recover_servers/
         """
-        print("inside post method...!")
         try:
             args = (
                 request,
@@ -1124,3 +1123,42 @@ class instances_check(generic.View):
         restart_status=api.nova.server_reboot(request,instance_id)
         return restart_status        
         
+
+
+@urls.register
+class VmMonitoring(generic.View):
+    """API over all servers.
+    """
+    url_regex = r'nova/vm_monitoring/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a list of servers in active state .
+        """  
+        with open('vm_monitoring.json') as data_file:
+            data = json.loads(data_file.read())
+            return(data)      
+
+    @rest_utils.ajax(data_required=True)
+    def post(self, request):
+        """Get a list of servers.
+
+        The listing result is an object with property "items". Each item is
+        a server.
+
+        Example GET:
+        http://localhost/api/nova/recover_servers/
+        """
+        try:
+            args = (
+                request,
+                request.DATA['instance_id']
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter'
+                                            "'%s'" % e.args[0])
+        
+        instance_id=request.DATA['instance_id']
+
+        restart_status=api.nova.server_reboot(request,instance_id)
+        return restart_status 

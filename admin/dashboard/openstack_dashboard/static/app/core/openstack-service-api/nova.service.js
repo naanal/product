@@ -73,7 +73,8 @@
       createJsoninNova:createJsoninNova,
       reCreates_instances:reCreates_instances,
       instances_rdpcheck:instances_rdpcheck,
-      instance_hardreboot:instance_hardreboot
+      instance_hardreboot:instance_hardreboot,
+      vm_monitoring:vm_monitoring
     };
 
     return service;
@@ -744,11 +745,16 @@
     }
 
     function instance_hardreboot(instance_id) {
-      console.log("inside the Nova api servicev");
-      console.log(instance_id)
       return apiService.post('/api/nova/instances_rdpcheck/',instance_id)
         .error(function () {
           toastService.add('error', gettext('Unable to restart Instances  Status.'));
+        });
+    }
+
+    function vm_monitoring(){
+      return apiService.get('/api/nova/vm_monitoring/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve VM Details.'));
         });
     }
 

@@ -29,26 +29,46 @@
   <md-content>
     <md-tabs md-dynamic-height md-border-bottom>
         <md-tab label="Overview">
-            <md-content class="md-padding">
-                <div class="container text-center">
-                    <div ng-repeat="session in user_session_status" class="myStyle text-center">
-                        <i class="fa fa-5x" ng-class="{ 
+            <md-content class="md-padding" layout-xs="column" layout="row" layout-align="center center" layout-wrap="" style="background-color: rgb(236, 240, 245);">
+                
+    <div flex-xs="" flex-gt-xs="50" flex-gt-md="25" flex-lg="20"  layout="row" layout-align="center center" ng-repeat="session in user_session_status">
+      <md-card style="min-width: 300px">
+        <div layout="column" layout-align="center center">
+        <i class="fa fa-5x md-card-image" ng-class="{ 
                           'fa-user': session.values[0][6] == 1,
                           'fa-user-times': session.values[0][6] == 0,
                           'success' : session.isHigh == 0,
                           'danger': session.isHigh == 1 }" aria-hidden="true"></i>
-                        <br />
-                        {$session.tags.user$} <br/>
-                    <div class="">
-                        <i class="fa fa-desktop fa-lg" aria-hidden="true"></i> {$session.tags.computer$} <br/>
+        <a ui-sref="users_detail({computer: session.tags.computer, username: session.tags.user})" class="md-headline">{$session.tags.user$}</a>
 
-                        <i class="fa fa-sign-in" aria-hidden="true"></i> {$session.values[0][3] $}
-                        <p ng-repeat="msg in session.msg">
-                            {$msg$}
-                        </p>
-                    </div>
-                    </div>
-                </div>
+
+
+
+        </div>
+        
+        <md-card-content>
+           <md-subheader class="md-no-sticky" >
+              <span ng-if="session.values[0][4] != 'None' ">{$session.tags.user$} is login from {$session.values[0][4]$}</span>
+              <span ng-if="session.values[0][4] == 'None' ">{$session.tags.user$} is currently inactive</span>
+           </md-subheader>
+
+          <div layout="column">
+              <div layout="row">
+                <p flex="50"> <i class="fa fa-desktop" aria-hidden="true"></i>  Computer</p>
+                <p flex="50">{$session.tags.computer$}</p>
+              </div>
+              <div layout="row">
+                <p flex="50">  <i class="fa fa-sign-in" aria-hidden="true"></i>  Status</p>
+                <p flex="50">{$session.values[0][3] $}</p>
+              </div>
+              <div layout="row" ng-repeat="msg in session.msg">
+                <p flex="100">{$msg$}</p>
+              </div>
+          </div>
+        </md-card-content>
+      </md-card>
+  
+    </div>
 
             </md-content>
         </md-tab>

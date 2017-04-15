@@ -450,7 +450,7 @@ WINDOWS_SERVER_USERPATH = "ou=users,ou=Police"
 
 DOMAIN_NAME = "naanal.local"
 
-MONITORING_HOST = "http://192.168.30.21:3000"
+MONITORING_HOST = "http://192.168.30.200:3000"
 
 NETWORK_HOST= "http://192.168.30.1"
 

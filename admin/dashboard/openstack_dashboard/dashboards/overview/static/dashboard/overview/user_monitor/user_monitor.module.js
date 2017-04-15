@@ -47,11 +47,11 @@
 
       function config($provide, $windowProvider,$stateProvider, $urlRouterProvider) {
         var path = $windowProvider.$get().STATIC_URL + 'dashboard/overview/user_monitor/';
-        $provide.constant('horizon.dashboard.overview.basePath', path);
-        $urlRouterProvider.otherwise("/user_usage");
+        $provide.constant('horizon.dashboard.overview.user_monitor.basePath', path);
+        $urlRouterProvider.otherwise("/");
         $stateProvider
             .state('users', {
-                url: "/user_usage",
+                url: "/",
                 templateUrl: path + "views/user_usage_list.html"
             })
             .state('users_detail', {

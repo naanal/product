@@ -1,36 +1,6 @@
-<div id="virtual_monitor_wrapper" ng-controller="horizon.dashboard.overview.virtual_monitor.VirtualMonitorController as vmc">
-
-<!-- <button id = "spin" class="btn btn-primary btn-lg" ng-click="modal.openRallyTestWizard({ successUrl: '/overview/virtual_monitor/' })" ng-controller="RallyTestModalController as modal" class="btn-launch ng-scope">Run Tests</button> -->
-
-<style>
-.content-header
-{
-  display: none;
-}
-.fa-check, .normal
-{
-	color: green;
-}
-.fa-times, .danger
-{
-	color:red;
-}
-.warning
-{
-	color: orange;
-}
-.grey
-{
-	color: grey;
-}
-.vmalert
-{
-	background-color: rgb(252, 239, 219);
-}
-</style>
 <md-content class="md-padding" layout-xs="column" layout="row" layout-align="center center" layout-wrap="" style="background-color: rgb(236, 240, 245);">
 
-    <div flex-xs="" flex-gt-xs="50" flex-md="50" flex-gt-md="30" flex-lg="25"  layout="row" layout-align="center center" ng-repeat="vm in machines">
+    <div flex-xs="" flex-gt-xs="50" flex-gt-md="25" flex-lg="25"  layout="row" layout-align="center center" ng-repeat="vm in machines">
       <md-card style="min-width: 370px">
         <div layout="column" layout-align="center center">
         <i class="fa fa-laptop fa-5x md-card-image normal" ng-class="{'normal': vm.health == 1,'warning': vm.health == 2,'danger': vm.health == 3,'grey': vm.health == 0 }" aria-hidden="true"></i>
@@ -82,21 +52,10 @@
                 <p class="md-subhead">{$vm.NW_Total * 0.000001 | number : 1$} MBs </p>
               </div>
           </md-list-item>
-           <md-card-actions layout="row" layout-align="end center">
-           <span flex="80"></span>
-            <a ng-href="http://192.168.30.200:3000/dashboard/db/process-monitoring?refresh=5s&orgId=1&var-vm={$vm.instance_name | uppercase$}&var-user=All&var-process=All" target="_blank" class="md-icon-button" aria-label="process" data-toggle="tooltip" title="Process Monitoring">
-              <md-icon><i class="fa fa-line-chart"></i></md-icon>
-            </a>
-            <span flex=""></span>
-            <a ng-href="http://192.168.30.200:3000/dashboard/db/vm-monitoring?refresh=5s&orgId=1&var-vm={$vm.instance_name $}" target="_blank" class="md-icon-button" aria-label="vm" data-toggle="tooltip" title="VM Monitoring">
-              <md-icon><i class="fa fa-external-link"></i></md-icon>
-            </a>
-          </md-card-actions>
+          
 
         </md-card-content>
       </md-card>
   
     </div>
   </md-content>
-
-</div>
