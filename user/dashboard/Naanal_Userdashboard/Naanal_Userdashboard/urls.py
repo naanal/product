@@ -13,5 +13,6 @@ urlpatterns = patterns('',
     url(r'^stop/','login.views.instance_stop' ),
     url(r'^remote_desktops/','login.views.remote_desktops' ),
     url(r'^logout/','login.views.logout' ),
+    url(r'^myapps/','login.views.myapps' ),
     
 )
