@@ -16,9 +16,8 @@ md-card .md-actions, md-card md-card-actions
 		<a href="/virtual/networks/create"  class="btn btn-default btn-sm ajax-modal"><i class="fa fa-plus"></i> Create New Network</a>
     	</div>
 
-    <div class="md-padding" layout-xs="column" layout="row" layout-wrap="">        
-        <div ng-repeat=" node in node_vm_status" >         
-          <div flex-xs flex-gt-xs="50" layout="column">
+    <div class="md-padding" layout-xs="column" layout="row" layout-padding="" layout-wrap="">      
+          <div flex-xs flex-gt-xs="33" layout="row"  ng-repeat=" node in node_vm_status">
             <md-card>
                 <md-card-title>
                   <md-card-title-text>
@@ -31,11 +30,10 @@ md-card .md-actions, md-card md-card-actions
               <md-card-content>
                    <p class="md-subhead">Total Vms: {$node.total_instance$}</p>
                    <div google-chart chart={$node.node_chart$}
-                   style="padding:0;width:450px">
+                   style="padding:0;width:200px">
                   </div>
               </md-card-content>
             </md-card>
-        </div>
         </div>
     
         <div flex-xs flex-gt-xs="50" layout="column">
@@ -51,7 +49,7 @@ md-card .md-actions, md-card md-card-actions
             <md-card-content>
                  <p class="md-subhead">Total Vms: {$total_instances$}</p>
                  <div google-chart chart="instances_chart"
-                 style="padding:0;width:450px">
+                 style="padding:0;width:440px">
                 </div>
             </md-card-content>
           </md-card>
@@ -93,7 +91,7 @@ md-card .md-actions, md-card md-card-actions
             <md-card-content>
                 <p class="md-subhead">Total Volumes: {$total_volumes$}</p>
                  <div google-chart chart="volumes_chart"
-                 style="padding:0;width:450px">
+                 style="padding:0;width:440px">
                 </div>
             </md-card-content>
           </md-card>
@@ -111,7 +109,7 @@ md-card .md-actions, md-card md-card-actions
             <md-card-content>
                 <p class="md-subhead">Total Images: {$total_images$}</p>
                  <div google-chart chart="images_chart"
-                 style="padding:0;width:450px">
+                 style="padding:0;width:440px">
                 </div>
             </md-card-content>
           </md-card>

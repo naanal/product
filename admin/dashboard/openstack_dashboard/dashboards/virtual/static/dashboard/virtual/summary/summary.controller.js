@@ -98,8 +98,8 @@
         node_chart.data = instances_status;
         node_chart.options = {
             displayExactValues: true,
-            width: 450,
-            height: 260,
+            width: 200,
+            height: 150,
             is3D: true,
             chartArea: {left:15,top:10,bottom:15, right:0},
             legend: {position:'bottom', alignment: 'start'}
