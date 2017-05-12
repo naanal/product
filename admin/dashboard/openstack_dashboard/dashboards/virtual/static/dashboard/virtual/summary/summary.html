@@ -16,14 +16,35 @@ md-card .md-actions, md-card md-card-actions
 		<a href="/virtual/networks/create"  class="btn btn-default btn-sm ajax-modal"><i class="fa fa-plus"></i> Create New Network</a>
     	</div>
 
-    <div class="md-padding" layout-xs="column" layout="row" layout-wrap="">
+    <div class="md-padding" layout-xs="column" layout="row" layout-wrap="">        
+        <div ng-repeat=" node in node_vm_status" >         
+          <div flex-xs flex-gt-xs="50" layout="column">
+            <md-card>
+                <md-card-title>
+                  <md-card-title-text>
+                    <span class="md-headline">
+                    <md-icon><i class="fa fa-laptop"></i></md-icon>
+                    {$node.name$}
+                    </span>
+                  </md-card-title-text>
+                </md-card-title>
+              <md-card-content>
+                   <p class="md-subhead">Total Vms: {$node.total_instance$}</p>
+                   <div google-chart chart={$node.node_chart$}
+                   style="padding:0;width:450px">
+                  </div>
+              </md-card-content>
+            </md-card>
+        </div>
+        </div>
+    
         <div flex-xs flex-gt-xs="50" layout="column">
           <md-card>
             <md-card-title>
               <md-card-title-text>
                 <span class="md-headline">
                 <md-icon><i class="fa fa-laptop"></i></md-icon>
-                Instances
+                 All Instances
                 </span>
               </md-card-title-text>
             </md-card-title>

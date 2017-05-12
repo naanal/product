@@ -46,8 +46,8 @@
     
     $scope.status = function () {
       novaAPI.getServersStatus().then(function(res){
-        $scope.instances_status = res.data.instances_status;
-        $scope.total_instances = res.data.total_instances;
+        $scope.instances_status = res.data.instances_status;        
+        $scope.total_instances = res.data.total_instances;       
         var instances_chart = {}
         instances_chart.type = "PieChart"
         instances_chart.data = $scope.instances_status;
@@ -60,7 +60,59 @@
             legend: {position:'bottom', alignment: 'start'}
         };
         $scope.instances_chart = instances_chart;
+      });   
+
+      novaAPI.instances_rdpcheck().then(function(res){             
+        $scope.node_details = res.data['node_details'];
+        console.log("**************************************");
+        console.log("res data");
+        console.log($scope.node_details);                
+        var node_instance_status={}
+        console.log(node_instance_status);
+        $scope.node_vm_status=[];
+
+        for (var i = 0; i < $scope.node_details.length; i++) 
+        { 
+          console.log($scope.node_details[i]);
+          // console.log("Total instance");
+          // console.log($scope.node_details[i].total);
+          // console.log("after delete name");
+          var name=$scope.node_details[i].node_name
+          var total_instances=$scope.node_details[i].total;
+          delete $scope.node_details[i].node_name;
+          delete $scope.node_details[i].total;
+          // console.log($scope.node_details[i]);
+          // console.log("Print instance status");
+          // console.log($scope.instances_status);
+          // console.log(typeof($scope.instances_status));
+          var instances_status = [];
+          instances_status.push(["Instance Status","Count"]);
+          for (var key in $scope.node_details[i]) {
+              if ($scope.node_details[i].hasOwnProperty(key)) {
+                  instances_status.push( [ key, $scope.node_details[i][key] ] );
+              }
+          }          
+          console.log(instances_status);
+        var node_chart = {}
+        node_chart.type = "PieChart"
+        node_chart.data = instances_status;
+        node_chart.options = {
+            displayExactValues: true,
+            width: 450,
+            height: 260,
+            is3D: true,
+            chartArea: {left:15,top:10,bottom:15, right:0},
+            legend: {position:'bottom', alignment: 'start'}
+        };
+        $scope.node_chart = node_chart;
+        var node={"name":name,"node_chart":$scope.node_chart,"total_instance":total_instances};
+        $scope.node_vm_status.push(node); 
+        }
+        console.log(node);
+        console.log($scope.node_vm_status);
+        
       });
+
       cinderAPI.getVolumesStatus().then(function(res){
         $scope.volumes_status = res.data.volumes_status;
         $scope.total_volumes = res.data.total_volumes;
