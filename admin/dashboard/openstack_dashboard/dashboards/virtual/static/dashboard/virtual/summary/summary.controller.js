@@ -168,13 +168,13 @@
       });
     }
 
-   var theInterval = $interval(function(){
-      $scope.status();
-   }.bind(this), 5000);    
+   // var theInterval = $interval(function(){
+   //    $scope.status();
+   // }.bind(this), 5000);    
 
-    $scope.$on('$destroy', function () {
-        $interval.cancel(theInterval)
-    });
+   //  $scope.$on('$destroy', function () {
+   //      $interval.cancel(theInterval)
+   //  });
 
     $scope.status();
   }
