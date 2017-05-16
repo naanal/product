@@ -138,6 +138,7 @@
       novaLimits: {},
       profiles: [],
       securityGroups: [],
+      hostnames: [],
       volumeBootable: false,
       volumes: [],
       volumeSnapshots: [],
@@ -162,6 +163,8 @@
         // REQUIRED Server Key.  Null allowed.
         user_data: '',
         disk_config: 'AUTO',
+        // node name
+        node: '',
         // REQUIRED
         flavor: null,
         instance_count: 1,
@@ -217,6 +220,7 @@
 
         promise = $q.all([
           getImages(),
+          novaAPI.getHostname().then(getHostnames, noop),
           novaAPI.getAvailabilityZones().then(onGetAvailabilityZones, noop),
           novaAPI.getFlavors(true, true).then(onGetFlavors, noop),
           novaAPI.getKeypairs().then(onGetKeypairs, noop),
@@ -317,6 +321,24 @@
         model.newInstanceSpec.availability_zone = model.availabilityZones[0];
       }
     }
+
+
+    // host name list
+
+    function getHostnames(data) {
+      console.log("************************");
+      console.log("openstack host names");
+//      console.log(data);
+//      console.log(data.data);
+//      console.log(data.data['all_hosts']);
+//      console.log("Before change");
+//      console.log(model.hostnames);
+      model.hostnames.length = 0;
+      push.apply(model.hostnames, data.data['all_hosts']);
+//      console.log("After host name push");
+//      console.log(model.hostnames);
+    }
+
 
     // Flavors
 

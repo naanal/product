@@ -246,11 +246,16 @@ class Servers(generic.View):
             raise rest_utils.AjaxError(400, 'missing required parameter '
                                             "'%s'" % e.args[0])
         kw = {}
-        print(request.DATA)
+        # print(request.DATA)
+        print("***************************")
+        print(request.DATA['node'])
+        if request.DATA['node'] :
+            request.DATA['availability_zone']=request.DATA['availability_zone']+":"+request.DATA['node']
+            print(request.DATA['availability_zone'])
         for name in self._optional_create:
             if name in request.DATA:
                 kw[name] = request.DATA[name]
-        print(kw)
+        # print(kw)
         new = api.nova.server_create(*args, **kw)
         return rest_utils.CreatedResponse(
             '/api/nova/servers/%s' % utils_http.urlquote(new.id),
@@ -1161,4 +1166,24 @@ class VmMonitoring(generic.View):
         instance_id=request.DATA['instance_id']
 
         restart_status=api.nova.server_reboot(request,instance_id)
-        return restart_status 
+        return restart_status
+
+
+@urls.register
+class Hostlist(generic.View):
+    """API for nova host name lists.
+    """
+    url_regex = r'nova/hostlist/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a list of nova node names.
+        Will return HTTP 501 status code if the service_list extension is
+        not supported.
+        """
+        if api.base.is_service_enabled(request, 'compute') \
+                and api.nova.extension_supported('Services', request):
+            result = api.nova.service_list(request, binary="nova-compute")
+            return {'all_hosts': [host.host for host in result]}
+        else:
+            raise rest_utils.AjaxError(501, '')

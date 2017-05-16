@@ -74,7 +74,8 @@
       reCreates_instances:reCreates_instances,
       instances_rdpcheck:instances_rdpcheck,
       instance_hardreboot:instance_hardreboot,
-      vm_monitoring:vm_monitoring
+      vm_monitoring:vm_monitoring,
+      getHostname:getHostname
     };
 
     return service;
@@ -758,6 +759,12 @@
         });
     }
 
+    function getHostname(){
+      return apiService.get('/api/nova/hostlist/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve host names.'));
+        });
+    }
 
   }
 }());

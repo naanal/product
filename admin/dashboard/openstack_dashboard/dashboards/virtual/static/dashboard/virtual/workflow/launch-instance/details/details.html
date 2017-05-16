@@ -32,6 +32,15 @@
         </select>
       </div>
 
+      <div class="form-group">
+        <label class="control-label" translate for="availability-zone">Select Node</label>
+        <select class="form-control" id="selected-node"
+                ng-options="host for host in model.hostnames"
+                ng-model="model.newInstanceSpec.node">
+        </select>
+      </div>
+
+
       <div class="form-group" ng-class="{ 'has-error': launchInstanceDetailsForm.count.$invalid }">
         <label class="control-label" for="instance-count" translate>
           Count
