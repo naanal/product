@@ -28,7 +28,8 @@
       'horizon.dashboard.virtual.containers',
       'horizon.dashboard.virtual.images',
       'horizon.dashboard.virtual.workflow',
-      'horizon.dashboard.virtual.summary'
+      'horizon.dashboard.virtual.summary',
+      'horizon.dashboard.virtual.virtual_machines'
     ])
     .config(config);
 

@@ -24,7 +24,7 @@ PANEL_GROUP = 'default'
 PANEL = 'virtual_machines'
 
 # If set to True, this settings file will not be added to the settings.
-DISABLED = False
+DISABLED = True
 
 # Python panel class of the PANEL to be added.
 ADD_PANEL = 'openstack_dashboard.dashboards.identity.virtual_machines.panel.VirtualMachines'
