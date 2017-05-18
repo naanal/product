@@ -15,7 +15,21 @@ password = "p@ssw0rd123"  # keystone_admin_password on passwords.yaml
 project_name = "admin"
 username = "admin"
 auth_url = "http://%s:35357/v2.0" % controller_ip
-dump_directory = "/home/naanal/Documents/"
+dump_directory = "/home/dashboard/product/admin/dashboard/"
+
+import smtplib
+import string
+
+#-------------------------Notification mail-------------------------------
+email = "naanal"
+pwd = "************************"
+to_email = ['naanalteam@gmail.com','naanalteam@naanal.in']
+
+#------------------------Slack--------------------------------------------
+
+from slackclient import SlackClient
+slack_client = SlackClient('xoxp-29804153346-29865765217-185394003318-71ab4e2067af11d66c5609d3b2c0f947')
+channel="test_rdp_status"
 
 
 def init():
@@ -32,15 +46,17 @@ def init():
         return neutron, cinder, nova
     except Exception as e:
         raise Exception('nova cinder object init error...!')
-def info_collection(nova,cinder,instance_id):
+def info_collection(nova,instance_id,cinder):
     try:
+        print("Inside the info_collection...!")
         instance = nova.servers.get(instance_id)
         info = instance._info
         ip_list = floating_ip_check(info)
         return instance,info,ip_list
     except Exception as e:
-        raise Exception('info collection error...!')
-        
+        print("ERROR")
+
+
 def floating_ip_check(info):
     for net in info.get('addresses', ''):
         tmp_list = []
@@ -53,6 +69,8 @@ def floating_ip_check(info):
                 tmp_ip.append(nic['addr'])
         tmp_list.extend([(flt_ip, fix_ip) for flt_ip in tmp_ip])
         return tmp_list
+
+
 def get_fixed_ip(info,neutron):
     try:
         nics = []
@@ -87,49 +105,87 @@ def json_dump_write(filename="instance_rdpstatus.json",data=None):
     print(file_path)
     #filepath = filename
     with open(file_path, 'w') as outfile:
-        outfile.write(data)        
+        outfile.write(data)
         outfile.close()
 
-        
-def run_alway():  
-    try:       
-        while True:
-#             print("inside run always")
+    
+def notification_mail(subj="",msg="",to_email=to_email,email=email,pwd=pwd):
+    server = smtplib.SMTP('smtp.webfaction.com',25)
+    server.starttls()
+    server.login(email,pwd)
+
+    subj = subj
+    msg = msg
+    email = email + "@naanal.in"
+    print("mail in commonfunctions.........!!!")
+
+    for i in to_email:
+        BODY = string.join((
+            "From: %s" % email,
+            "To: %s" % to_email,
+            "Subject: %s" % subj ,
+            "",
+            msg
+            ), "\r\n")
+        server.sendmail(email,to_email,BODY)
+    server.quit()
+
+def generate_msg(RDP_failed_instance=None):   
+    f=''
+    for i in range(0,len(RDP_failed_instance)):
+        f=f+RDP_failed_instance[i]+','        
+    notification_slack(channel,f)
+    #notification_mail(subj="RDP failed instances",msg=f,to_email=to_email,email=email,pwd=pwd)
+    
+def notification_slack(channel,msg):
+    slack_client.api_call( "chat.postMessage",channel=channel,text=msg)
+
+def run_alway():        
+    try:
+        while True:    
             vms = []
             node_vm_status=[]
+            RDP_failed_instance=[]
             neutron, cinder, nova = init()
             all_nodes=[host.host for host in nova.services.list(binary="nova-compute")]
-#             print("alll nodes",all_nodes)
+            i=0
+            #             print("alll nodes",all_nodes)
             for node in all_nodes:
                 active_instance_count=0
                 shutoff_instnce_count=0
-                error_instance_count=0
-                others_instance_count=0
+                error_instance_count=0     
+                unable_rdp_instance_count=0
                 ins_list = nova.servers.list(search_opts={"host": node})
                 print("Instance in "+node,ins_list)
-                try:          
-#                     print(ins_list)
+                try:
+            #                     print(ins_list)
                     for ins in ins_list:
-#                         print(ins)
+            #                         print(ins)
                         if ins.status=="ACTIVE":
-#                             print('inside active')
-                            active_instance_count=active_instance_count+1           
+            #                             print('inside active')
+                            i=i+1                   
                             vm_obj = {}
-                            instance, info, ip_list = info_collection(nova, cinder, ins.id)            
+                            #instance, info, ip_list = info_collection(nova, cinder, ins.id)  
+                            instance = nova.servers.get(ins.id)
+                            info = instance._info
+                            ip_list = floating_ip_check(info)
                             nics = get_fixed_ip(info, neutron)
                             if not nics:
                                 internal_ip = None
                             else:
-                                internal_ip = nics[0]['v4-fixed-ip']            
+                                internal_ip = nics[0]['v4-fixed-ip']
                             if ip_list:
                                 floating_ip = ip_list[0][0]
                                 ip = ip_list[0][0]
                                 status = check_rdp(ip=ip)
                                 if (status):
+                                    active_instance_count=active_instance_count+1                        
                                     rdp_status = status
-                                    vm_state = status            
+                                    vm_state = status
                                 else:
                                     rdp_status = status
+                                    RDP_failed_instance.append(instance.name)                                    
+                                    unable_rdp_instance_count=unable_rdp_instance_count+1
                                     ping_status = ping(host=ip)
                                     if ping_status:
                                         vm_state = ping_status
@@ -139,24 +195,25 @@ def run_alway():
                                 rdp_status = None
                                 vm_state = None
                                 floating_ip = None
-                            data = {"floating_ip": floating_ip,                
-                                    "instance_status": instance.status,            
-                                    "internal_ip": internal_ip,                        
-                                    "rdp_status": rdp_status,  
+                            data = {"floating_ip": floating_ip,
+                                    "instance_status": instance.status,
+                                    "internal_ip": internal_ip,
+                                    "rdp_status": rdp_status,
                                     "instance_name": instance.name,
                                     "vm_state": vm_state,
                                     "instance_host":info['OS-EXT-SRV-ATTR:host'],
-                                     "instance_id": instance.id}    
+                                     "instance_id": instance.id}
                             vms.append(data)
-                            print(data)
+                            #print(data)
+                            print("----------------------",i,"---------------")
                         elif ins.status=="SHUTOFF":
-#                             print("inside the shutoff")
+                        #print("inside the shutoff")
                             shutoff_instnce_count=shutoff_instnce_count+1
                         else :
                             error_instance_count=error_instance_count+1
-                    node_details={'node_name':node,'total':len(ins_list),'active':active_instance_count,'shutoff':shutoff_instnce_count,'error':error_instance_count,"others":others_instance_count}
-                    node_vm_status.append(node_details) 
-                    print(node_vm_status)
+                    node_details={'node_name':node,'total':len(ins_list),'RDP:Inactive':unable_rdp_instance_count,'RDP:Active':active_instance_count,'Shutoff':shutoff_instnce_count,'Error':error_instance_count}
+                    node_vm_status.append(node_details)
+                    #print(node_vm_status)
                 except Exception as e:
                     print (e)
                     pass
@@ -165,11 +222,13 @@ def run_alway():
             #print(vms1)
             instances_rdpstatus = json.dumps(vms1, ensure_ascii=True)
             json_dump_write(data=instances_rdpstatus)
-#             print("finished")
-            time.sleep(120)
+            generate_msg(RDP_failed_instance)
+            print("------------------------------------------------------")
+            print("finished")
+            time.sleep(30)            
     except Exception as e:
-        print (e)
-        run_alway()
-
+            print (e)
+            instances_rdpstatus = json.dumps(vms1, ensure_ascii=True)
+            generate_msg(RDP_failed_instance)
+            run_alway()
 run_alway()
-        
