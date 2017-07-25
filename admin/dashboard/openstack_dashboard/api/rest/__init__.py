@@ -36,3 +36,4 @@ from . import rally        # noqa
 from . import ldap         # noqa
 from . import adminevent   # noqa
 from . import high_aval    # noqa
+from . import windows_backup    # noqa
