@@ -63,12 +63,13 @@ class Backup(generic.View):
         except KeyError as e:
             raise rest_utils.AjaxError(400, 'missing required parameter'
                                             "'%s'" % e.args[0])
-        cilents=request.DATA['clients']       
+        cilents=request.DATA['clients']      
+        status=[] 
 
         """ Drive that want to Backup"""
         drive_want_to_backup=request.DATA['drive']
         for client in cilents:            
-            status=[]
+            
             user="\\"+client
             
             user_name=backup_location+user
@@ -104,12 +105,17 @@ class Backup(generic.View):
             for cmnd in command_list:
                 result=os.system(cmnd)
 
+            print result
+
             if result!=0:
                 state={"cilent_name":client,"backup_status":"False"}
                 status.append(state)
             else:
                 state={"cilent_name":client,"backup_status":"True"}
                 status.append(state)
+
+            
+                
 
             # result=os.system(t1)
             # result=os.system(t2)
@@ -120,7 +126,7 @@ class Backup(generic.View):
 
 
 
-            print result
+            
             # if result==0:
             #     result = subprocess.check_output(t2, shell=True)
             #     if result ==0:
@@ -164,10 +170,10 @@ class restore(generic.View):
 
         """ Drive to  restore backup"""
         drive_want_to_restore=request.DATA['drive']
-        
+        status=[]
         
         for client in cilents:            
-            status=[]
+            
             user="\\"+client
             
             user_name=backup_location+user
