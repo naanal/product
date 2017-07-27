@@ -17,7 +17,7 @@
 (function() {
   'use strict';
 
-  describe('Identity virtual_machines status table controller', function() {
+  describe('Identity users table controller', function() {
 
     var policy = { allowed: true };
     function fakePolicy() {
@@ -49,7 +49,7 @@
     beforeEach(module('horizon.app.core.openstack-service-api'));
 
     beforeEach(module('horizon.dashboard.virtual'));
-    beforeEach(module('horizon.dashboard.virtual.virtual_machines'));
+    beforeEach(module('horizon.dashboard.virtual.backup'));
     beforeEach(inject(function($injector) {
 
       toastService = $injector.get('horizon.framework.widgets.toast.service');
@@ -59,12 +59,12 @@
 
       spyOn(toastService, 'add').and.callFake(fakeToast);
       spyOn(policyAPI, 'ifAllowed').and.callFake(fakePolicy);
-      spyOn(keystoneAPI, 'geteventlog').and.callFake(fakePromise);
-      spyOn(keystoneAPI, 'getCurrenteventlogession').and.callFake(fakePromise);
+      spyOn(keystoneAPI, 'getUsers').and.callFake(fakePromise);
+      spyOn(keystoneAPI, 'getCurrentUserSession').and.callFake(fakePromise);
     }));
 
     function createController() {
-      return controller('backupTableController', {
+      return controller('backupController', {
         toast: toastService,
         policyAPI: policyAPI,
         keystoneAPI: keystoneAPI
@@ -75,8 +75,8 @@
       policy.allowed = true;
       createController();
       expect(policyAPI.ifAllowed).toHaveBeenCalled();
-      expect(keystoneAPI.geteventlog).toHaveBeenCalled();
-      expect(keystoneAPI.getCurrenteventlogession).toHaveBeenCalled();
+      expect(keystoneAPI.getUsers).toHaveBeenCalled();
+      expect(keystoneAPI.getCurrentUserSession).toHaveBeenCalled();
     });
 
     it('should not invoke keystone apis if policy fails', function() {
@@ -84,8 +84,8 @@
       createController();
       expect(policyAPI.ifAllowed).toHaveBeenCalled();
       expect(toastService.add).toHaveBeenCalled();
-      expect(keystoneAPI.geteventlog).not.toHaveBeenCalled();
-      expect(keystoneAPI.getCurrenteventlogession).not.toHaveBeenCalled();
+      expect(keystoneAPI.getUsers).not.toHaveBeenCalled();
+      expect(keystoneAPI.getCurrentUserSession).not.toHaveBeenCalled();
     });
 
   });

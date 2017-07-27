@@ -40,9 +40,9 @@ class Backup(generic.View):
         """        
         list_machine_cmd="salt-key -l accepted"
         result = subprocess.check_output(list_machine_cmd, shell=True)
-        print (result)
+        # print (result)
         client_list=result.split('\n')
-        client_list=client_list[1:]
+        client_list=client_list[1:len(client_list)-1]    
         return(client_list)
 
 
@@ -65,18 +65,18 @@ class Backup(generic.View):
                                             "'%s'" % e.args[0])
         cilents=request.DATA['clients']      
         status=[] 
+     
 
         """ Drive that want to Backup"""
         drive_want_to_backup=request.DATA['drive']
         for client in cilents:            
-            
             user="\\"+client
             
             user_name=backup_location+user
             #print (user_name)
-            backup1=backup_location+user+"\Backup1"
+            backup1=backup_location+user+"\Latest"
 
-            backup2=backup_location+user+"\Backup2"
+            backup2=backup_location+user+"\Previous"
             #print (backup1)
             #print(backup2)
             """BACKUP FOLDER CREATION commands"""
