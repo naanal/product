@@ -33,7 +33,8 @@
     'md.data.table',
     'googlechart',
     'toggle-switch',
-    'ui.router'
+    'ui.router',
+    'ng-weekday-selector'
   ];
 
   /**

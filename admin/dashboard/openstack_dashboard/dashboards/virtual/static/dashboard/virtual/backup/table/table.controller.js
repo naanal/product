@@ -38,10 +38,12 @@
     '$scope',
     '$rootScope'
   ];
+  var app = angular.module('weekday', ['ng-weekday-selector']);
 
   function backupController(toast, gettext,novaAPI,backupAPI,Spinner, $scope, $rootScope) {
 
     $scope.drives = ["E:"];
+    $scope.name = 'World';
       
      $scope.selectedDrive = $scope.drives[0];
 

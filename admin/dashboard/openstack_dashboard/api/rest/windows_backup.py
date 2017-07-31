@@ -22,7 +22,14 @@ import os
 import subprocess
 
 """ Replace \\NAANAL-PC\Backup  with your backup shared folder """
-backup_location=r"\\NAANAL-PC\Backup"
+backup_script=r"\\NAANAL-PC\Backup\Backup.ps1"
+restore_latest_script=r"\\NAANAL-PC\Backup\Restore_latest.ps1"
+backup_previous_script=r"\\NAANAL-PC\Backup\Restore_previous.ps1"
+
+
+
+import salt.client
+local = salt.client.LocalClient()
 
 
 
@@ -70,49 +77,17 @@ class Backup(generic.View):
         """ Drive that want to Backup"""
         drive_want_to_backup=request.DATA['drive']
         for client in cilents:            
-            user="\\"+client
-            
-            user_name=backup_location+user
-            #print (user_name)
-            backup1=backup_location+user+"\Latest"
-
-            backup2=backup_location+user+"\Previous"
-            #print (backup1)
-            #print(backup2)
-            """BACKUP FOLDER CREATION commands"""
-            Name_folder="New-Item -ItemType directory -Path "+user_name +"  -Force;"
-            Backup1_folder="New-Item -ItemType directory -Path "+backup1 + " "+"-Force;"
-            Backup2_folder="New-Item -ItemType directory -Path "+backup2 + " "+"-Force;"
-            
-            """Remove BACKUP1 commands"""
-            Remove_Backup2_contents="Remove-Item -Recurse -Force "+backup2 +"\*;"
-
-            """Move backup2 into backup1 folder after delete the contants of backup2"""
-            move_backup1_backup2="Get-ChildItem -Path "+backup1+" | % {  Copy-Item $_.fullname "+backup2+" -Recurse -Force }"
-
-
-            """ move selected drive into backup1 folder"""
-            actual_backup="Get-ChildItem -Path "+'"'+drive_want_to_backup+'"' +"| % { Copy-Item $_.fullname  "+'"'+backup1+'"'+" -Recurse -Force}"
-
-            t1=("salt "+"'"+client+"'"+" cmd.run " +"'"+Name_folder+"'" +" shell=powershell")
-            t2=(" salt "+"'"+client+"'"+" cmd.run " +"'"+Backup1_folder+"'" +" shell=powershell")
-            t3=(" salt "+"'"+client+"'"+" cmd.run " +"'"+Backup2_folder+"'" +" shell=powershell")
-            t4=(" salt "+"'"+client+"'"+" cmd.run " +"'"+Remove_Backup2_contents+"'" +" shell=powershell")
-            t5=(" salt "+"'"+client+"'"+" cmd.run " +"'"+move_backup1_backup2+"'" +" shell=powershell")
-            t6=(" salt "+"'"+client+"'"+" cmd.run " +"'"+actual_backup+"'" +" shell=powershell")
-
-            command_list=[t1,t2,t3,t4,t5,t6]
-            for cmnd in command_list:
-                result=os.system(cmnd)
-
+            print client
+            backup_cmd='Powershell -noprofile -executionpolicy bypass -file '+backup_script
+            result=local.cmd(client, 'cmd.run', [backup_cmd,'shell=powershell'])
             print result
 
-            if result!=0:
-                state={"cilent_name":client,"backup_status":"False"}
-                status.append(state)
-            else:
-                state={"cilent_name":client,"backup_status":"True"}
-                status.append(state)
+            # if result!=0:
+            #     state={"cilent_name":client,"backup_status":"False"}
+            #     status.append(state)
+            # else:
+            #     state={"cilent_name":client,"backup_status":"True"}
+            #     status.append(state)
 
             
                 
@@ -166,7 +141,7 @@ class restore(generic.View):
         cilents=request.DATA['clients']  
 
         """ Backup name that want to Restore"""
-        Selected_backup="\\"+request.DATA['backup_name']  
+        Selected_backup=request.DATA['backup_name']  
 
         """ Drive to  restore backup"""
         drive_want_to_restore=request.DATA['drive']
@@ -174,25 +149,19 @@ class restore(generic.View):
         
         for client in cilents:            
             
-            user="\\"+client
-            
-            user_name=backup_location+user
-            # print (user_name)
-
-            Restore_Backup_selection=user_name+Selected_backup
-            #print(Restore_Backup_selection)
-
-            Restore="Get-ChildItem -Path "+'"'+Restore_Backup_selection+'"'+" | % {   Copy-Item $_.fullname "+'"'+drive_want_to_restore+'"'+" -Recurse -Force }"
-            """BACKUP FOLDER CREATION commands"""
-            t1=(" salt "+"'"+client+"'"+" cmd.run " +"'"+Restore+"'" +" shell=powershell")    
-            #print(t1)                 
-            result=os.system(t1)
-            if result!=0:
-                state={"cilent_name":client,"restore_status":"False"}
-                status.append(state)
+            print client
+            print("Restore")            
+            if Selected_backup=="Latest": 
+                print("Latest")               
+                backup_cmd='Powershell -noprofile -executionpolicy bypass -file '+restore_latest_script
+                result=local.cmd(client, 'cmd.run', [backup_cmd,'shell=powershell'])
+                print result
             else:
-                state={"cilent_name":client,"restore_status":"True"}
-                status.append(state)          
+                print ("Previous")
+                backup_cmd='Powershell -noprofile -executionpolicy bypass -file '+backup_previous_script
+                result=local.cmd(client, 'cmd.run', [backup_cmd,'shell=powershell'])
+                print result
+            
         return(status)
 
 
