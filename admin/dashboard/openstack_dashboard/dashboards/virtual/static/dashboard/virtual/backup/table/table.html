@@ -7,6 +7,70 @@
             </section>
 
             <md-tabs md-dynamic-height="" md-border-bottom="">
+
+
+                <md-tab label="Scheduler">
+                    <md-content class="md-padding">
+
+
+                        <div layout="row" layout-xs="column" >
+                          <div flex>
+                    
+
+                    <h1> Days </h1>
+                    <input type="checkbox" name="vehicle" value="Bike">Sunday<br>
+                    <input type="checkbox" name="vehicle" value="Car">Monday<br>
+                    <input type="checkbox" name="vehicle" value="Bike">Tuesday<br>
+                    <input type="checkbox" name="vehicle" value="Car">Wednesday <br>
+                    <input type="checkbox" name="vehicle" value="Bike">Thursday<br>
+                    <input type="checkbox" name="vehicle" value="Car">Friday <br>
+                    <input type="checkbox" name="vehicle" value="Bike">Saturday
+                        
+
+
+                          </div>
+                          <div flex>
+                              <h1>Time</h1>                     
+
+                                 <label for="exampleInput">Pick a time between 8am and 5pm:</label>
+                               <input type="time" id="exampleInput" name="input" ng-model="example.value"
+                                   placeholder="HH:mm:ss" min="08:00:00" max="17:00:00" required />
+                               <div role="alert">
+                                 <span class="error" ng-show="myForm.input.$error.required">
+                                     Required!</span>
+                                 <span class="error" ng-show="myForm.input.$error.time">
+                                     Not a valid date!</span>
+                               </div>
+  
+                          </div>
+
+
+                             <div flex>
+                              <h1>Schedule Button</h1>
+
+                                    <md-button class="md-raised md-primary">Schedule Backup</md-button>
+
+                              
+                          </div>
+
+
+                        </div>
+
+                    
+
+
+                    </md-content>
+
+                </md-tab>
+
+
+
+
+
+
+
+
+
                 <md-tab label="Backup">
                     <md-content class="md-padding">
                         <section layout="row" layout-xs="column">

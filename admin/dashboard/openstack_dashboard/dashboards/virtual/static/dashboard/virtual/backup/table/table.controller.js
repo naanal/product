@@ -59,6 +59,16 @@
         selected: []
         };  
 
+
+        $scope.example = {
+       value: new Date(1970, 0, 1, 14, 57, 0)
+     }
+
+
+
+            $rootScope.reloadPage = function(){window.location.reload();}
+
+
      
 
       $rootScope.retieveCilentDetails = function(){
@@ -76,29 +86,7 @@
      $rootScope.retieveCilentDetails();
 
 
-  //     $scope.backupSingle = function(ciletMachineName){
-  //       var backup_attributes={ };
-   
 
-
-
-  //         backupAPI.backupClient(backup_attributes)
-  //         .then(function(res){
-         
-  //           var res = res.data;
-  //           console.log("After backup");
-  //           console.log(res);
-  //           // for(var i=0;i<res.length;i++) {
-  //           //   if (res[i].status.includes("success"))   
-                
-  //           //     toast.add('success', res[i].group_name+" "+res[i].action+" "+res[i].status);
-  //           //   else                
-  //           //     toast.add('danger',res[i].group_name+" "+res[i].action+" "+res[i].status);
-  //           // }           
-  //         });
-    
-
-  // }
 
 
   $scope.backupALL=function(ciletMachineName){   
@@ -115,7 +103,9 @@
           .then(function(res){           
             var res = res.data;
             console.log(res);
+            $rootScope.reloadPage();
             $rootScope.retieveCilentDetails();
+            
           })
         }
 
@@ -165,7 +155,9 @@
           .then(function(res){           
             var res = res.data;
             console.log(res);
+            $rootScope.reloadPage();
             $rootScope.retieveCilentDetails();
+            
                  
           })
         }
