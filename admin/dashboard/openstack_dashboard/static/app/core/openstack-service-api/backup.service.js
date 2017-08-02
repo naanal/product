@@ -36,6 +36,7 @@
       getClientdetails:getClientdetails,
       backupClient:backupClient,
       restoreClient:restoreClient,
+      schduleALL:schduleALL,
     };
 
     return service;
@@ -80,6 +81,16 @@
       return apiService.post('/api/restore/list/',data)
         .error(function () {
           toastService.add('error', gettext('Unable to Restore backup.'));
+        });
+    }
+
+    function schduleALL(data) {
+      console.log("inside schduleALL api");
+      console.log(data);
+
+      return apiService.post('/api/restore/schedule/',data)
+        .error(function () {
+          toastService.add('error', gettext('Unable to schedule backup.'));
         });
     }
 

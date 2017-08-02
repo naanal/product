@@ -1,4 +1,4 @@
- <div ng-controller="backupController">
+<div ng-controller="backupController">
     <md-card>
 
         <md-card-content>
@@ -13,60 +13,46 @@
                     <md-content class="md-padding">
 
 
-                        <div layout="row" layout-xs="column" >
-                          <div flex ng-app="weekday">
-                    
-
-                    <h1> Days </h1>
-                    
-                         <ng-weekday-selector  ng-model="days" ng-change="changed=true;"></ng-weekday-selector>
-
-                         {$days$}
-   
-  
+                        <div layout="row" layout-xs="column">
+                            <div flex ng-app="weekday">
 
 
-                          </div>
-                          <div flex >
-                              <h1>Time</h1>                     
+                                <h1> Days </h1>
 
-                                 <label for="exampleInput">Pick a time :</label>
-                               <input type="time" id="exampleInput" name="input" ng-model="example.value"
-                                   placeholder="HH:mm:ss" min="01:00:00" max="24:00:00" required />
-                               <div role="alert">
-                                 <span class="error" ng-show="myForm.input.$error.required">
-                                     Required!</span>
-                                 <span class="error" ng-show="myForm.input.$error.time">
-                                     Not a valid date!</span>
-                               </div>
-  
-                          </div>
+                                <ng-weekday-selector ng-model="days" ng-change="changed=true;"></ng-weekday-selector>
+
+
+
+
+                            </div>
+                            <div flex >
+                                <h1>Time</h1>
+
+                                <label for="exampleInput">Pick a time :</label>
+                                <input type="time" id="exampleInput" name="input" ng-model="example.value" placeholder="HH:mm:ss" min="01:00:00" max="24:00:00" required />
+
+
+                            </div>
 
 
 
 
                         </div>
 
-                    
+
 
 
                     </md-content>
-                    <section layout="row" layout-sm="column" layout-align="center end"
+                    <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+                        <div flex layout="row"       layout-align="center center">
 
- layout-wrap>
-                           <div flex>                             
+                            <md-button class="md-raised md-primary" ng-click="schduleALL(days,example);">Schedule Backup</md-button>
 
-                                    <md-button class="md-raised md-primary">Schedule Backup</md-button>
-                              
-                          </div>
-            </section>
-                          
+                        </div>
+                    </section>
+
 
                 </md-tab>
-
-
-
-
 
 
 
@@ -80,7 +66,7 @@
                                     <md-icon>
                                         <i class="material-icons">search</i>
                                     </md-icon>
-                                    <input type="text" ng-model="searchquery" placeholder="Search By name, computer..."/>
+                                    <input type="text" ng-model="searchquery" placeholder="Search By name, computer..." />
                                 </md-input-container>
                                 <md-content ng-show="selected.length" class="md-padding">
                                     <p class="md-padding md-title">
@@ -90,60 +76,59 @@
                             </section>
                             <span flex=""></span>
                             <section flex="" layout-align="end center">
-                                <md-button
-                                        class="md-fab md-mini md-primary btn-launch ng-scope" aria-label="view"
-                                        ng-hide="selected.length"
-                                        ng-click="backupALL(tableBackup.selected);">
+                                <md-button class="md-fab md-mini md-primary btn-launch ng-scope" aria-label="view" ng-hide="selected.length" ng-click="backupALL(tableBackup.selected);">
                                     <md-icon>backup</md-icon>
                                     <md-tooltip>Backup Selected Machines</md-tooltip>
                                 </md-button>
                                 <span flex=""></span>
-                            
+
 
                             </section>
-                            
-                        </section>            
+
+                        </section>
                         <style>
-                                .disabled {
-                                        text-decoration: line-through;
-                                     }
-​                        </style>
-                        
+                            .disabled {
+                                text-decoration: line-through;
+                            }
+
+                            ​
+                        </style>
+
 
                         <md-table-container>
-                            <table   md-table md-row-select multiple ng-model="tableBackup.selected" >
+                            <table md-table md-row-select multiple ng-model="tableBackup.selected">
                                 <thead md-head md-order="userquery.order">
-                                <tr md-row>
-                                    <th md-column><span class="md-title" style="font-weight:bold">Machine Name</span></th>
-                                    
-                                    <!-- <th md-column><span class="md-title"> </span> </th> -->
-                                   
-                                </tr>
+                                    <tr md-row>
+                                        <th md-column><span class="md-title" style="font-weight:bold">Machine Name</span></th>
+
+                                        <!-- <th md-column><span class="md-title"> </span> </th> -->
+
+                                    </tr>
                                 </thead>
                                 <tbody md-body>
-                                <tr md-row md-select="client" md-select-id="name" md-auto-select  ng-repeat="client in cilentdetails" >
-                                    <td md-cell><span class="md-body-2" >{$client$}</span></td>
+                                    <tr md-row md-select="client" md-select-id="name" md-auto-select ng-repeat="client in cilentdetails">
+                                        <td md-cell><span class="md-body-2">{$client$}</span></td>
 
-                              <!--       <td md-cell >
+                                        <!--       <td md-cell >
                                     <md-button class="md-fab md-mini md-primary btn-launch ng-scope"  aria-label="view" ng-click="backupSingle(client);">
 
                                     <md-icon >backup</md-icon>
                                     <md-tooltip>Backup</md-tooltip>
                                     </md-button>
                                     </td> -->
-                                  
-                                </tr>
+
+                                    </tr>
                                 </tbody>
                             </table>
-                        </md-table-container>  
+                        </md-table-container>
                         <div flex="100">
-      <h2 class="md-title">Selected Items</h2>
-      <code style="display: block; padding: 8px;">{$tableBackup.selected$}</code>
-    </div>
-  
-                      
+                            <h2 class="md-title">Selected Items</h2>
+                            <code style="display: block; padding: 8px;">{$tableBackup.selected$}</code>
+                        </div>
 
-                    
+
+
+
                     </md-content>
 
 
@@ -151,58 +136,54 @@
                 <md-tab label="Restore">
                     <md-content class="md-padding">
                         <section layout="row" layout-xs="column">
-        
+
                             <md-input-container layout="row" layout-xs="column" style="min-width: 200px;">
-                              <md-icon>
-                                <i class="material-icons">search</i>
-                                 </md-icon>
-                                <input type="text" ng-model="searchquery1" placeholder="Search By Computer Name"/>
-                            </md-input-container>   
+                                <md-icon>
+                                    <i class="material-icons">search</i>
+                                </md-icon>
+                                <input type="text" ng-model="searchquery1" placeholder="Search By Computer Name" />
+                            </md-input-container>
                             <span flex=""></span>
                             <section flex="" layout-align="end center">
-                            <md-button
-                                        class="md-fab md-mini md-primary btn-launch ng-scope" aria-label="view"
-                                        ng-hide="selected.length"
-                                        ng-click="restoreALL(tableRestore.selected);"
-                                        >
+                                <md-button class="md-fab md-mini md-primary btn-launch ng-scope" aria-label="view" ng-hide="selected.length" ng-click="restoreALL(tableRestore.selected);">
                                     <md-icon>refresh</md-icon>
                                     <md-tooltip>Restore Selected Machines</md-tooltip>
                                 </md-button>
-                                       
-                                </section>  
 
-                                <section flex="" layout-align="center center">                                
+                            </section>
+
+                            <section flex="" layout-align="center center">
                                 <b>Select Backup </b>
                                 <li></li>
-                                <li> 
-                                <select ng-model="selectedBackup"  ng-options="x for x in backups">
+                                <li>
+                                    <select ng-model="selectedBackup" ng-options="x for x in backups">
                                                 
                                  </select>
-                                           
+
                                 </li>
-                                 {$selectedBackup$}
-                                </section>
-                        
-                                
-                        </section>         
-                         
-                                
+                                {$selectedBackup$}
+                            </section>
+
+
+                        </section>
+
+
 
                         <md-table-container>
 
-                             <table   md-table md-row-select multiple ng-model="tableRestore.selected" >
+                            <table md-table md-row-select multiple ng-model="tableRestore.selected">
                                 <thead md-head md-order="computerquery.order">
-                                <tr md-row>
-                                    <th md-column><span class="md-title" style="font-weight:bold">Machine Name</span></th>
-                                    <!-- <th md-column><span class="md-title" style="font-weight:bold"> Drive</span> </th>
+                                    <tr md-row>
+                                        <th md-column><span class="md-title" style="font-weight:bold">Machine Name</span></th>
+                                        <!-- <th md-column><span class="md-title" style="font-weight:bold"> Drive</span> </th>
                                     <th md-column><span class="md-title"> </span> </th>
                                     -->
-                                </tr>
+                                    </tr>
                                 </thead>
                                 <tbody md-body>
-                                <tr md-row md-select="client" md-select-id="name" md-auto-select  ng-repeat="client in cilentdetails" >
-                                    <td md-cell><span class="md-body-2" >{$client$}</span></td>
-                                  <!--   <td md-cell>
+                                    <tr md-row md-select="client" md-select-id="name" md-auto-select ng-repeat="client in cilentdetails">
+                                        <td md-cell><span class="md-body-2">{$client$}</span></td>
+                                        <!--   <td md-cell>
                                         <span class="md-body-2" >
                                             <select ng-model="selectedDrive"  ng-options="x for x in drives">
                                                 
@@ -211,33 +192,33 @@
                                         </span>
                                     </td> -->
 
-                                   <!--  <td md-cell >
+                                        <!--  <td md-cell >
                                     <md-button class="md-fab md-mini md-primary btn-launch ng-scope"  aria-label="view" ng-click="backupSingle(client);">
 
                                     <md-icon >refresh</md-icon>
                                     <md-tooltip>Restore</md-tooltip>
                                     </md-button>
                                     </td> -->
-                                  
-                                </tr>
+
+                                    </tr>
                                 </tbody>
                             </table>
 
 
                         </md-table-container>
-                        
 
-                       
+
+
                     </md-content>
 
-                                      <div flex="100">
-      <h2 class="md-title">Selected Items</h2>
-      <code style="display: block; padding: 8px;">{$tableRestore.selected$}</code>
-    </div>
+                    <div flex="100">
+                        <h2 class="md-title">Selected Items</h2>
+                        <code style="display: block; padding: 8px;">{$tableRestore.selected$}</code>
+                    </div>
 
 
 
-                                   </md-tab>
+                </md-tab>
 
 
 

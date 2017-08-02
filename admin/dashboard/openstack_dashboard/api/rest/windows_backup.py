@@ -26,7 +26,8 @@ backup_script=r"\\NAANAL-PC\Backup\Backup.ps1"
 restore_latest_script=r"\\NAANAL-PC\Backup\Restore_latest.ps1"
 backup_previous_script=r"\\NAANAL-PC\Backup\Restore_previous.ps1"
 
-
+"""SChdule backup"""
+backup_script_location=r'C:\Backup.ps1'
 
 import salt.client
 local = salt.client.LocalClient()
@@ -162,6 +163,39 @@ class restore(generic.View):
                 result=local.cmd(client, 'cmd.run', [backup_cmd,'shell=powershell'])
                 print result
             
+        return(status)
+
+
+@urls.register
+class schedule(generic.View):
+    """API for salt key list (client machines name)
+    """
+    url_regex = r'restore/schedule/$'  
+    @rest_utils.ajax(data_required=True)
+    def post(self, request):     
+        try:
+            args = (
+                request,
+                request.DATA['days'],
+                request.DATA['time']
+            )
+        except KeyError as e:
+            raise rest_utils.AjaxError(400, 'missing required parameter'
+                                            "'%s'" % e.args[0])
+        schtask_name="Mybackup"
+        days=request.DATA['days']         
+        time=request.DATA['time']
+        schtask_delete_old='SchTasks /Delete /TN '+schtask_name
+        schtask='SchTasks /Create /SC WEEKLY /D '+days+' /TN '+'"'+schtask_name+'"'+' /TR '+ backup_script_location+' /ST '+time
+        ret=local.cmd_iter('*', 'cmd.run', [schtask_delete_old,'shell=powershell'])
+        ret=local.cmd_iter('*', 'cmd.run', [schtask,'shell=powershell'])
+        status=[]   
+        print(schtask_delete_old)
+        print(schtask)
+        status=[]
+        for i in ret:
+            print(i)
+            status.append(i)
         return(status)
 
 
