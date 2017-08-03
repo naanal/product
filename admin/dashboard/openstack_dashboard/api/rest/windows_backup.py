@@ -20,7 +20,7 @@ from django.conf import settings
 import json
 import os
 import subprocess
-
+import time
 """ Replace \\NAANAL-PC\Backup  with your backup shared folder """
 backup_script=r"\\NAANAL-PC\Backup\Backup.ps1"
 restore_latest_script=r"\\NAANAL-PC\Backup\Restore_latest.ps1"
@@ -177,25 +177,37 @@ class schedule(generic.View):
             args = (
                 request,
                 request.DATA['days'],
-                request.DATA['time']
+                request.DATA['times']
             )
         except KeyError as e:
             raise rest_utils.AjaxError(400, 'missing required parameter'
                                             "'%s'" % e.args[0])
         schtask_name="Mybackup"
         days=request.DATA['days']         
-        time=request.DATA['time']
-        schtask_delete_old='SchTasks /Delete /TN '+schtask_name
-        schtask='SchTasks /Create /SC WEEKLY /D '+days+' /TN '+'"'+schtask_name+'"'+' /TR '+ backup_script_location+' /ST '+time
-        ret=local.cmd_iter('*', 'cmd.run', [schtask_delete_old,'shell=powershell'])
-        ret=local.cmd_iter('*', 'cmd.run', [schtask,'shell=powershell'])
+        times=request.DATA['times']
+        list_machine_cmd="salt-key -l accepted"
+        result = subprocess.check_output(list_machine_cmd, shell=True)
+        # print (result)
+        client_list=result.split('\n')
+        client_list=client_list[1:len(client_list)-1]  
         status=[]   
-        print(schtask_delete_old)
-        print(schtask)
-        status=[]
-        for i in ret:
-            print(i)
-            status.append(i)
+        print(client_list)
+        for client in client_list:
+            print (client)
+
+            schtask_delete_old='SchTasks /Delete /TN '+schtask_name+' /f'
+            schtask='SchTasks /Create /SC WEEKLY /D '+days+' /TN '+'"'+schtask_name+'"'+' /TR '+ backup_script_location+' /ST '+times+' /f'
+            ret=local.cmd_iter(client, 'cmd.run', [schtask_delete_old,'shell=powershell'])
+            for i in ret:
+                print(i)
+            time.sleep(5)
+            ret=local.cmd_iter(client, 'cmd.run', [schtask,'shell=powershell'])            
+            print(schtask_delete_old)
+            print(schtask)
+            status=[]
+            for i in ret:
+                print(i)
+                status.append(i)
         return(status)
 
 

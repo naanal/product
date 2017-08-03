@@ -42,8 +42,37 @@
     function backupController(toast, gettext, novaAPI, backupAPI, Spinner, $scope, $rootScope) {
 
         $scope.drives = ["E:"];
-        $scope.name = 'World';
+        $scope.hours = [];
+        $scope.mins = [];
 
+        function pad2(number) {
+            return (number < 10 ? '0' : '') + number
+        }
+
+
+        var initHours = function() {
+            var i;
+            for (i = 0; i <= 23; i++) {
+                var num = pad2(i);
+                $scope.hours.push(num);
+            }
+        }
+
+
+        var initMins = function() {
+            var i;
+            for (i = 0; i <= 59; i++) {
+                var num = pad2(i);
+                $scope.mins.push(num);
+            }
+        }
+        initHours();
+        initMins();
+
+
+
+        //$scope.mins = ["E:"];
+        $scope.name = 'World';
         $scope.selectedDrive = $scope.drives[0];
 
         $scope.backups = ["Latest", "Previous"];
@@ -165,22 +194,19 @@
         }
 
 
-        $scope.schduleALL = function(days, time) {
-            var schduleAttributes = {};            
-            var dayString = "";            
-            var timeString=time.value;                        
-            var test2 =timeString.toLocaleTimeString();                   
-            
+        $scope.schduleALL = function(days, selectedHours, selectedMins) {
+            var schduleAttributes = {};
+            var dayString = "";
             for (var i = 0; i < days.length; i++) {
                 if (days[i].isSelected == true) {
                     dayString += days[i].name + ","
 
                 }
             }
-            
+
             dayString = dayString.slice(0, -1);
             schduleAttributes.days = dayString;
-            schduleAttributes.time = timeString.toLocaleTimeString();
+            schduleAttributes.times = selectedHours.toString() + ':' + selectedMins.toString();
             console.log(schduleAttributes);
             backupAPI.schduleALL(schduleAttributes)
                 .then(function(res) {
