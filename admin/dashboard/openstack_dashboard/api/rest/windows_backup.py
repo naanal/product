@@ -196,7 +196,7 @@ class schedule(generic.View):
             print (client)
 
             schtask_delete_old='SchTasks /Delete /TN '+schtask_name+' /f'
-            schtask='SchTasks /Create /SC WEEKLY /D '+days+' /TN '+'"'+schtask_name+'"'+' /TR '+ backup_script_location+' /ST '+times+' /f'
+            schtask='SchTasks /Create /SC WEEKLY /D '+days+' /TN '+'"'+schtask_name+'"'+' /TR '+ backup_script+' /ST '+times+' /f'
             ret=local.cmd_iter(client, 'cmd.run', [schtask_delete_old,'shell=powershell'])
             for i in ret:
                 print(i)
